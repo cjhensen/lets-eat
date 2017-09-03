@@ -1,0 +1,9 @@
+language: node_js
+node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: XVfGmLK7YyOKZ+Ert02HM/NTSL1YNb51qW4Nm1n+PrDhmpJwVOq5tIhF8MiAt4zAeOQhECYJECHDgIBLo/SMqzNcmXtypv2+wJeNRQLsYQB+DlcrtNMn4OZ+rtV0bTWdJZ56VGIhYaaD+WMdeP+//KWGPF1QN3OYfE2ofYpi+Un6ldk4DGeZAJ+Zp3cvrITN+mK/z6Z6QTlImgvHO9TI7Nq7tiS8Wj60H+qSvKZIb8RABMR95Nfgu2YOaCCRgfHxdUQUuQQYQNoyr3GFdfbYBW5zxK5TaiH9JcwjfWovLX42yz+Scczto/n20GXh68CUMuZBFOdDJEJDMHfzFiq05r21IAsn/AO9GyDznjxIxiwuvUBEQNtWcmjRr4BUyW9nKdcFoiaG7XWo6WAsSbomcbsUMit4pZWzzh9XKmDjxi5215dN45DFBjJ1gfq2nZMP74WivONwTa8zNxShAR9pkxYHe+Rkicm37uTtUWLeQoS3T64Q0bi6TGdpVlk3l8U3hpt5zJZOuBfaD3+QSnaNro/r9IRHOBpm4cKekVzTaMVWvkfgfuCkH6eXVjZCZhYDERCb3hjutsXJQBUHiX9dHSrOR4ghZACO958Wxj5tgTOGtMCnQI+fhZYL3cilz/GI6Lbt0yfMoOn5qSXPJ3JOp1gNgcVvN3YiNtIel8GSijQ=
+  app: protected-crag-89258
+  on:
+    repo: cjhensen/lets-eat
