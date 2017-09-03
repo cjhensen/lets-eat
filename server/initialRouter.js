@@ -26,6 +26,8 @@ const router = express.Router();
 router.get('/', (request, response) => {
   console.log('get works!');
   response.sendFile('index.html', { root: '/public/'});
+  // or
+  // response.sendFile('index.html', { root: path.join(__dirname, '../public')});
 });
 
 // POST
