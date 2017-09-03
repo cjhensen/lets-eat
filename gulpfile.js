@@ -52,9 +52,15 @@ gulp.task('server', function() {
 
 gulp.task('watch', function() {
   livereload.listen();
-  watch([`${folders.src}/less/**/*.less`, `${folders.src}/components/**/*.less`], function() { gulp.start('less'); });
+  watch([
+    `${folders.src}/less/**/*.less`, 
+    `${folders.src}/components/**/*.less`
+    ], function() { gulp.start('less'); });
   watch(`${folders.src}/**/*.html`, function() { gulp.start('html'); });
-  watch(`${folders.src}/components/**/*.js`, function() { gulp.start('js'); });
+  watch([
+    `${folders.src}/app.js`, 
+    `${folders.src}/components/**/*.js`
+    ], function() { gulp.start('js'); });
 });
 
 // compile less
@@ -81,7 +87,9 @@ gulp.task('html', function() {
 // bundle js files and minimize
 gulp.task('js', function(cb) {
   pump([
-    gulp.src(`${folders.src}/js/**/*.js`),
+    gulp.src([
+      `${folders.src}/app.js`,
+      `${folders.src}/components/**/*.js`]),
     concat('app.js'),
     // babili({
     //   mangle: {
