@@ -25,6 +25,7 @@ const router = express.Router();
 // GET
 router.get('/', (request, response) => {
   console.log('get works!');
+  response.sendFile('../public/index.html');
 });
 
 // POST
