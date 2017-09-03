@@ -28,6 +28,7 @@ describe('Lets Eat API', function() {
           response.should.have.status(200);
           response.type.should.equal('text/html');
         });
+        done();
     });
   });
 });
