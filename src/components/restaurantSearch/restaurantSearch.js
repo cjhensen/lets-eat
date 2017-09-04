@@ -5,6 +5,8 @@ const restaurantSearch = (function() {
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
+
+  // get values from form input fields
   function getFormValues() {
     return {
       location: $('.js-input-location', template).val(),
@@ -14,6 +16,7 @@ const restaurantSearch = (function() {
     }
   }
 
+  // Handle clicking the search button
   function handleSearchBtnClicked(event) {
     console.log('handleSearchBtnClicked');
     event.preventDefault();

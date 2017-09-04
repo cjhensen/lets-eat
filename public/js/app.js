@@ -42,7 +42,10 @@ const restaurantSearchTmpl = (function() {
       </form>
     `;
 
-    return template.trim();
+    // remove line breaks,
+    // remove whitespace between element tags, 
+    // remove leading and trailing whitespace
+    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
   }
 
   return {
@@ -58,6 +61,8 @@ const restaurantSearch = (function() {
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
+
+  // get values from form input fields
   function getFormValues() {
     return {
       location: $('.js-input-location', template).val(),
@@ -67,6 +72,7 @@ const restaurantSearch = (function() {
     }
   }
 
+  // Handle clicking the search button
   function handleSearchBtnClicked(event) {
     console.log('handleSearchBtnClicked');
     event.preventDefault();
