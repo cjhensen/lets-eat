@@ -24,6 +24,9 @@ const router = express.Router();
 
 // GET
 router.get('/', (request, response) => {
+  response.sendFile('index.html', { root: '/public/'});
+});
+router.get('/', (request, response) => {
   console.log('get works!');
   response.sendFile('index.html', { root: '/public/'});
   // or

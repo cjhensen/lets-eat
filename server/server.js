@@ -11,12 +11,14 @@ const app = express();
 
 // require some request router
 const initialRouter = require('./initialRouter');
+const yelpApiRouter = require('./yelpApiRouter');
 
 // setting up public directory
 app.use(express.static('public')); // might need to change this due to server being in a folder
 
 // use some request router
 app.use('/', initialRouter);
+app.use('/restaurant-search', yelpApiRouter);
 
 let server;
 
