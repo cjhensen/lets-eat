@@ -37,6 +37,7 @@ const YelpSearch = {
           ls.push(business);
           console.log(business.name);
         });
+        // TODO: make the return work, its not working at all right now
         return Object.keys(this.searchResults).map(key => this.searchResults[key]);
       });
     }).catch(e => {
