@@ -33,11 +33,7 @@ router.get('/', (request, response) => {
         // add search result items to storage
         res.jsonBody.businesses.forEach(function(business) {
           searchResults.push(business);
-          console.log(business.name);
         });
-        console.log("SEARCH RESULTS**********", searchResults);
-        // TODO: make the return work, its not working at all right now
-        // console.log('searchResults', this.searchResults);
 
         response.json(Object.keys(searchResults).map(key => searchResults[key]));
 
