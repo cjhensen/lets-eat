@@ -1,4 +1,9 @@
 const restaurantSearchTmpl = (function() {
+
+  // modules:
+  // _utilities
+  
+
   // TODO: for cuisine selections, have an array of cuisines and for each item
   // in the array, create the html option element for it and add it to the template
   // Probably has to be a separate function, then a function to combine the two

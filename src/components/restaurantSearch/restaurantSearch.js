@@ -1,5 +1,10 @@
 const restaurantSearch = (function() {
 
+  // modules:
+  // restaurantSearchTmpl
+  // pubSub
+
+
   // DOM
   const element = $('.js-restaurant-search');
   const template = $(restaurantSearchTmpl.generateTemplate());
@@ -17,9 +22,6 @@ const restaurantSearch = (function() {
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
     getDataFromApi(formValues, processSearchResults);
-
-    // pass data to choose view
-    // display data in choose view
   }
 
   // getDataFromApi: request yelp search data via my own api
@@ -46,7 +48,12 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
-    console.log('data', data);
+
+
+    // emit event with processed data
+    // received in: 
+    //   restaurantChoose
+    pubSub.emit('processSearchResults', data);
   }
 
   // getFormValues: get values from form input fields and returns as an object

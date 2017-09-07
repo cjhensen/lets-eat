@@ -1,4 +1,46 @@
 
+const pubSub = (function() {
+  
+  // object that holds events, none created by default
+  const events = {};
+
+  // on:
+  // if the event doesn't exist, create an empty array
+  // add handler fn to events array at eventName
+  function on(eventName, fn) {
+    events[eventName] = events[eventName] || [];
+    events[eventName].push(fn);
+  }
+
+  // off:
+  // if eventName exists in events, if fn exists, remove function from array
+  function off(eventName, fn) {
+    if(events[eventName]) {
+      for(let i = 0; i < events[eventName].length; i++) {
+        if(events[eventName][i] === fn) {
+          events[eventName].splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
+
+  // if eventName exists, pass data to each fn in the array while calling each fn
+  function emit(eventName, data) {
+    if(events[eventName]) {
+      events[eventName].forEach(function(fn) {
+        fn(data);
+      });
+    }
+  }
+
+  return {
+    on: on,
+    off: off,
+    emit: emit
+  }
+
+})();
 const _utilities = (function() {
   
   // templateClean:
@@ -15,6 +57,10 @@ const _utilities = (function() {
 
 })();
 const restaurantChooseTmpl = (function() {
+
+  // modules:
+  // _utilities
+  
 
   function generateTemplate() {
     const template = `
@@ -44,23 +90,37 @@ const restaurantChooseTmpl = (function() {
 })();
 const restaurantChoose = (function() {
 
+  // modules:
+  // restaurantChooseTmpl
+  // pubSub
+
+
   // DOM
   const element = $('.js-restaurant-choose');
   const template = $(restaurantChooseTmpl.generateTemplate());
 
-  function render() {
+  // subscribed events
+  pubSub.on('processSearchResults', render);
+
+  function render(data) {
     console.log('restaurantChoose render');
+    console.log('data from pubsub', data);
     element.append(template);
   }
-  
-  render();
+
+  // render();
 
   return {
     render: render
   }
-  
+
 })();
 const restaurantSearchTmpl = (function() {
+
+  // modules:
+  // _utilities
+  
+
   // TODO: for cuisine selections, have an array of cuisines and for each item
   // in the array, create the html option element for it and add it to the template
   // Probably has to be a separate function, then a function to combine the two
@@ -120,6 +180,11 @@ const restaurantSearchTmpl = (function() {
 
 const restaurantSearch = (function() {
 
+  // modules:
+  // restaurantSearchTmpl
+  // pubSub
+
+
   // DOM
   const element = $('.js-restaurant-search');
   const template = $(restaurantSearchTmpl.generateTemplate());
@@ -137,9 +202,6 @@ const restaurantSearch = (function() {
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
     getDataFromApi(formValues, processSearchResults);
-
-    // pass data to choose view
-    // display data in choose view
   }
 
   // getDataFromApi: request yelp search data via my own api
@@ -166,7 +228,12 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
-    console.log('data', data);
+
+
+    // emit event with processed data
+    // received in: 
+    //   restaurantChoose
+    pubSub.emit('processSearchResults', data);
   }
 
   // getFormValues: get values from form input fields and returns as an object

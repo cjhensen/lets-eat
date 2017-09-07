@@ -27,9 +27,9 @@ const pubSub = (function() {
   // if eventName exists, pass data to each fn in the array while calling each fn
   function emit(eventName, data) {
     if(events[eventName]) {
-      events[eventName].forEach(function(fn)) {
+      events[eventName].forEach(function(fn) {
         fn(data);
-      }
+      });
     }
   }
 

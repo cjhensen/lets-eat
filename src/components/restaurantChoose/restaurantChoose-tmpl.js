@@ -1,5 +1,9 @@
 const restaurantChooseTmpl = (function() {
 
+  // modules:
+  // _utilities
+  
+
   function generateTemplate() {
     const template = `
       <div>
