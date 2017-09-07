@@ -36,7 +36,7 @@ const restaurantSearch = (function() {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 50
+        "limit": 5
       },
       dataType: 'json',
       type: 'GET',
@@ -48,7 +48,8 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
-
+    // process the data -> remove results based on 'tryNew' option
+    //   remove any yelpevents results
 
     // emit event with processed data
     // received in: 
