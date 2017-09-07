@@ -3,6 +3,7 @@ const restaurantSearchTmpl = (function() {
   // in the array, create the html option element for it and add it to the template
   // Probably has to be a separate function, then a function to combine the two
   // templates
+  // TODO: uncomment cuisine when I add support with the yelp api
   function generateTemplate() {
     const template = `
       <form id="restaurant-search">
@@ -21,6 +22,7 @@ const restaurantSearchTmpl = (function() {
           </select>
         </label>
 
+        <!--
         <label for="select-cuisine">Cuisine (optional)
           <select class="js-select-cuisine" name="cuisine" id="select-cuisine">
             <option value="" disabled selected>Select a cuisine</option>
@@ -31,6 +33,7 @@ const restaurantSearchTmpl = (function() {
             <option value="burgers">Burgers</option>
           </select>
         </label>
+        -->
 
         <label for="input-try-new" class="try-new">Try something new?
           <input class="js-input-try-new" type="checkbox" id="input-try-new" name="try-new">
