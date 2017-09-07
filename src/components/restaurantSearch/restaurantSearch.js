@@ -17,6 +17,9 @@ const restaurantSearch = (function() {
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
     getDataFromApi(formValues, processSearchResults);
+
+    // pass data to choose view
+    // display data in choose view
   }
 
   // getDataFromApi: request yelp search data via my own api

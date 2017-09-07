@@ -6,7 +6,7 @@ const _utilities = (function() {
   // remove whitespace between element tags, 
   // remove leading and trailing whitespace
   function templateClean(template) {
-    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
+    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim(); 
   }
 
   return {
@@ -18,7 +18,20 @@ const restaurantChooseTmpl = (function() {
 
   function generateTemplate() {
     const template = `
-      <div>Cool template!</div>
+      <div>
+        <div class="info-place">
+          <h4>Title</h4>
+          <span class="rating-stars"></span>
+        </div>
+        <div class="img-place">
+          <img src="#" alt="">
+        </div>
+        <div class="choose-controls">
+          <button type="button" class="btn">Eat Here!</button>
+          <button type="button" class="btn">Already been here</button>
+          <button type="button" class="btn">Not feeling this place</button>
+        </div><!-- / choose-controls -->
+      </div>
       `;
 
       return _utilities.templateClean(template);
@@ -27,7 +40,7 @@ const restaurantChooseTmpl = (function() {
   return {
     generateTemplate: generateTemplate
   }
-  
+
 })();
 const restaurantChoose = (function() {
 
@@ -124,6 +137,9 @@ const restaurantSearch = (function() {
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
     getDataFromApi(formValues, processSearchResults);
+
+    // pass data to choose view
+    // display data in choose view
   }
 
   // getDataFromApi: request yelp search data via my own api
