@@ -89,6 +89,7 @@ gulp.task('js', function(cb) {
   pump([
     gulp.src([
       `${folders.src}/app.js`,
+      `${folders.src}/utilities/**/*.js`,
       `${folders.src}/components/**/*.js`]),
     concat('app.js'),
     // babili({

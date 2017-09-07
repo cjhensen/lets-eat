@@ -47,7 +47,7 @@ const restaurantSearchTmpl = (function() {
     // remove line breaks,
     // remove whitespace between element tags, 
     // remove leading and trailing whitespace
-    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
+    return _utilities.templateClean(template);
   }
 
   return {

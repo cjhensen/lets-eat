@@ -1,4 +1,52 @@
 
+const _utilities = (function() {
+  
+  // templateClean:
+  // remove line breaks,
+  // remove whitespace between element tags, 
+  // remove leading and trailing whitespace
+  function templateClean(template) {
+    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
+  }
+
+  return {
+    templateClean: templateClean
+  }
+
+})();
+const restaurantChooseTmpl = (function() {
+
+  function generateTemplate() {
+    const template = `
+      <div>Cool template!</div>
+      `;
+
+      return _utilities.templateClean(template);
+  };
+
+  return {
+    generateTemplate: generateTemplate
+  }
+  
+})();
+const restaurantChoose = (function() {
+
+  // DOM
+  const element = $('.js-restaurant-choose');
+  const template = $(restaurantChooseTmpl.generateTemplate());
+
+  function render() {
+    console.log('restaurantChoose render');
+    element.append(template);
+  }
+  
+  render();
+
+  return {
+    render: render
+  }
+  
+})();
 const restaurantSearchTmpl = (function() {
   // TODO: for cuisine selections, have an array of cuisines and for each item
   // in the array, create the html option element for it and add it to the template
@@ -48,7 +96,7 @@ const restaurantSearchTmpl = (function() {
     // remove line breaks,
     // remove whitespace between element tags, 
     // remove leading and trailing whitespace
-    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
+    return _utilities.templateClean(template);
   }
 
   return {
