@@ -5,7 +5,7 @@ const _utilities = (function() {
   // remove whitespace between element tags, 
   // remove leading and trailing whitespace
   function templateClean(template) {
-    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
+    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim(); 
   }
 
   return {
