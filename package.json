@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./server/server.js",
-    "test": "mocha ./test"
+    "test": "mocha ./src/components/**/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "gulp-nodemon": "^2.2.1",
     "gulp-notify": "^3.0.0",
     "gulp-watch": "^4.3.11",
+    "jsdom": "^11.2.0",
     "less-plugin-glob": "^2.0.1",
     "mocha": "^3.5.0",
     "pump": "^1.0.2"
@@ -38,6 +39,7 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
+    "jquery": "^3.2.1",
     "uuid": "^3.1.0",
     "yelp-fusion": "^1.0.3"
   }
