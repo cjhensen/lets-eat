@@ -69,15 +69,20 @@ const restaurantChooseTmpl = (function() {
   // _utilities
 
 
-  function generateTemplate() {
+  function generateTemplate(options) {
+
+    // options
+    // title, rating, img_src, img_alt
+    options = options || "";
+
     const template = `
       <div>
         <div class="info-place">
-          <h4 class="js-title">Title</h4>
-          <span class="js-rating rating-stars"></span>
+          <h4 class="js-title">${options.title}</h4>
+          <span class="js-rating rating-stars">${options.rating}</span>
         </div>
         <div class="img-place">
-          <img class="js-img" src="#" alt="">
+          <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
         </div>
         <div class="choose-controls">
           <button type="button" class="btn">Eat Here!</button>
@@ -105,44 +110,13 @@ const restaurantChoose = (function() {
 
   // DOM
   const element = $('.js-restaurant-choose');
-  const template = $(restaurantChooseTmpl.generateTemplate());
-  const restaurantTitle = $('.js-title', template); 
-  const restaurantRating = $('.js-rating', template); 
-  const restaurantImg = $('.js-img', template); 
-  const btnNext = $('.js-btn-next', template); 
+  // const template = $(restaurantChooseTmpl.generateTemplate()); doing this in render() instead
+  const templateOptions = {};
 
-  // module variables
-  let usedSearchResultIndexes = [];
-  let searchResultData;
 
   // subscribed events
-  pubSub.on('processSearchResults', resetSearchResultIndexes);
-  pubSub.on('processSearchResults', resetCachedSearchResultData);
   pubSub.on('processSearchResults', populateSearchResult);
-  pubSub.on('processSearchResults', cacheSearchResultData);
 
-  // resetSearchResultIndexes:
-  // empties the usedSearchResultIndexes array when receiving an event from processSearchResults (the initial button click)
-  function resetSearchResultIndexes() {
-    console.log('resetSearchResultIndexes');
-
-    usedSearchResultIndexes = [];
-  }
-
-  function handleNextBtnClicked() {
-    console.log('handleNextBtnClicked');
-
-    populateSearchResult(searchResultData);
-  }
-
-  function resetCachedSearchResultData() {
-    searchResultData = [];
-  }
-  // cacheSearchResultData:
-  // saves result data to local array for reuse
-  function cacheSearchResultData(data) {
-    searchResultData = data;
-  }
 
   // populateSearchResult:
   // fill in template with data received from restaurantSearch,
@@ -153,51 +127,28 @@ const restaurantChoose = (function() {
 
     // select random number from 0 to 49 (max results returned from API)
     // TODO: keep track of chosen random numbers
-    let index = _utilities.randomIntBetweenNums(0, 4);
+    let index = _utilities.randomIntBetweenNums(0, 49);
     console.log('index', index);
 
-    // new index is generated at start of function
-    // check the used indexes array
-    // if the index is already in there, generate a new index and use that
-    // otherwise, the original index is good to use
-    usedSearchResultIndexes.forEach(function(usedIndex) {
-      if(usedIndex === index) {
-        usedSearchResultIndexes.push(index);
-        index = _utilities.randomIntBetweenNums(0, 4);
-      } else {
-        console.log('nothing changes and index still goes forward');
-        console.log('index all used up', index);
-      }
-    });
+    templateOptions.title = searchResultData[index].name;
+    templateOptions.rating = searchResultData[index].rating;
+    templateOptions.img_src = searchResultData[index].image_url;
+    templateOptions.img_alt = searchResultData[index].name;
 
-    // reset then set all element properties based on data
-    restaurantTitle.empty();
-    restaurantTitle.append(searchResultData[index].name);
-
-    restaurantRating.empty();
-    restaurantRating.append(searchResultData[index].rating);
-
-    restaurantImg.attr('src', "");
-    restaurantImg.attr('src', searchResultData[index].image_url);
-
-    restaurantImg.attr('alt', "");
-    restaurantImg.attr('alt', searchResultData[index].name);
+    console.log('templateOptions', templateOptions);
 
     render();
   }
 
-  function assignEventHandlers() {
-    console.log('assignEventHandlers');
-    btnNext.on('click', handleNextBtnClicked);
-  }
 
   function render() {
     console.log('restaurantChoose render');
+    const template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     element.append(template);
   }
 
   // render();
-  assignEventHandlers();
+  // assignEventHandlers();
 
   return {
     render: render
@@ -305,7 +256,7 @@ const restaurantSearch = (function() {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 5
+        "limit": 50
       },
       dataType: 'json',
       type: 'GET',

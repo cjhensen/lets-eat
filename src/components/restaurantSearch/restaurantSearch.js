@@ -36,7 +36,7 @@ const restaurantSearch = (function() {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 5
+        "limit": 50
       },
       dataType: 'json',
       type: 'GET',
