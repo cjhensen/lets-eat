@@ -58,9 +58,35 @@ const _utilities = (function() {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  // Fisher-Yates Shuffle
+  // https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+  function shuffleArray(array) {
+    let counter = array.length;
+
+    while(counter > 0) {
+      // random index with max of counter (array length)
+      let index = Math.floor(Math.random() * counter);
+
+      // decrease counter
+      counter--;
+
+      // temp is set to array item at decreased counter
+      let temp = array[counter];
+
+      // array item at decreased counter index is set to array at random index
+      array[counter] = array[index];
+
+      // array at random index is set to temp value
+      array[index] = temp;
+    }
+
+    return array;
+  }
+
   return {
     templateClean: templateClean,
-    randomIntBetweenNums: randomIntBetweenNums
+    randomIntBetweenNums: randomIntBetweenNums,
+    shuffleArray: shuffleArray
   }
 
 })();
@@ -106,7 +132,7 @@ const restaurantChoose = (function() {
   // modules:
   // restaurantChooseTmpl
   // pubSub
-  // utilities
+  // utilities: randomIntBetweenNums, shuffleArray
 
 
   // DOM
@@ -124,6 +150,7 @@ const restaurantChoose = (function() {
 
   // module variables
   let localSearchResultData = [];
+  let currentSearchResultIndex = 0;
 
   // handleNextBtnClicked:
   // show a different result when user clicks next btn ('Not feeling this place')
@@ -140,11 +167,16 @@ const restaurantChoose = (function() {
   function handleReceivedSearchResults(searchResultData) {
     console.log('handleReceivedSearchResults');
     
-    // reset local data on new search
+    // reset local data and index on new search
     localSearchResultData = [];
+    currentSearchResultIndex = 0;
 
     // set local data equal to received search result data
     localSearchResultData = searchResultData;
+
+    // shuffle localSearchResultData for showing a random result
+    // is it better to only shuffle indexes? 
+    _utilities.shuffleArray(localSearchResultData);
   }
 
   // populateSearchResult:
@@ -156,19 +188,23 @@ const restaurantChoose = (function() {
 
     console.log('localSearchResultData', localSearchResultData);
 
-    // select random number from 0 to 49 (max results returned from API)
-    // TODO: keep track of chosen random numbers
-    let index = _utilities.randomIntBetweenNums(0, 4);
-    console.log('index', index);
+    if(currentSearchResultIndex < localSearchResultData.length) {
+      templateOptions.title = localSearchResultData[currentSearchResultIndex].name;
+      templateOptions.rating = localSearchResultData[currentSearchResultIndex].rating;
+      templateOptions.img_src = localSearchResultData[currentSearchResultIndex].image_url;
+      templateOptions.img_alt = localSearchResultData[currentSearchResultIndex].name;
 
-    templateOptions.title = localSearchResultData[index].name;
-    templateOptions.rating = localSearchResultData[index].rating;
-    templateOptions.img_src = localSearchResultData[index].image_url;
-    templateOptions.img_alt = localSearchResultData[index].name;
+      // increment index for next result
+      currentSearchResultIndex++;
 
-    console.log('templateOptions', templateOptions);
+      render();
 
-    render();
+      console.log('templateOptions', templateOptions);
+
+    } else {
+      console.log('end of result list');
+    }
+
   }
 
   // assignEventHandlers:
