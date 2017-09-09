@@ -132,7 +132,7 @@ const restaurantChoose = (function() {
   // modules:
   // restaurantChooseTmpl
   // pubSub
-  // utilities: randomIntBetweenNums, shuffleArray
+  // utilities: shuffleArray
 
 
   // DOM
