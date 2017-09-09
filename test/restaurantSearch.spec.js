@@ -11,6 +11,7 @@ global.$ = require('jquery')(global.document.window);
 
 // const restaurantSearchTmpl = require('../src/components/restaurantSearch/restaurantSearch-tmpl');
 // const restaurantSearch = require('../src/components/restaurantSearch/restaurantSearch');
+const app = require('../src/app');
 
 describe('restaurantSearch', function() {
   it('should do something', function() {
