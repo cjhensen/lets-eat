@@ -1,4 +1,9 @@
 const restaurantSearchTmpl = (function() {
+
+  // modules:
+  // _utilities
+  
+
   // TODO: for cuisine selections, have an array of cuisines and for each item
   // in the array, create the html option element for it and add it to the template
   // Probably has to be a separate function, then a function to combine the two
@@ -47,7 +52,7 @@ const restaurantSearchTmpl = (function() {
     // remove line breaks,
     // remove whitespace between element tags, 
     // remove leading and trailing whitespace
-    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim();
+    return _utilities.templateClean(template);
   }
 
   return {
