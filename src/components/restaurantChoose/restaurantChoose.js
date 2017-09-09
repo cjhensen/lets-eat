@@ -54,6 +54,7 @@ const restaurantChoose = (function() {
   // fill in template with local copy of search result data,
   // then render
   // Note* I am not handling the data being received in the pubsub for this function (no parameter)
+  // TODO: show something on last result
   function populateSearchResult() {
     console.log('populateSearchResult');
 
