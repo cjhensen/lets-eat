@@ -125,9 +125,11 @@ const restaurantChoose = (function() {
   // module variables
   let localSearchResultData = [];
 
-
+  // handleNextBtnClicked:
+  // show a different result when user clicks next btn ('Not feeling this place')
   function handleNextBtnClicked() {
     console.log('handleNextBtnClicked');
+    populateSearchResult();
   }
 
   // handleReceivedSearchResults:
@@ -173,7 +175,7 @@ const restaurantChoose = (function() {
   // assigns event handlers for component element events
   function assignEventHandlers() {
     console.log('assignEventHandlers');
-    
+
     // Need to bind event handlers to parent DOM, so new elements added or replaced
     // don't lose their event functionality
     componentElementSelector.on('click', btnNextResult, handleNextBtnClicked);
@@ -182,7 +184,7 @@ const restaurantChoose = (function() {
   // render the view to the page
   function render() {
     console.log('restaurantChoose render');
-    // template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
+    template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     componentElementSelector.html(template);
   }
 
