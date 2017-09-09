@@ -85,12 +85,15 @@ gulp.task('html', function() {
 });
 
 // bundle js files and minimize
+// bundling app.js twice for now, for testing purposes
+// TODO: switch to commonjs via browserify for modules and builds
 gulp.task('js', function(cb) {
   pump([
     gulp.src([
       `${folders.src}/app.js`,
       `${folders.src}/utilities/**/*.js`,
       `${folders.src}/components/**/*.js`]),
+      ]),
     concat('app.js'),
     // babili({
     //   mangle: {
