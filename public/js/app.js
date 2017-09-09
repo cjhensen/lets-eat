@@ -144,7 +144,7 @@ const restaurantChoose = (function() {
   function render() {
     console.log('restaurantChoose render');
     const template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
-    element.append(template);
+    element.html(template);
   }
 
   // render();
