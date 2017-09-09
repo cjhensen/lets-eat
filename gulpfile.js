@@ -85,17 +85,21 @@ gulp.task('html', function() {
 });
 
 // bundle js files and minimize
+// bundling app.js twice for now, for testing purposes
+// TODO: switch to commonjs via browserify for modules and builds
+// `${folders.src}/app.js`,
 gulp.task('js', function(cb) {
   pump([
     gulp.src([
-      `${folders.src}/app.js`,
-      `${folders.src}/components/**/*.js`]),
+      `${folders.src}/components/**/*.js`
+      ]),
     concat('app.js'),
     // babili({
     //   mangle: {
     //     keepClassName: true
     //   }
     // }),
+    gulp.dest(`${folders.src}`), 
     gulp.dest(`${folders.build}/js`),
     livereload(),
     notify({ message: 'JS compiled successfully' })
