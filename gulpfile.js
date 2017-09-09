@@ -1,5 +1,6 @@
 // gulp
 const gulp = require('gulp');
+const watch = require('gulp-watch');
 
 // server, unless using express
 // const devBuild = (process.env.NODE_ENV !== 'production');
@@ -29,6 +30,7 @@ const babili = require('gulp-babili');
 // compiles less files
 const less = require('gulp-less');
 const minifycss = require('gulp-minify-css');
+const lessGlob = require('less-plugin-glob');
 
 const folders = {
   src: './src/',
@@ -50,15 +52,23 @@ gulp.task('server', function() {
 
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch(`${folders.src}/less/**/*.less`, ['less']);
-  gulp.watch(`${folders.src}/**/*.html`, ['html']);
-  gulp.watch(`${folders.src}/js/**/*.js`, ['js']);
+  watch([
+    `${folders.src}/less/**/*.less`, 
+    `${folders.src}/components/**/*.less`
+    ], function() { gulp.start('less'); });
+  watch(`${folders.src}/**/*.html`, function() { gulp.start('html'); });
+  watch([
+    `${folders.src}/app.js`, 
+    `${folders.src}/components/**/*.js`
+    ], function() { gulp.start('js'); });
 });
 
 // compile less
 gulp.task('less', function() {
-  return gulp.src(`${folders.src}/less/main.less`)
-  .pipe(less())
+  return gulp.src(`${folders.src}/less/app.less`)
+  .pipe(less({
+    plugins: [lessGlob]
+  }))
   .pipe(minifycss())
   .pipe(gulp.dest(`${folders.build}/css`))
   .pipe(livereload())
@@ -75,9 +85,14 @@ gulp.task('html', function() {
 });
 
 // bundle js files and minimize
+// bundling app.js twice for now, for testing purposes
+// TODO: switch to commonjs via browserify for modules and builds
 gulp.task('js', function(cb) {
   pump([
-    gulp.src(`${folders.src}/js/**/*.js`),
+    gulp.src([
+      `${folders.src}/app.js`,
+      `${folders.src}/components/**/*.js`
+      ]),
     concat('app.js'),
     // babili({
     //   mangle: {

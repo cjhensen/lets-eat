@@ -6,15 +6,27 @@
   <title></title>
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
   <header role="banner">
-    <nav role="navigation"></nav>
+    <div class="wrapper">
+      <nav role="navigation"></nav>
+      Let's Eat!
+    </div><!-- / wrapper -->
   </header>
-  <section role="main"></section>
+  <section role="main">
+    <div class="wrapper">
+      <div class="js-restaurant-search restaurant-search">
+      </div><!-- / restaurant-search -->
+
+      <div class="js-restaurant-choose restaurant-choose">
+      </div><!-- / restaurant-choose -->
+    </div><!-- / wrapper -->
+  </section>
   <footer role="contentinfo"></footer>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>
