@@ -16,7 +16,8 @@ const pubSub = (function() {
   function off(eventName, fn) {
     if(events[eventName]) {
       for(let i = 0; i < events[eventName].length; i++) {
-        if(events[eventName][i] === fn) {
+        // if(events[eventName][i] === fn) {
+        if(events.indexOf(i) === fn) {
           events[eventName].splice(i, 1);
           break;
         }
