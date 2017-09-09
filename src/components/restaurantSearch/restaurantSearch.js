@@ -6,7 +6,7 @@ const restaurantSearch = (function() {
 
 
   // DOM
-  const element = $('.js-restaurant-search');
+  const componentElementSelector = $('.js-restaurant-search');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
@@ -36,7 +36,7 @@ const restaurantSearch = (function() {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 50
+        "limit": 5
       },
       dataType: 'json',
       type: 'GET',
@@ -90,7 +90,7 @@ const restaurantSearch = (function() {
   // render the element to the page
   function render() {
     console.log('restaurantSearch render');
-    element.append(template);
+    componentElementSelector.append(template);
   }
 
 

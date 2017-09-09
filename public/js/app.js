@@ -17,7 +17,8 @@ const pubSub = (function() {
   function off(eventName, fn) {
     if(events[eventName]) {
       for(let i = 0; i < events[eventName].length; i++) {
-        if(events[eventName][i] === fn) {
+        // if(events[eventName][i] === fn) {
+        if(events.indexOf(i) === fn) {
           events[eventName].splice(i, 1);
           break;
         }
@@ -109,46 +110,83 @@ const restaurantChoose = (function() {
 
 
   // DOM
-  const element = $('.js-restaurant-choose');
-  // const template = $(restaurantChooseTmpl.generateTemplate()); doing this in render() instead
+  const componentElementSelector = $('.js-restaurant-choose');
+  let template = $(restaurantChooseTmpl.generateTemplate());
+  const btnNextResult = $('.js-btn-next', template);
   const templateOptions = {};
 
 
   // subscribed events
+  // first set the local data to the received data
+  pubSub.on('processSearchResults', handleReceivedSearchResults);
+  // then populate the serach result on the page
   pubSub.on('processSearchResults', populateSearchResult);
 
+  // module variables
+  let localSearchResultData = [];
+
+
+  function handleNextBtnClicked() {
+    console.log('handleNextBtnClicked');
+  }
+
+  // handleReceivedSearchResults:
+  // Callback function for receiving search results from restaurantSearch.
+  // Sets the results passed in to a local variable for reuse.
+  // Clears existing data on new search by resetting the array, since this function is
+  // only called on pubSub event when a new search is submitted.
+  function handleReceivedSearchResults(searchResultData) {
+    console.log('handleReceivedSearchResults');
+    
+    // reset local data on new search
+    localSearchResultData = [];
+
+    // set local data equal to received search result data
+    localSearchResultData = searchResultData;
+  }
 
   // populateSearchResult:
-  // fill in template with data received from restaurantSearch,
+  // fill in template with local copy of search result data,
   // then render
-  function populateSearchResult(searchResultData) {
+  // Note* I am not handling the data being received in the pubsub for this function (no parameter)
+  function populateSearchResult() {
     console.log('populateSearchResult');
-    console.log('data from pubsub', searchResultData);
+
+    console.log('localSearchResultData', localSearchResultData);
 
     // select random number from 0 to 49 (max results returned from API)
     // TODO: keep track of chosen random numbers
-    let index = _utilities.randomIntBetweenNums(0, 49);
+    let index = _utilities.randomIntBetweenNums(0, 4);
     console.log('index', index);
 
-    templateOptions.title = searchResultData[index].name;
-    templateOptions.rating = searchResultData[index].rating;
-    templateOptions.img_src = searchResultData[index].image_url;
-    templateOptions.img_alt = searchResultData[index].name;
+    templateOptions.title = localSearchResultData[index].name;
+    templateOptions.rating = localSearchResultData[index].rating;
+    templateOptions.img_src = localSearchResultData[index].image_url;
+    templateOptions.img_alt = localSearchResultData[index].name;
 
     console.log('templateOptions', templateOptions);
 
     render();
   }
 
-
-  function render() {
-    console.log('restaurantChoose render');
-    const template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
-    element.html(template);
+  // assignEventHandlers:
+  // assigns event handlers for component element events
+  function assignEventHandlers() {
+    console.log('assignEventHandlers');
+    
+    // Need to bind event handlers to parent DOM, so new elements added or replaced
+    // don't lose their event functionality
+    componentElementSelector.on('click', btnNextResult, handleNextBtnClicked);
   }
 
-  // render();
-  // assignEventHandlers();
+  // render the view to the page
+  function render() {
+    console.log('restaurantChoose render');
+    // template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
+    componentElementSelector.html(template);
+  }
+
+  assignEventHandlers();
 
   return {
     render: render
@@ -226,7 +264,7 @@ const restaurantSearch = (function() {
 
 
   // DOM
-  const element = $('.js-restaurant-search');
+  const componentElementSelector = $('.js-restaurant-search');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
@@ -256,7 +294,7 @@ const restaurantSearch = (function() {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 50
+        "limit": 5
       },
       dataType: 'json',
       type: 'GET',
@@ -310,7 +348,7 @@ const restaurantSearch = (function() {
   // render the element to the page
   function render() {
     console.log('restaurantSearch render');
-    element.append(template);
+    componentElementSelector.append(template);
   }
 
 
