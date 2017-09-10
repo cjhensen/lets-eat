@@ -93,7 +93,6 @@ gulp.task('js', function(cb) {
       `${folders.src}/app.js`,
       `${folders.src}/utilities/**/*.js`,
       `${folders.src}/components/**/*.js`]),
-      ]),
     concat('app.js'),
     // babili({
     //   mangle: {
