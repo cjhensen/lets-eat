@@ -2,6 +2,7 @@ const restaurantChooseTmpl = (function() {
 
   // modules:
   // _utilities
+  const _utilities = require('../../utilities/utilities');
 
 
   function generateTemplate(options) {
@@ -38,3 +39,5 @@ const restaurantChooseTmpl = (function() {
   }
 
 })();
+
+module.exports = restaurantChooseTmpl;

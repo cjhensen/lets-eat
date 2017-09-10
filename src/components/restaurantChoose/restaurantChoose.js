@@ -5,6 +5,11 @@ const restaurantChoose = (function() {
   // pubSub
   // restaurantVisitedTmpl
   // utilities: shuffleArray
+  const _utilities = require('../../utilities/utilities');
+  const pubSub = require('../../utilities/pubSub');
+
+  // Dependencies
+  const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
 
   // DOM
   const componentElementSelector = $('.js-restaurant-choose-container');
@@ -110,3 +115,5 @@ const restaurantChoose = (function() {
   }
 
 })();
+
+module.exports = restaurantChoose;

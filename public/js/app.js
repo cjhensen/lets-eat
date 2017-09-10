@@ -1,99 +1,26 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+const leUtilities = require('./utilities');
+const components = require('./components');
 
-const pubSub = (function() {
-  
-  // object that holds events, none created by default
-  const events = {};
-
-  // on:
-  // if the event doesn't exist, create an empty array
-  // add handler fn to events array at eventName
-  function on(eventName, fn) {
-    events[eventName] = events[eventName] || [];
-    events[eventName].push(fn);
-  }
-
-  // off:
-  // if eventName exists in events, if fn exists, remove function from array
-  function off(eventName, fn) {
-    if(events[eventName]) {
-      for(let i = 0; i < events[eventName].length; i++) {
-        // if(events[eventName][i] === fn) {
-        if(events.indexOf(i) === fn) {
-          events[eventName].splice(i, 1);
-          break;
-        }
-      }
-    }
-  }
-
-  // if eventName exists, pass data to each fn in the array while calling each fn
-  function emit(eventName, data) {
-    if(events[eventName]) {
-      events[eventName].forEach(function(fn) {
-        fn(data);
-      });
-    }
-  }
-
-  return {
-    on: on,
-    off: off,
-    emit: emit
-  }
-
-})();
-const _utilities = (function() {
-  
-  // templateClean:
-  // remove line breaks,
-  // remove whitespace between element tags, 
-  // remove leading and trailing whitespace
-  function templateClean(template) {
-    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim(); 
-  }
-
-  // randomIntBetweenNums:
-  // generates a random integer between a min and max value
-  function randomIntBetweenNums(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-  // Fisher-Yates Shuffle
-  // https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
-  function shuffleArray(array) {
-    let counter = array.length;
-
-    while(counter > 0) {
-      // random index with max of counter (array length)
-      let index = Math.floor(Math.random() * counter);
-
-      // decrease counter
-      counter--;
-
-      // temp is set to array item at decreased counter
-      let temp = array[counter];
-
-      // array item at decreased counter index is set to array at random index
-      array[counter] = array[index];
-
-      // array at random index is set to temp value
-      array[index] = temp;
-    }
-
-    return array;
-  }
-
-  return {
-    templateClean: templateClean,
-    randomIntBetweenNums: randomIntBetweenNums,
-    shuffleArray: shuffleArray
-  }
-
-})();
+components.restaurantSearch.restaurantSearch.runApp();
+console.log('components built', components, leUtilities);
+},{"./components":2,"./utilities":12}],2:[function(require,module,exports){
+module.exports = {
+  restaurantChoose: require('./restaurantChoose'),
+  restaurantSearch: require('./restaurantSearch'),
+  restaurantVisited: require('./restaurantVisited')
+};
+},{"./restaurantChoose":3,"./restaurantSearch":6,"./restaurantVisited":9}],3:[function(require,module,exports){
+module.exports = {
+  restaurantChoose: require('./restaurantChoose'),
+  restaurantChooseTmpl: require('./restaurantChoose-tmpl')
+};
+},{"./restaurantChoose":5,"./restaurantChoose-tmpl":4}],4:[function(require,module,exports){
 const restaurantChooseTmpl = (function() {
 
   // modules:
   // _utilities
+  const _utilities = require('../../utilities/utilities');
 
 
   function generateTemplate(options) {
@@ -130,6 +57,9 @@ const restaurantChooseTmpl = (function() {
   }
 
 })();
+
+module.exports = restaurantChooseTmpl;
+},{"../../utilities/utilities":14}],5:[function(require,module,exports){
 const restaurantChoose = (function() {
 
   // modules:
@@ -137,6 +67,11 @@ const restaurantChoose = (function() {
   // pubSub
   // restaurantVisitedTmpl
   // utilities: shuffleArray
+  const _utilities = require('../../utilities/utilities');
+  const pubSub = require('../../utilities/pubSub');
+
+  // Dependencies
+  const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
 
   // DOM
   const componentElementSelector = $('.js-restaurant-choose-container');
@@ -145,9 +80,9 @@ const restaurantChoose = (function() {
   const templateOptions = {};
 
   // Embedded Components
-  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
-  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
-  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
+  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
   // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
 
 
@@ -242,10 +177,19 @@ const restaurantChoose = (function() {
   }
 
 })();
+
+module.exports = restaurantChoose;
+},{"../../utilities/pubSub":13,"../../utilities/utilities":14,"./restaurantChoose-tmpl":4}],6:[function(require,module,exports){
+module.exports = {
+  restaurantSearch: require('./restaurantSearch'),
+  restaurantSearchTmpl: require('./restaurantSearch-tmpl')
+};
+},{"./restaurantSearch":8,"./restaurantSearch-tmpl":7}],7:[function(require,module,exports){
 const restaurantSearchTmpl = (function() {
 
   // modules:
   // _utilities
+  const _utilities = require('../../utilities/utilities');
   
 
   // TODO: for cuisine selections, have an array of cuisines and for each item
@@ -305,12 +249,17 @@ const restaurantSearchTmpl = (function() {
 
 })();
 
+module.exports = restaurantSearchTmpl;
+},{"../../utilities/utilities":14}],8:[function(require,module,exports){
 const restaurantSearch = (function() {
 
   // modules:
   // restaurantSearchTmpl
   // pubSub
+  const pubSub = require('../../utilities/pubSub');
 
+  // Dependencies
+  const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
   const componentElementSelector = $('.js-restaurant-search-container');
@@ -412,17 +361,34 @@ const restaurantSearch = (function() {
   // on initial load:
   //   render the template
   //   bind events
-  render();
-  assignEventHandlers();
+  // render();
+  // assignEventHandlers();
+
+  function runApp() {
+    console.log('runApp');
+    render();
+    assignEventHandlers();
+  }
 
   return {
     render: render,
     assignEventHandlers: assignEventHandlers,
-    test: test
+    test: test,
+    runApp: runApp
   }
 
 })();
+
+module.exports = restaurantSearch;
+},{"../../utilities/pubSub":13,"./restaurantSearch-tmpl":7}],9:[function(require,module,exports){
+module.exports = {
+  restaurantVisited: require('./restaurantVisited'),
+  restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
+};
+},{"./restaurantVisited":11,"./restaurantVisited-tmpl":10}],10:[function(require,module,exports){
 const restaurantVisitedTmpl = (function() {
+
+  const _utilities = require('../../utilities/utilities');
 
   function generateTemplate() {
     const template = `
@@ -439,7 +405,13 @@ const restaurantVisitedTmpl = (function() {
   }
   
 })();
+
+module.exports = restaurantVisitedTmpl;
+},{"../../utilities/utilities":14}],11:[function(require,module,exports){
 const restaurantVisited = (function() {
+
+  // Dependencies
+  const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
 
   const componentElementSelector = $('.js-restaurant-visited-container');
   let template = $(restaurantVisitedTmpl.generateTemplate());
@@ -453,3 +425,108 @@ const restaurantVisited = (function() {
     render: render
   }
 })();
+
+module.exports = restaurantVisited;
+},{"./restaurantVisited-tmpl":10}],12:[function(require,module,exports){
+module.exports = {
+  pubSub: require('./pubSub'),
+  utilities: require('./utilities')
+};
+},{"./pubSub":13,"./utilities":14}],13:[function(require,module,exports){
+const pubSub = (function() {
+  
+  // object that holds events, none created by default
+  const events = {};
+
+  // on:
+  // if the event doesn't exist, create an empty array
+  // add handler fn to events array at eventName
+  function on(eventName, fn) {
+    events[eventName] = events[eventName] || [];
+    events[eventName].push(fn);
+  }
+
+  // off:
+  // if eventName exists in events, if fn exists, remove function from array
+  function off(eventName, fn) {
+    if(events[eventName]) {
+      for(let i = 0; i < events[eventName].length; i++) {
+        // if(events[eventName][i] === fn) {
+        if(events.indexOf(i) === fn) {
+          events[eventName].splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
+
+  // if eventName exists, pass data to each fn in the array while calling each fn
+  function emit(eventName, data) {
+    if(events[eventName]) {
+      events[eventName].forEach(function(fn) {
+        fn(data);
+      });
+    }
+  }
+
+  return {
+    on: on,
+    off: off,
+    emit: emit
+  }
+
+})();
+
+module.exports = pubSub;
+},{}],14:[function(require,module,exports){
+const _utilities = (function() {
+  
+  // templateClean:
+  // remove line breaks,
+  // remove whitespace between element tags, 
+  // remove leading and trailing whitespace
+  function templateClean(template) {
+    return template.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s+</g,'><').trim(); 
+  }
+
+  // randomIntBetweenNums:
+  // generates a random integer between a min and max value
+  function randomIntBetweenNums(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  // Fisher-Yates Shuffle
+  // https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+  function shuffleArray(array) {
+    let counter = array.length;
+
+    while(counter > 0) {
+      // random index with max of counter (array length)
+      let index = Math.floor(Math.random() * counter);
+
+      // decrease counter
+      counter--;
+
+      // temp is set to array item at decreased counter
+      let temp = array[counter];
+
+      // array item at decreased counter index is set to array at random index
+      array[counter] = array[index];
+
+      // array at random index is set to temp value
+      array[index] = temp;
+    }
+
+    return array;
+  }
+
+  return {
+    templateClean: templateClean,
+    randomIntBetweenNums: randomIntBetweenNums,
+    shuffleArray: shuffleArray
+  }
+
+})();
+
+module.exports = _utilities;
+},{}]},{},[1]);

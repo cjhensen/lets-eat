@@ -1,5 +1,7 @@
 const restaurantVisitedTmpl = (function() {
 
+  const _utilities = require('../../utilities/utilities');
+
   function generateTemplate() {
     const template = `
       <div class="js-restaurant-visited le-restaurant-visited">
@@ -15,3 +17,5 @@ const restaurantVisitedTmpl = (function() {
   }
   
 })();
+
+module.exports = restaurantVisitedTmpl;

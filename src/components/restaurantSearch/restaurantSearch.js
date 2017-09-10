@@ -3,7 +3,10 @@ const restaurantSearch = (function() {
   // modules:
   // restaurantSearchTmpl
   // pubSub
+  const pubSub = require('../../utilities/pubSub');
 
+  // Dependencies
+  const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
   const componentElementSelector = $('.js-restaurant-search-container');
@@ -105,13 +108,22 @@ const restaurantSearch = (function() {
   // on initial load:
   //   render the template
   //   bind events
-  render();
-  assignEventHandlers();
+  // render();
+  // assignEventHandlers();
+
+  function runApp() {
+    console.log('runApp');
+    render();
+    assignEventHandlers();
+  }
 
   return {
     render: render,
     assignEventHandlers: assignEventHandlers,
-    test: test
+    test: test,
+    runApp: runApp
   }
 
 })();
+
+module.exports = restaurantSearch;

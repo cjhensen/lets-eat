@@ -46,3 +46,5 @@ const _utilities = (function() {
   }
 
 })();
+
+module.exports = _utilities;

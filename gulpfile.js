@@ -25,6 +25,10 @@ const pump = require('pump');
 // minifies js files
 // const uglify = require('gulp-uglify'); does not support ES6
 const babili = require('gulp-babili');
+// using commonjs require in the browser
+const browserify = require('browserify');
+// converts bundle into type of stream that gulp expects
+const source = require('vinyl-source-stream');
 
 // LESS
 // compiles less files
@@ -39,7 +43,7 @@ const folders = {
 
 // gulp defaults
 gulp.task('default', ['clean', 'server', 'watch'], function() {
-  gulp.start('less', 'html', 'js')
+  gulp.start('less', 'html', 'browserify')
 });
 
 
@@ -59,8 +63,9 @@ gulp.task('watch', function() {
   watch(`${folders.src}/**/*.html`, function() { gulp.start('html'); });
   watch([
     `${folders.src}/app.js`, 
+    `${folders.src}/utilities/**/*.js`, 
     `${folders.src}/components/**/*.js`
-    ], function() { gulp.start('js'); });
+    ], function() { gulp.start('browserify'); });
 });
 
 // compile less
@@ -85,27 +90,35 @@ gulp.task('html', function() {
 });
 
 // bundle js files and minimize
-// bundling app.js twice for now, for testing purposes
 // TODO: switch to commonjs via browserify for modules and builds
-gulp.task('js', function(cb) {
-  pump([
-    gulp.src([
-      `${folders.src}/app.js`,
-      `${folders.src}/utilities/**/*.js`,
-      `${folders.src}/components/**/*.js`]),
-    concat('app.js'),
-    // babili({
-    //   mangle: {
-    //     keepClassName: true
-    //   }
-    // }),
-    gulp.dest(`${folders.build}/js`),
-    livereload(),
-    notify({ message: 'JS compiled successfully' })
-    ],
-    cb
-  );
+// gulp.task('js', function(cb) {
+//   pump([
+//     gulp.src([
+//       `${folders.src}/app.js`,
+//       `${folders.src}/utilities/**/*.js`,
+//       `${folders.src}/components/**/*.js`]),
+//     concat('app.js'),
+//     // babili({
+//     //   mangle: {
+//     //     keepClassName: true
+//     //   }
+//     // }),
+//     gulp.dest(`${folders.build}/js`),
+//     livereload(),
+//     notify({ message: 'JS compiled successfully' })
+//     ],
+//     cb
+//   );
+// });
+
+gulp.task('browserify', function() {
+  return browserify(`${folders.src}/app.js`)
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest(`${folders.build}/js`))
+    .pipe(notify({ message: 'Browserify build successful' }));
 });
+
 
 gulp.task('serve', ['server', 'watch']);
 

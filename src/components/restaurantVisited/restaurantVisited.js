@@ -1,5 +1,8 @@
 const restaurantVisited = (function() {
 
+  // Dependencies
+  const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
+
   const componentElementSelector = $('.js-restaurant-visited-container');
   let template = $(restaurantVisitedTmpl.generateTemplate());
 
@@ -12,3 +15,5 @@ const restaurantVisited = (function() {
     render: render
   }
 })();
+
+module.exports = restaurantVisited;

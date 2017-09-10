@@ -2,6 +2,7 @@ const restaurantSearchTmpl = (function() {
 
   // modules:
   // _utilities
+  const _utilities = require('../../utilities/utilities');
   
 
   // TODO: for cuisine selections, have an array of cuisines and for each item
@@ -60,3 +61,5 @@ const restaurantSearchTmpl = (function() {
   }
 
 })();
+
+module.exports = restaurantSearchTmpl;
