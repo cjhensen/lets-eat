@@ -6,7 +6,7 @@ const restaurantSearch = (function() {
 
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-search');
+  const componentElementSelector = $('.js-restaurant-search-container');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 

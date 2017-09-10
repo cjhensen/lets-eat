@@ -3,14 +3,20 @@ const restaurantChoose = (function() {
   // modules:
   // restaurantChooseTmpl
   // pubSub
+  // restaurantVisitedTmpl
   // utilities: shuffleArray
 
-
   // DOM
-  const componentElementSelector = $('.js-restaurant-choose');
+  const componentElementSelector = $('.js-restaurant-choose-container');
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = $('.js-btn-next', template);
   const templateOptions = {};
+
+  // Embedded Components
+  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
+  // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
 
 
   // subscribed events
@@ -94,6 +100,7 @@ const restaurantChoose = (function() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     componentElementSelector.html(template);
+    // componentElementSelector.append(restaurantVisitedComponent);
   }
 
   assignEventHandlers();

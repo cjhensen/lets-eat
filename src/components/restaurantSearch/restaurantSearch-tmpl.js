@@ -11,7 +11,7 @@ const restaurantSearchTmpl = (function() {
   // TODO: uncomment cuisine when I add support with the yelp api
   function generateTemplate() {
     const template = `
-      <form id="restaurant-search">
+      <form id="restaurant-search" class="js-restaurant-search">
         <label for="input-location">Location
           <input class="js-input-location" type="number" id="input-location" name="location" pattern="[0-9]*" required>
         </label>

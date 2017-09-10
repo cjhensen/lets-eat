@@ -98,12 +98,12 @@ const restaurantChooseTmpl = (function() {
 
   function generateTemplate(options) {
 
-    // options
-    // title, rating, img_src, img_alt
+    // options:
+    // title, rating, img_src, img_alt, restaurantVisitedComponent
     options = options || "";
 
     const template = `
-      <div>
+      <div class="js-restaurant-choose">
         <div class="info-place">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating}</span>
@@ -116,11 +116,14 @@ const restaurantChooseTmpl = (function() {
           <button type="button" class="btn">Already been here</button>
           <button type="button" class="btn js-btn-next">Not feeling this place</button>
         </div><!-- / choose-controls -->
+
+        <!-- insert restaurantVisited component -->
+        ${options.restaurantVisitedComponent}
       </div>
       `;
 
       return _utilities.templateClean(template);
-  };
+  }
 
   return {
     generateTemplate: generateTemplate
@@ -132,14 +135,20 @@ const restaurantChoose = (function() {
   // modules:
   // restaurantChooseTmpl
   // pubSub
+  // restaurantVisitedTmpl
   // utilities: shuffleArray
 
-
   // DOM
-  const componentElementSelector = $('.js-restaurant-choose');
+  const componentElementSelector = $('.js-restaurant-choose-container');
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = $('.js-btn-next', template);
   const templateOptions = {};
+
+  // Embedded Components
+  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
+  // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
 
 
   // subscribed events
@@ -223,6 +232,7 @@ const restaurantChoose = (function() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     componentElementSelector.html(template);
+    // componentElementSelector.append(restaurantVisitedComponent);
   }
 
   assignEventHandlers();
@@ -245,7 +255,7 @@ const restaurantSearchTmpl = (function() {
   // TODO: uncomment cuisine when I add support with the yelp api
   function generateTemplate() {
     const template = `
-      <form id="restaurant-search">
+      <form id="restaurant-search" class="js-restaurant-search">
         <label for="input-location">Location
           <input class="js-input-location" type="number" id="input-location" name="location" pattern="[0-9]*" required>
         </label>
@@ -303,7 +313,7 @@ const restaurantSearch = (function() {
 
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-search');
+  const componentElementSelector = $('.js-restaurant-search-container');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
@@ -411,4 +421,35 @@ const restaurantSearch = (function() {
     test: test
   }
 
+})();
+const restaurantVisitedTmpl = (function() {
+
+  function generateTemplate() {
+    const template = `
+      <div class="js-restaurant-visited le-restaurant-visited">
+        My visited template
+      </div><!-- / le-restaurant-visited -->
+    `;
+
+    return _utilities.templateClean(template);
+  }
+
+  return {
+    generateTemplate: generateTemplate
+  }
+  
+})();
+const restaurantVisited = (function() {
+
+  const componentElementSelector = $('.js-restaurant-visited-container');
+  let template = $(restaurantVisitedTmpl.generateTemplate());
+
+  function render() {
+    componentElementSelector.html(template);
+  }
+
+  // render();
+  return {
+    render: render
+  }
 })();

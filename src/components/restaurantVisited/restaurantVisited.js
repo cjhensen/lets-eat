@@ -1,11 +1,14 @@
 const restaurantVisited = (function() {
 
-  // DOM
-  const componentElementSelector = 
+  const componentElementSelector = $('.js-restaurant-visited-container');
+  let template = $(restaurantVisitedTmpl.generateTemplate());
 
-
-  return {
-
+  function render() {
+    componentElementSelector.html(template);
   }
 
+  // render();
+  return {
+    render: render
+  }
 })();

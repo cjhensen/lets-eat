@@ -2,7 +2,9 @@ const restaurantVisitedTmpl = (function() {
 
   function generateTemplate() {
     const template = `
-      <div>My visited template</div>
+      <div class="js-restaurant-visited le-restaurant-visited">
+        My visited template
+      </div><!-- / le-restaurant-visited -->
     `;
 
     return _utilities.templateClean(template);
@@ -11,4 +13,5 @@ const restaurantVisitedTmpl = (function() {
   return {
     generateTemplate: generateTemplate
   }
+  
 })();
