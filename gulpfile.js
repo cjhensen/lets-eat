@@ -114,6 +114,10 @@ gulp.task('html', function() {
 gulp.task('browserify', function() {
   return browserify(`${folders.src}/app.js`)
     .bundle()
+    .on('error', function(err) {
+      console.log(err.toString());
+      this.emit('end');
+    })
     .pipe(source('app.js'))
     .pipe(gulp.dest(`${folders.build}/js`))
     .pipe(livereload())
