@@ -116,6 +116,7 @@ gulp.task('browserify', function() {
     .bundle()
     .pipe(source('app.js'))
     .pipe(gulp.dest(`${folders.build}/js`))
+    .pipe(livereload())
     .pipe(notify({ message: 'Browserify build successful' }));
 });
 

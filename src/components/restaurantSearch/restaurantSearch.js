@@ -1,11 +1,7 @@
 const restaurantSearch = (function() {
 
-  // modules:
-  // restaurantSearchTmpl
-  // pubSub
-  const pubSub = require('../../utilities/pubSub');
-
   // Dependencies
+  const pubSub = require('../../utilities/pubSub');
   const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM

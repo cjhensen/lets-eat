@@ -1,7 +1,7 @@
 const restaurantChooseTmpl = (function() {
 
-  // modules:
-  // _utilities
+  // Dependencies
+  // _utilities.templateClean
   const _utilities = require('../../utilities/utilities');
 
 

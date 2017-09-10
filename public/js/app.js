@@ -18,8 +18,8 @@ module.exports = {
 },{"./restaurantChoose":5,"./restaurantChoose-tmpl":4}],4:[function(require,module,exports){
 const restaurantChooseTmpl = (function() {
 
-  // modules:
-  // _utilities
+  // Dependencies
+  // _utilities.templateClean
   const _utilities = require('../../utilities/utilities');
 
 
@@ -62,15 +62,10 @@ module.exports = restaurantChooseTmpl;
 },{"../../utilities/utilities":14}],5:[function(require,module,exports){
 const restaurantChoose = (function() {
 
-  // modules:
-  // restaurantChooseTmpl
-  // pubSub
-  // restaurantVisitedTmpl
-  // utilities: shuffleArray
+  // Dependencies
+  // _utilities.shuffleArray
   const _utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
-
-  // Dependencies
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
 
   // DOM
@@ -187,8 +182,8 @@ module.exports = {
 },{"./restaurantSearch":8,"./restaurantSearch-tmpl":7}],7:[function(require,module,exports){
 const restaurantSearchTmpl = (function() {
 
-  // modules:
-  // _utilities
+  // Dependencies
+  // _utilities.templateClean
   const _utilities = require('../../utilities/utilities');
   
 
@@ -253,12 +248,8 @@ module.exports = restaurantSearchTmpl;
 },{"../../utilities/utilities":14}],8:[function(require,module,exports){
 const restaurantSearch = (function() {
 
-  // modules:
-  // restaurantSearchTmpl
-  // pubSub
-  const pubSub = require('../../utilities/pubSub');
-
   // Dependencies
+  const pubSub = require('../../utilities/pubSub');
   const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
@@ -388,6 +379,8 @@ module.exports = {
 },{"./restaurantVisited":11,"./restaurantVisited-tmpl":10}],10:[function(require,module,exports){
 const restaurantVisitedTmpl = (function() {
 
+  // Dependencies
+  // _utilities.templateClean
   const _utilities = require('../../utilities/utilities');
 
   function generateTemplate() {

@@ -1,14 +1,9 @@
 const restaurantChoose = (function() {
 
-  // modules:
-  // restaurantChooseTmpl
-  // pubSub
-  // restaurantVisitedTmpl
-  // utilities: shuffleArray
+  // Dependencies
+  // _utilities.shuffleArray
   const _utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
-
-  // Dependencies
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
 
   // DOM

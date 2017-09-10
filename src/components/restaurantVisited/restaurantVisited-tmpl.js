@@ -1,5 +1,7 @@
 const restaurantVisitedTmpl = (function() {
 
+  // Dependencies
+  // _utilities.templateClean
   const _utilities = require('../../utilities/utilities');
 
   function generateTemplate() {
