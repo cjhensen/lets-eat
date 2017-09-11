@@ -5,11 +5,11 @@ const restaurantSearch = (function() {
   const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-search-container');
+  const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
-
+  
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
   function handleSearchBtnClicked(event) {
@@ -89,7 +89,7 @@ const restaurantSearch = (function() {
   // render the element to the page
   function render() {
     console.log('restaurantSearch render');
-    componentElementSelector.append(template);
+    componentContainer.append(template);
   }
 
 

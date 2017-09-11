@@ -3,17 +3,27 @@ const restaurantVisited = (function() {
   // Dependencies
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
 
-  const componentElementSelector = $('.js-restaurant-visited-container');
+  // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
+  const component = '.js-restaurant-visited';
+  const btnGoBack = `${component} button:nth-child(1)`;
+  const btnNotGoBack = `${component} button:nth-child(2)`;
 
-  function render() {
-    componentElementSelector.html(template);
+  function handleBtnGoBackClicked() {
+    console.log('handleBtnGoBackClicked');
   }
 
-  // render();
-  return {
-    render: render
+  function handleBtnNotGoBackClicked() {
+    console.log('handleBtnNotGoBackClicked');
   }
+
+  function assignEventHandlers() {
+    APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
+    APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
+  }
+
+  assignEventHandlers();
+
 })();
 
 module.exports = restaurantVisited;

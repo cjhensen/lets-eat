@@ -1,7 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global,__dirname){
+// Globals
 global.__base = __dirname + '/';
 global.__components = __dirname + '/components';
+global.APP_CONTAINER = $('#le-app');
 
 const leUtilities = require('./utilities');
 const components = require('./components');
@@ -76,16 +78,16 @@ const restaurantChoose = (function() {
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-choose-container');
+  const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
+  const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = 'button.js-btn-next'; // not $('button.js-btn-next', template);
+  const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
   const templateOptions = {};
 
   // Embedded Components
-  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
-  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
-  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
-  // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
+  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
 
 
   // subscribed events
@@ -162,16 +164,14 @@ const restaurantChoose = (function() {
 
     // Need to bind event handlers to parent DOM, so new elements added or replaced
     // don't lose their event functionality
-    componentElementSelector.on('click', btnNextResult, handleNextBtnClicked);
+    componentContainer.on('click', btnNextResult, handleNextBtnClicked);
   }
 
   // render the view to the page
   function render() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
-    componentElementSelector.html(template);
-    console.log('componentElementSelector', componentElementSelector);
-    // componentElementSelector.append(restaurantVisitedComponent);
+    componentContainer.html(template);
   }
 
   assignEventHandlers();
@@ -264,11 +264,11 @@ const restaurantSearch = (function() {
   const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-search-container');
+  const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
-
+  
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
   function handleSearchBtnClicked(event) {
@@ -348,7 +348,7 @@ const restaurantSearch = (function() {
   // render the element to the page
   function render() {
     console.log('restaurantSearch render');
-    componentElementSelector.append(template);
+    componentContainer.append(template);
   }
 
 
@@ -418,17 +418,27 @@ const restaurantVisited = (function() {
   // Dependencies
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
 
-  const componentElementSelector = $('.js-restaurant-visited-container');
+  // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
+  const component = '.js-restaurant-visited';
+  const btnGoBack = `${component} button:nth-child(1)`;
+  const btnNotGoBack = `${component} button:nth-child(2)`;
 
-  function render() {
-    componentElementSelector.html(template);
+  function handleBtnGoBackClicked() {
+    console.log('handleBtnGoBackClicked');
   }
 
-  // render();
-  return {
-    render: render
+  function handleBtnNotGoBackClicked() {
+    console.log('handleBtnNotGoBackClicked');
   }
+
+  function assignEventHandlers() {
+    APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
+    APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
+  }
+
+  assignEventHandlers();
+
 })();
 
 module.exports = restaurantVisited;

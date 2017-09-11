@@ -8,16 +8,16 @@ const restaurantChoose = (function() {
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-choose-container');
+  const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
+  const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = 'button.js-btn-next'; // not $('button.js-btn-next', template);
+  const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
   const templateOptions = {};
 
   // Embedded Components
-  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
-  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
-  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
-  // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
+  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
 
 
   // subscribed events
@@ -94,16 +94,14 @@ const restaurantChoose = (function() {
 
     // Need to bind event handlers to parent DOM, so new elements added or replaced
     // don't lose their event functionality
-    componentElementSelector.on('click', btnNextResult, handleNextBtnClicked);
+    componentContainer.on('click', btnNextResult, handleNextBtnClicked);
   }
 
   // render the view to the page
   function render() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
-    componentElementSelector.html(template);
-    console.log('componentElementSelector', componentElementSelector);
-    // componentElementSelector.append(restaurantVisitedComponent);
+    componentContainer.html(template);
   }
 
   assignEventHandlers();
