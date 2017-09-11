@@ -12,7 +12,7 @@ const restaurantChooseTmpl = (function() {
     options = options || "";
 
     const template = `
-      <div class="js-restaurant-choose">
+      <div class="js-restaurant-choose le-restaurant-choose">
         <div class="info-place">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating}</span>

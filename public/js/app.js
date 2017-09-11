@@ -1,9 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global,__dirname){
+global.__base = __dirname + '/';
+global.__components = __dirname + '/components';
+
 const leUtilities = require('./utilities');
 const components = require('./components');
 
 components.restaurantSearch.restaurantSearch.runApp();
 console.log('components built', components, leUtilities);
+console.log('__base', __base, __components);
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
 },{"./components":2,"./utilities":12}],2:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
@@ -30,7 +36,7 @@ const restaurantChooseTmpl = (function() {
     options = options || "";
 
     const template = `
-      <div class="js-restaurant-choose">
+      <div class="js-restaurant-choose le-restaurant-choose">
         <div class="info-place">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating}</span>
@@ -67,6 +73,7 @@ const restaurantChoose = (function() {
   const _utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
+  const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
 
   // DOM
   const componentElementSelector = $('.js-restaurant-choose-container');
@@ -75,9 +82,9 @@ const restaurantChoose = (function() {
   const templateOptions = {};
 
   // Embedded Components
-  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
-  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
-  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
+  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
   // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
 
 
@@ -174,7 +181,7 @@ const restaurantChoose = (function() {
 })();
 
 module.exports = restaurantChoose;
-},{"../../utilities/pubSub":13,"../../utilities/utilities":14,"./restaurantChoose-tmpl":4}],6:[function(require,module,exports){
+},{"../../utilities/pubSub":13,"../../utilities/utilities":14,"../restaurantVisited/restaurantVisited-tmpl":10,"./restaurantChoose-tmpl":4}],6:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
@@ -194,42 +201,44 @@ const restaurantSearchTmpl = (function() {
   // TODO: uncomment cuisine when I add support with the yelp api
   function generateTemplate() {
     const template = `
-      <form id="restaurant-search" class="js-restaurant-search">
-        <label for="input-location">Location
-          <input class="js-input-location" type="number" id="input-location" name="location" pattern="[0-9]*" required>
-        </label>
+      <div class="le-restaurant-search js-restaurant-search">
+        <form id="restaurant-search">
+          <label for="input-location">Location
+            <input class="js-input-location" type="number" id="input-location" name="location" pattern="[0-9]*" required>
+          </label>
 
-        <label for="select-radius">Radius
-          <select class="js-select-radius" name="radius" id="select-radius" required>
-            <option value="" disabled selected>Select a radius</option>
-            <option value="5">5mi</option>
-            <option value="10">10mi</option>
-            <option value="15">15mi</option>
-            <option value="20">20mi</option>
-            <option value="25">25mi</option>
-          </select>
-        </label>
+          <label for="select-radius">Radius
+            <select class="js-select-radius" name="radius" id="select-radius" required>
+              <option value="" disabled selected>Select a radius</option>
+              <option value="5">5mi</option>
+              <option value="10">10mi</option>
+              <option value="15">15mi</option>
+              <option value="20">20mi</option>
+              <option value="25">25mi</option>
+            </select>
+          </label>
 
-        <!--
-        <label for="select-cuisine">Cuisine (optional)
-          <select class="js-select-cuisine" name="cuisine" id="select-cuisine">
-            <option value="" disabled selected>Select a cuisine</option>
-            <option value="italian">Italian</option>
-            <option value="american">American</option>
-            <option value="mexican">Mexican</option>
-            <option value="asian">Asian</option>
-            <option value="burgers">Burgers</option>
-          </select>
-        </label>
-        -->
+          <!--
+          <label for="select-cuisine">Cuisine (optional)
+            <select class="js-select-cuisine" name="cuisine" id="select-cuisine">
+              <option value="" disabled selected>Select a cuisine</option>
+              <option value="italian">Italian</option>
+              <option value="american">American</option>
+              <option value="mexican">Mexican</option>
+              <option value="asian">Asian</option>
+              <option value="burgers">Burgers</option>
+            </select>
+          </label>
+          -->
 
-        <label for="input-try-new" class="try-new">Try something new?
-          <input class="js-input-try-new" type="checkbox" id="input-try-new" name="try-new">
-        </label>
+          <label for="input-try-new" class="try-new">Try something new?
+            <input class="js-input-try-new" type="checkbox" id="input-try-new" name="try-new">
+          </label>
 
-        <button type="submit" class="btn btn-submit js-btn-submit">Let's Eat!</button>
+          <button type="submit" class="btn btn-submit js-btn-submit">Let's Eat!</button>
 
-      </form>
+        </form>
+      </div>
     `;
 
     // remove line breaks,
@@ -386,7 +395,8 @@ const restaurantVisitedTmpl = (function() {
   function generateTemplate() {
     const template = `
       <div class="js-restaurant-visited le-restaurant-visited">
-        My visited template
+        <button type="button">I'd go here again</button>
+        <button>I wouldn't go back</button>
       </div><!-- / le-restaurant-visited -->
     `;
 

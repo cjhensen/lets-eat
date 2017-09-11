@@ -5,6 +5,7 @@ const restaurantChoose = (function() {
   const _utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
+  const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
 
   // DOM
   const componentElementSelector = $('.js-restaurant-choose-container');
@@ -13,9 +14,9 @@ const restaurantChoose = (function() {
   const templateOptions = {};
 
   // Embedded Components
-  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
-  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
-  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
+  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
   // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
 
 
