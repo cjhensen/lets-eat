@@ -9,7 +9,7 @@ const restaurantSearch = (function() {
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
-
+  
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
   function handleSearchBtnClicked(event) {
@@ -30,7 +30,7 @@ const restaurantSearch = (function() {
     console.log('getDataFromApi');
 
     const settings = {
-      url: '/restaurant-search/',
+      url: 'http://localhost:8080/restaurant-search/',
       data: {
         "term": "food",
         "location": queryParams.location,
