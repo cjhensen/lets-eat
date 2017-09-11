@@ -10,13 +10,13 @@ const restaurantChoose = (function() {
   // DOM
   const componentElementSelector = $('.js-restaurant-choose-container');
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = $('.js-btn-next', template);
+  const btnNextResult = 'button.js-btn-next'; // not $('button.js-btn-next', template);
   const templateOptions = {};
 
   // Embedded Components
-  let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
-  templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
-  console.log('restaurantVisitedComponent', restaurantVisitedComponent);
+  // let restaurantVisitedComponent = restaurantVisitedTmpl.generateTemplate();
+  // templateOptions.restaurantVisitedComponent = restaurantVisitedComponent;
+  // console.log('restaurantVisitedComponent', restaurantVisitedComponent);
   // let restaurantVisitedComponent = $(restaurantVisitedTmpl.generateTemplate());
 
 
@@ -34,6 +34,7 @@ const restaurantChoose = (function() {
   // show a different result when user clicks next btn ('Not feeling this place')
   function handleNextBtnClicked() {
     console.log('handleNextBtnClicked');
+    console.log('btnNextResult', btnNextResult);
     populateSearchResult();
   }
 
@@ -101,6 +102,7 @@ const restaurantChoose = (function() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     componentElementSelector.html(template);
+    console.log('componentElementSelector', componentElementSelector);
     // componentElementSelector.append(restaurantVisitedComponent);
   }
 
