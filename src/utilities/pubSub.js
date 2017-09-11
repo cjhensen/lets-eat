@@ -41,3 +41,5 @@ const pubSub = (function() {
   }
 
 })();
+
+module.exports = pubSub;

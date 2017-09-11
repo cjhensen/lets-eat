@@ -1,17 +1,18 @@
 const restaurantChooseTmpl = (function() {
 
-  // modules:
-  // _utilities
+  // Dependencies
+  // _utilities.templateClean
+  const _utilities = require('../../utilities/utilities');
 
 
   function generateTemplate(options) {
 
-    // options
-    // title, rating, img_src, img_alt
+    // options:
+    // title, rating, img_src, img_alt, restaurantVisitedComponent
     options = options || "";
 
     const template = `
-      <div>
+      <div class="js-restaurant-choose le-restaurant-choose">
         <div class="info-place">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating}</span>
@@ -24,14 +25,19 @@ const restaurantChooseTmpl = (function() {
           <button type="button" class="btn">Already been here</button>
           <button type="button" class="btn js-btn-next">Not feeling this place</button>
         </div><!-- / choose-controls -->
+
+        <!-- insert restaurantVisited component -->
+        ${options.restaurantVisitedComponent}
       </div>
       `;
 
       return _utilities.templateClean(template);
-  };
+  }
 
   return {
     generateTemplate: generateTemplate
   }
 
 })();
+
+module.exports = restaurantChooseTmpl;

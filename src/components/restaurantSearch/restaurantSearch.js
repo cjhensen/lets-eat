@@ -1,16 +1,15 @@
 const restaurantSearch = (function() {
 
-  // modules:
-  // restaurantSearchTmpl
-  // pubSub
-
+  // Dependencies
+  const pubSub = require('../../utilities/pubSub');
+  const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
-  const componentElementSelector = $('.js-restaurant-search');
+  const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
-
+  
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
   function handleSearchBtnClicked(event) {
@@ -90,7 +89,7 @@ const restaurantSearch = (function() {
   // render the element to the page
   function render() {
     console.log('restaurantSearch render');
-    componentElementSelector.append(template);
+    componentContainer.append(template);
   }
 
 
@@ -105,13 +104,22 @@ const restaurantSearch = (function() {
   // on initial load:
   //   render the template
   //   bind events
-  render();
-  assignEventHandlers();
+  // render();
+  // assignEventHandlers();
+
+  function runApp() {
+    console.log('runApp');
+    render();
+    assignEventHandlers();
+  }
 
   return {
     render: render,
     assignEventHandlers: assignEventHandlers,
-    test: test
+    test: test,
+    runApp: runApp
   }
 
 })();
+
+module.exports = restaurantSearch;
