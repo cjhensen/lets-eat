@@ -31,7 +31,7 @@ const restaurantSearch = (function() {
     console.log('getDataFromApi');
 
     const settings = {
-      url: 'http://localhost:8080/restaurant-search/',
+      url: '/restaurant-search/',
       data: {
         "term": "food",
         "location": queryParams.location,
