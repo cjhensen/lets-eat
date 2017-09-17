@@ -6,12 +6,15 @@ const restaurantChoose = (function() {
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
+  const {Users} = require('../../models/userModel');
+  const testUser = Users.create("christian", "password");
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
+  const btnNextResult = `${component} .js-btn-next`;
+  const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const templateOptions = {};
 
   // Embedded Components
@@ -20,11 +23,12 @@ const restaurantChoose = (function() {
   console.log('restaurantVisitedComponent', restaurantVisitedComponent);
 
 
-  // subscribed events
+  // Subscribed Events
   // first set the local data to the received data
   pubSub.on('processSearchResults', handleReceivedSearchResults);
   // then populate the serach result on the page
   pubSub.on('processSearchResults', populateSearchResult);
+  pubSub.on('showNextSearchResult', populateSearchResult);
 
   // module variables
   let localSearchResultData = [];
@@ -36,6 +40,16 @@ const restaurantChoose = (function() {
     console.log('handleNextBtnClicked');
     console.log('btnNextResult', btnNextResult);
     populateSearchResult();
+  }
+
+  // handleAlreadyVisitedBtnClicked
+  // sends user and restaurant to restaurantVisited to show the popup with the two go 
+  // again/wouldn't go again buttons in it and make those buttons add to their respective lists
+  function handleAlreadyVisitedBtnClicked() {
+    console.log('handleAlreadyVisitedBtnClicked');
+
+    // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
+    pubSub.emit('displayVisitedPopup', {user: testUser, restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
@@ -51,7 +65,26 @@ const restaurantChoose = (function() {
     currentSearchResultIndex = 0;
 
     // set local data equal to received search result data
-    localSearchResultData = searchResultData;
+    localSearchResultData = searchResultData.data;
+
+    const tryNew = searchResultData.tryNew;
+    console.log('try new in handleReceivedSearchResults', tryNew);
+
+
+    // if tryNew is true
+    if(tryNew) {
+      // get the user history
+      const userHistory = Users.get(testUser, "history");
+
+      // Replace localSearchResultData with only the places
+      // where the user has not been
+      localSearchResultData = localSearchResultData.filter(function(placeObj) {
+        return !userHistory.some(function(placeObj2) {
+          return placeObj.id == placeObj2.id;
+        });
+      });
+    }
+
 
     // shuffle localSearchResultData for showing a random result
     // is it better to only shuffle indexes? 
@@ -95,6 +128,7 @@ const restaurantChoose = (function() {
     // Need to bind event handlers to parent DOM, so new elements added or replaced
     // don't lose their event functionality
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
+    componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
   }
 
   // render the view to the page

@@ -4,6 +4,7 @@ global.__components = __dirname + '/components';
 global.APP_CONTAINER = $('#le-app');
 
 const leUtilities = require('./utilities');
+const models = require('./models');
 const components = require('./components');
 
 components.restaurantSearch.restaurantSearch.runApp();

@@ -1,4 +1,209 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var v1 = require('./v1');
+var v4 = require('./v4');
+
+var uuid = v4;
+uuid.v1 = v1;
+uuid.v4 = v4;
+
+module.exports = uuid;
+
+},{"./v1":4,"./v4":5}],2:[function(require,module,exports){
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+
+function bytesToUuid(buf, offset) {
+  var i = offset || 0;
+  var bth = byteToHex;
+  return bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]];
+}
+
+module.exports = bytesToUuid;
+
+},{}],3:[function(require,module,exports){
+(function (global){
+// Unique ID creation requires a high quality random # generator.  In the
+// browser this is a little complicated due to unknown quality of Math.random()
+// and inconsistent support for the `crypto` API.  We do the best we can via
+// feature-detection
+var rng;
+
+var crypto = global.crypto || global.msCrypto; // for IE 11
+if (crypto && crypto.getRandomValues) {
+  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
+  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+  rng = function whatwgRNG() {
+    crypto.getRandomValues(rnds8);
+    return rnds8;
+  };
+}
+
+if (!rng) {
+  // Math.random()-based (RNG)
+  //
+  // If all else fails, use Math.random().  It's fast, but is of unspecified
+  // quality.
+  var rnds = new Array(16);
+  rng = function() {
+    for (var i = 0, r; i < 16; i++) {
+      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return rnds;
+  };
+}
+
+module.exports = rng;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(require,module,exports){
+var rng = require('./lib/rng');
+var bytesToUuid = require('./lib/bytesToUuid');
+
+// **`v1()` - Generate time-based UUID**
+//
+// Inspired by https://github.com/LiosK/UUID.js
+// and http://docs.python.org/library/uuid.html
+
+// random #'s we need to init node and clockseq
+var _seedBytes = rng();
+
+// Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+var _nodeId = [
+  _seedBytes[0] | 0x01,
+  _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
+];
+
+// Per 4.2.2, randomize (14 bit) clockseq
+var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
+
+// Previous uuid creation time
+var _lastMSecs = 0, _lastNSecs = 0;
+
+// See https://github.com/broofa/node-uuid for API details
+function v1(options, buf, offset) {
+  var i = buf && offset || 0;
+  var b = buf || [];
+
+  options = options || {};
+
+  var clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq;
+
+  // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+  // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+  // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+  // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+  var msecs = options.msecs !== undefined ? options.msecs : new Date().getTime();
+
+  // Per 4.2.1.2, use count of uuid's generated during the current clock
+  // cycle to simulate higher resolution clock
+  var nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1;
+
+  // Time since last uuid creation (in msecs)
+  var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+
+  // Per 4.2.1.2, Bump clockseq on clock regression
+  if (dt < 0 && options.clockseq === undefined) {
+    clockseq = clockseq + 1 & 0x3fff;
+  }
+
+  // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+  // time interval
+  if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === undefined) {
+    nsecs = 0;
+  }
+
+  // Per 4.2.1.2 Throw error if too many uuids are requested
+  if (nsecs >= 10000) {
+    throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+  }
+
+  _lastMSecs = msecs;
+  _lastNSecs = nsecs;
+  _clockseq = clockseq;
+
+  // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+  msecs += 12219292800000;
+
+  // `time_low`
+  var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+  b[i++] = tl >>> 24 & 0xff;
+  b[i++] = tl >>> 16 & 0xff;
+  b[i++] = tl >>> 8 & 0xff;
+  b[i++] = tl & 0xff;
+
+  // `time_mid`
+  var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+  b[i++] = tmh >>> 8 & 0xff;
+  b[i++] = tmh & 0xff;
+
+  // `time_high_and_version`
+  b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+  b[i++] = tmh >>> 16 & 0xff;
+
+  // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+  b[i++] = clockseq >>> 8 | 0x80;
+
+  // `clock_seq_low`
+  b[i++] = clockseq & 0xff;
+
+  // `node`
+  var node = options.node || _nodeId;
+  for (var n = 0; n < 6; ++n) {
+    b[i + n] = node[n];
+  }
+
+  return buf ? buf : bytesToUuid(b);
+}
+
+module.exports = v1;
+
+},{"./lib/bytesToUuid":2,"./lib/rng":3}],5:[function(require,module,exports){
+var rng = require('./lib/rng');
+var bytesToUuid = require('./lib/bytesToUuid');
+
+function v4(options, buf, offset) {
+  var i = buf && offset || 0;
+
+  if (typeof(options) == 'string') {
+    buf = options == 'binary' ? new Array(16) : null;
+    options = null;
+  }
+  options = options || {};
+
+  var rnds = options.random || (options.rng || rng)();
+
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+  // Copy bytes to buffer, if provided
+  if (buf) {
+    for (var ii = 0; ii < 16; ++ii) {
+      buf[i + ii] = rnds[ii];
+    }
+  }
+
+  return buf || bytesToUuid(rnds);
+}
+
+module.exports = v4;
+
+},{"./lib/bytesToUuid":2,"./lib/rng":3}],6:[function(require,module,exports){
 (function (global,__dirname){
 // Globals
 global.__base = __dirname + '/';
@@ -6,24 +211,25 @@ global.__components = __dirname + '/components';
 global.APP_CONTAINER = $('#le-app');
 
 const leUtilities = require('./utilities');
+const models = require('./models');
 const components = require('./components');
 
 components.restaurantSearch.restaurantSearch.runApp();
 console.log('components built', components, leUtilities);
 console.log('__base', __base, __components);
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
-},{"./components":2,"./utilities":12}],2:[function(require,module,exports){
+},{"./components":7,"./models":17,"./utilities":19}],7:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantSearch: require('./restaurantSearch'),
   restaurantVisited: require('./restaurantVisited')
 };
-},{"./restaurantChoose":3,"./restaurantSearch":6,"./restaurantVisited":9}],3:[function(require,module,exports){
+},{"./restaurantChoose":8,"./restaurantSearch":11,"./restaurantVisited":14}],8:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantChooseTmpl: require('./restaurantChoose-tmpl')
 };
-},{"./restaurantChoose":5,"./restaurantChoose-tmpl":4}],4:[function(require,module,exports){
+},{"./restaurantChoose":10,"./restaurantChoose-tmpl":9}],9:[function(require,module,exports){
 const restaurantChooseTmpl = (function() {
 
   // Dependencies
@@ -48,7 +254,7 @@ const restaurantChooseTmpl = (function() {
         </div>
         <div class="choose-controls">
           <button type="button" class="btn">Eat Here!</button>
-          <button type="button" class="btn">Already been here</button>
+          <button type="button" class="btn js-btn-already-visited">Already been here</button>
           <button type="button" class="btn js-btn-next">Not feeling this place</button>
         </div><!-- / choose-controls -->
 
@@ -67,7 +273,7 @@ const restaurantChooseTmpl = (function() {
 })();
 
 module.exports = restaurantChooseTmpl;
-},{"../../utilities/utilities":14}],5:[function(require,module,exports){
+},{"../../utilities/utilities":21}],10:[function(require,module,exports){
 const restaurantChoose = (function() {
 
   // Dependencies
@@ -76,12 +282,15 @@ const restaurantChoose = (function() {
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
+  const {Users} = require('../../models/userModel');
+  const testUser = Users.create("christian", "password");
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
+  const btnNextResult = `${component} .js-btn-next`;
+  const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const templateOptions = {};
 
   // Embedded Components
@@ -90,11 +299,12 @@ const restaurantChoose = (function() {
   console.log('restaurantVisitedComponent', restaurantVisitedComponent);
 
 
-  // subscribed events
+  // Subscribed Events
   // first set the local data to the received data
   pubSub.on('processSearchResults', handleReceivedSearchResults);
   // then populate the serach result on the page
   pubSub.on('processSearchResults', populateSearchResult);
+  pubSub.on('showNextSearchResult', populateSearchResult);
 
   // module variables
   let localSearchResultData = [];
@@ -106,6 +316,16 @@ const restaurantChoose = (function() {
     console.log('handleNextBtnClicked');
     console.log('btnNextResult', btnNextResult);
     populateSearchResult();
+  }
+
+  // handleAlreadyVisitedBtnClicked
+  // sends user and restaurant to restaurantVisited to show the popup with the two go 
+  // again/wouldn't go again buttons in it and make those buttons add to their respective lists
+  function handleAlreadyVisitedBtnClicked() {
+    console.log('handleAlreadyVisitedBtnClicked');
+
+    // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
+    pubSub.emit('displayVisitedPopup', {user: testUser, restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
@@ -121,7 +341,26 @@ const restaurantChoose = (function() {
     currentSearchResultIndex = 0;
 
     // set local data equal to received search result data
-    localSearchResultData = searchResultData;
+    localSearchResultData = searchResultData.data;
+
+    const tryNew = searchResultData.tryNew;
+    console.log('try new in handleReceivedSearchResults', tryNew);
+
+
+    // if tryNew is true
+    if(tryNew) {
+      // get the user history
+      const userHistory = Users.get(testUser, "history");
+
+      // Replace localSearchResultData with only the places
+      // where the user has not been
+      localSearchResultData = localSearchResultData.filter(function(placeObj) {
+        return !userHistory.some(function(placeObj2) {
+          return placeObj.id == placeObj2.id;
+        });
+      });
+    }
+
 
     // shuffle localSearchResultData for showing a random result
     // is it better to only shuffle indexes? 
@@ -165,6 +404,7 @@ const restaurantChoose = (function() {
     // Need to bind event handlers to parent DOM, so new elements added or replaced
     // don't lose their event functionality
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
+    componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
   }
 
   // render the view to the page
@@ -183,12 +423,12 @@ const restaurantChoose = (function() {
 })();
 
 module.exports = restaurantChoose;
-},{"../../utilities/pubSub":13,"../../utilities/utilities":14,"../restaurantVisited/restaurantVisited-tmpl":10,"./restaurantChoose-tmpl":4}],6:[function(require,module,exports){
+},{"../../models/userModel":18,"../../utilities/pubSub":20,"../../utilities/utilities":21,"../restaurantVisited/restaurantVisited-tmpl":15,"./restaurantChoose-tmpl":9}],11:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
 };
-},{"./restaurantSearch":8,"./restaurantSearch-tmpl":7}],7:[function(require,module,exports){
+},{"./restaurantSearch":13,"./restaurantSearch-tmpl":12}],12:[function(require,module,exports){
 const restaurantSearchTmpl = (function() {
 
   // Dependencies
@@ -256,7 +496,7 @@ const restaurantSearchTmpl = (function() {
 })();
 
 module.exports = restaurantSearchTmpl;
-},{"../../utilities/utilities":14}],8:[function(require,module,exports){
+},{"../../utilities/utilities":21}],13:[function(require,module,exports){
 const restaurantSearch = (function() {
 
   // Dependencies
@@ -306,13 +546,18 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
-    // process the data -> remove results based on 'tryNew' option
+
+    // Pass tryNew value to emitter for use in restaurantChoose
+    const tryNew = getFormValues().tryNew;
+    
+    // process the data ->
     //   remove any yelpevents results
 
     // emit event with processed data
     // received in: 
     //   restaurantChoose
-    pubSub.emit('processSearchResults', data);
+
+    pubSub.emit('processSearchResults', {data: data, tryNew: tryNew});
   }
 
   // getFormValues: get values from form input fields and returns as an object
@@ -382,12 +627,12 @@ const restaurantSearch = (function() {
 })();
 
 module.exports = restaurantSearch;
-},{"../../utilities/pubSub":13,"./restaurantSearch-tmpl":7}],9:[function(require,module,exports){
+},{"../../utilities/pubSub":20,"./restaurantSearch-tmpl":12}],14:[function(require,module,exports){
 module.exports = {
   restaurantVisited: require('./restaurantVisited'),
   restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
 };
-},{"./restaurantVisited":11,"./restaurantVisited-tmpl":10}],10:[function(require,module,exports){
+},{"./restaurantVisited":16,"./restaurantVisited-tmpl":15}],15:[function(require,module,exports){
 const restaurantVisitedTmpl = (function() {
 
   // Dependencies
@@ -412,11 +657,13 @@ const restaurantVisitedTmpl = (function() {
 })();
 
 module.exports = restaurantVisitedTmpl;
-},{"../../utilities/utilities":14}],11:[function(require,module,exports){
+},{"../../utilities/utilities":21}],16:[function(require,module,exports){
 const restaurantVisited = (function() {
 
   // Dependencies
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
+  const pubSub = require('../../utilities/pubSub');
+  const {Users} = require('../../models/userModel');
 
   // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
@@ -424,30 +671,151 @@ const restaurantVisited = (function() {
   const btnGoBack = `${component} button:nth-child(1)`;
   const btnNotGoBack = `${component} button:nth-child(2)`;
 
-  function handleBtnGoBackClicked() {
-    console.log('handleBtnGoBackClicked');
+  // Subscribed Events
+  // Received from restaurantChoose on already been here button click
+  pubSub.on('displayVisitedPopup', handleReceivedPopupData);
+
+  // Module variables. Used for received data via event subscription.
+  let currentUser = {};
+  let currentRestaurant = {};
+
+  // handleReceivedPopupData:
+  // set the local data equal to received data so it can be passed around in the module
+  // show the component
+  function handleReceivedPopupData(data) {
+    console.log('handleVisitedPopupShown');
+    
+    // reset local data on popup activated
+    currentUser = {};
+    currentRestaurant = {};
+
+    // set local data equal to received data from showing popup via click
+    currentUser = data.user;
+    currentRestaurant = data.restaurant;
+
+    showComponent();
   }
 
+  // handleBtnGoBackClicked:
+  // updates the current user history and liked lists with currentRestaurant
+  // emits event to show next search result in restaurantChoose
+  function handleBtnGoBackClicked() {
+    console.log('handleBtnGoBackClicked');
+
+    // Add restaurant to history list and liked list
+    Users.update(currentUser, "history", currentRestaurant);
+    Users.update(currentUser, "liked", currentRestaurant);
+
+    console.log('Users after update', Users);
+    // Send event to show next result in restaurantChoose
+    pubSub.emit('showNextSearchResult');
+  }
+
+  // handleBtnNotGoBackClicked:
+  // updates the current user history and disliked lists with currentRestaurant
+  // emits event to show next search result in restaurantChoose
   function handleBtnNotGoBackClicked() {
     console.log('handleBtnNotGoBackClicked');
+
+    // Add restaurant to history list and liked list
+    Users.update(currentUser, "history", currentRestaurant);
+    Users.update(currentUser, "disliked", currentRestaurant);
+
+    console.log('Users after update', Users);
+    // Send event to show next result in restaurantChoose
+    pubSub.emit('showNextSearchResult');
   }
 
   function assignEventHandlers() {
+    console.log('restaurantVisited assignEventHandlers');
     APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
     APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
   }
 
+  function showComponent() {
+    $(component).css("display", "block");
+  }
+
+  function hideComponent() {
+    $(component).css("display", "none");
+  }
+
+  // component starts out hidden via css
   assignEventHandlers();
 
 })();
 
 module.exports = restaurantVisited;
-},{"./restaurantVisited-tmpl":10}],12:[function(require,module,exports){
+},{"../../models/userModel":18,"../../utilities/pubSub":20,"./restaurantVisited-tmpl":15}],17:[function(require,module,exports){
+module.exports = {
+  userModel: require('./userModel')
+};
+},{"./userModel":18}],18:[function(require,module,exports){
+// Dependencies
+const uuid = require('uuid');
+
+const Users = {
+
+  // createNewUser:
+  // creates a new user with specified username and password
+  // Gives random uuid
+  // Sets up storate for placeHistory, placesLiked, and placesDisliked
+  create: function(username, password) {
+    const user = {
+      userInfo: {
+        id: uuid.v4(),
+        username: username,
+        password: password
+      },
+      history: [],
+      liked: [],
+      disliked: []
+    }
+
+    this.users.push(user);
+    return user;
+  },
+
+  get: function(user, arrayToGet) {
+    const id = user.userInfo.id;
+    let selectedArray = [];
+    // if users model id matches user id being passed in,
+    // get the array specified
+    this.users.find(function(usr) {
+      if(usr.userInfo.id === id) {
+        selectedArray = usr[arrayToGet];
+      }
+    });
+    return selectedArray;
+  },
+
+  update: function(user, arrayToUpdate, itemToAdd) {
+    const id = user.userInfo.id;
+
+    // if users model id matches user id being passed in,
+    // add item to specified array: history, liked, or disliked
+    this.users.find(function(usr) {
+      if(usr.userInfo.id === id) {
+        usr[arrayToUpdate].push(itemToAdd);
+      }
+    });
+  }
+
+}
+
+function createUsersModel() {
+  const storage = Object.create(Users);
+  storage.users = [];
+  return storage;
+}
+
+module.exports = {Users: createUsersModel()};
+},{"uuid":1}],19:[function(require,module,exports){
 module.exports = {
   pubSub: require('./pubSub'),
   utilities: require('./utilities')
 };
-},{"./pubSub":13,"./utilities":14}],13:[function(require,module,exports){
+},{"./pubSub":20,"./utilities":21}],20:[function(require,module,exports){
 const pubSub = (function() {
   
   // object that holds events, none created by default
@@ -493,7 +861,7 @@ const pubSub = (function() {
 })();
 
 module.exports = pubSub;
-},{}],14:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 const _utilities = (function() {
   
   // templateClean:
@@ -544,4 +912,4 @@ const _utilities = (function() {
 })();
 
 module.exports = _utilities;
-},{}]},{},[1]);
+},{}]},{},[6]);
