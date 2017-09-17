@@ -289,7 +289,7 @@ const restaurantChoose = (function() {
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
+  const btnNextResult = `${component} .js-btn-next`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const templateOptions = {};
 
@@ -357,8 +357,6 @@ const restaurantChoose = (function() {
           return placeObj.id == placeObj2.id;
         });
       });
-      console.log('array difference', localSearchResultData);
-
     }
 
 
@@ -546,8 +544,11 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
+
+    // Pass tryNew value to emitter for use in restaurantChoose
     const tryNew = getFormValues().tryNew;
-    // process the data -> remove results based on 'tryNew' option
+    
+    // process the data ->
     //   remove any yelpevents results
 
     // emit event with processed data

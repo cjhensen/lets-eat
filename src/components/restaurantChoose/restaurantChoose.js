@@ -13,7 +13,7 @@ const restaurantChoose = (function() {
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
-  const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
+  const btnNextResult = `${component} .js-btn-next`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const templateOptions = {};
 
@@ -81,8 +81,6 @@ const restaurantChoose = (function() {
           return placeObj.id == placeObj2.id;
         });
       });
-      console.log('array difference', localSearchResultData);
-
     }
 
 

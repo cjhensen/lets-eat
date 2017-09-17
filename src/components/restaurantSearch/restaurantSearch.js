@@ -47,8 +47,11 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
+
+    // Pass tryNew value to emitter for use in restaurantChoose
     const tryNew = getFormValues().tryNew;
-    // process the data -> remove results based on 'tryNew' option
+    
+    // process the data ->
     //   remove any yelpevents results
 
     // emit event with processed data
