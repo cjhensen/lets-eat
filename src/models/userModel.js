@@ -14,13 +14,25 @@ const Users = {
         username: username,
         password: password
       },
-      placeHistory: [],
-      placesLiked: [],
-      placesDisliked: []
+      history: [],
+      liked: [],
+      disliked: []
     }
 
     this.users.push(user);
     return user;
+  },
+
+  update: function(user, arrayToUpdate, itemToAdd) {
+    const id = user.userInfo.id;
+    
+    // if users model id matches user id being passed in,
+    // add item to specified array: history, liked, or disliked
+    this.users.find(function(usr) {
+      if(usr.userInfo.id === id) {
+        usr[arrayToUpdate].push(itemToAdd);
+      }
+    });
   }
 
 }

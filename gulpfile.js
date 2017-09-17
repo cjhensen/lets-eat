@@ -64,7 +64,8 @@ gulp.task('watch', function() {
   watch([
     `${folders.src}/app.js`, 
     `${folders.src}/utilities/**/*.js`, 
-    `${folders.src}/components/**/*.js`
+    `${folders.src}/components/**/*.js`,
+    `${folders.src}/models/**/*.js`
     ], function() { gulp.start('browserify'); });
 });
 

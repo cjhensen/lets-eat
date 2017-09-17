@@ -6,12 +6,15 @@ const restaurantChoose = (function() {
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
+  const {Users} = require('../../models/userModel');
+  const testUser = Users.create("christian", "password");
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`; // not $('button.js-btn-next', template);
+  const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const templateOptions = {};
 
   // Embedded Components
@@ -20,7 +23,7 @@ const restaurantChoose = (function() {
   console.log('restaurantVisitedComponent', restaurantVisitedComponent);
 
 
-  // subscribed events
+  // Subscribed Events
   // first set the local data to the received data
   pubSub.on('processSearchResults', handleReceivedSearchResults);
   // then populate the serach result on the page
@@ -36,6 +39,17 @@ const restaurantChoose = (function() {
     console.log('handleNextBtnClicked');
     console.log('btnNextResult', btnNextResult);
     populateSearchResult();
+  }
+
+  // handleAlreadyVisitedBtnClicked
+  // show the popup with the two go again/wouldn't go again buttons in it
+  function handleAlreadyVisitedBtnClicked() {
+    console.log('handleAlreadyVisitedBtnClicked');
+    console.log('Users', Users);
+    console.log('testUser', testUser);
+    console.log('current index', localSearchResultData[currentSearchResultIndex]);
+    Users.update(testUser, "history", localSearchResultData[currentSearchResultIndex]);
+    console.log('Users after update', Users);
   }
 
   // handleReceivedSearchResults:
@@ -95,6 +109,7 @@ const restaurantChoose = (function() {
     // Need to bind event handlers to parent DOM, so new elements added or replaced
     // don't lose their event functionality
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
+    componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
   }
 
   // render the view to the page

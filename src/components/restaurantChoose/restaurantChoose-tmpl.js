@@ -22,7 +22,7 @@ const restaurantChooseTmpl = (function() {
         </div>
         <div class="choose-controls">
           <button type="button" class="btn">Eat Here!</button>
-          <button type="button" class="btn">Already been here</button>
+          <button type="button" class="btn js-btn-already-visited">Already been here</button>
           <button type="button" class="btn js-btn-next">Not feeling this place</button>
         </div><!-- / choose-controls -->
 
