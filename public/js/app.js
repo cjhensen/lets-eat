@@ -319,7 +319,8 @@ const restaurantChoose = (function() {
   }
 
   // handleAlreadyVisitedBtnClicked
-  // show the popup with the two go again/wouldn't go again buttons in it
+  // sends user and restaurant to restaurantVisited to show the popup with the two go 
+  // again/wouldn't go again buttons in it and make those buttons add to their respective lists
   function handleAlreadyVisitedBtnClicked() {
     console.log('handleAlreadyVisitedBtnClicked');
 
@@ -695,6 +696,9 @@ const restaurantVisited = (function() {
     showComponent();
   }
 
+  // handleBtnGoBackClicked:
+  // updates the current user history and liked lists with currentRestaurant
+  // emits event to show next search result in restaurantChoose
   function handleBtnGoBackClicked() {
     console.log('handleBtnGoBackClicked');
 
@@ -707,13 +711,16 @@ const restaurantVisited = (function() {
     pubSub.emit('showNextSearchResult');
   }
 
+  // handleBtnNotGoBackClicked:
+  // updates the current user history and disliked lists with currentRestaurant
+  // emits event to show next search result in restaurantChoose
   function handleBtnNotGoBackClicked() {
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
     Users.update(currentUser, "history", currentRestaurant);
     Users.update(currentUser, "disliked", currentRestaurant);
-    
+
     console.log('Users after update', Users);
     // Send event to show next result in restaurantChoose
     pubSub.emit('showNextSearchResult');

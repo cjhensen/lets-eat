@@ -43,7 +43,8 @@ const restaurantChoose = (function() {
   }
 
   // handleAlreadyVisitedBtnClicked
-  // show the popup with the two go again/wouldn't go again buttons in it
+  // sends user and restaurant to restaurantVisited to show the popup with the two go 
+  // again/wouldn't go again buttons in it and make those buttons add to their respective lists
   function handleAlreadyVisitedBtnClicked() {
     console.log('handleAlreadyVisitedBtnClicked');
 
