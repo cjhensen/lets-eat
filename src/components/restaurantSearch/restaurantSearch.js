@@ -47,13 +47,15 @@ const restaurantSearch = (function() {
   // processSearchResults: do stuff with the data returned from getDataFromApi (the yelp search results)
   function processSearchResults(data) {
     console.log('processSearchResults');
+    const tryNew = getFormValues().tryNew;
     // process the data -> remove results based on 'tryNew' option
     //   remove any yelpevents results
 
     // emit event with processed data
     // received in: 
     //   restaurantChoose
-    pubSub.emit('processSearchResults', data);
+
+    pubSub.emit('processSearchResults', {data: data, tryNew: tryNew});
   }
 
   // getFormValues: get values from form input fields and returns as an object

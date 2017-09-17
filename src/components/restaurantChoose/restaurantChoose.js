@@ -45,11 +45,9 @@ const restaurantChoose = (function() {
   // show the popup with the two go again/wouldn't go again buttons in it
   function handleAlreadyVisitedBtnClicked() {
     console.log('handleAlreadyVisitedBtnClicked');
-    console.log('Users', Users);
-    console.log('testUser', testUser);
-    console.log('current index', localSearchResultData[currentSearchResultIndex]);
-    Users.update(testUser, "history", localSearchResultData[currentSearchResultIndex]);
+    Users.update(testUser, "history", localSearchResultData[currentSearchResultIndex-1]);
     console.log('Users after update', Users);
+    populateSearchResult();
   }
 
   // handleReceivedSearchResults:
@@ -65,7 +63,28 @@ const restaurantChoose = (function() {
     currentSearchResultIndex = 0;
 
     // set local data equal to received search result data
-    localSearchResultData = searchResultData;
+    localSearchResultData = searchResultData.data;
+
+    const tryNew = searchResultData.tryNew;
+    console.log('try new in handleReceivedSearchResults', tryNew);
+
+
+    // if tryNew is true
+    if(tryNew) {
+      // get the user history
+      const userHistory = Users.get(testUser, "history");
+
+      // Replace localSearchResultData with only the places
+      // where the user has not been
+      localSearchResultData = localSearchResultData.filter(function(placeObj) {
+        return !userHistory.some(function(placeObj2) {
+          return placeObj.id == placeObj2.id;
+        });
+      });
+      console.log('array difference', localSearchResultData);
+
+    }
+
 
     // shuffle localSearchResultData for showing a random result
     // is it better to only shuffle indexes? 

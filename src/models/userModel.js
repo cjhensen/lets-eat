@@ -23,9 +23,22 @@ const Users = {
     return user;
   },
 
+  get: function(user, arrayToGet) {
+    const id = user.userInfo.id;
+    let selectedArray = [];
+    // if users model id matches user id being passed in,
+    // get the array specified
+    this.users.find(function(usr) {
+      if(usr.userInfo.id === id) {
+        selectedArray = usr[arrayToGet];
+      }
+    });
+    return selectedArray;
+  },
+
   update: function(user, arrayToUpdate, itemToAdd) {
     const id = user.userInfo.id;
-    
+
     // if users model id matches user id being passed in,
     // add item to specified array: history, liked, or disliked
     this.users.find(function(usr) {
