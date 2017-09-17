@@ -28,6 +28,7 @@ const restaurantChoose = (function() {
   pubSub.on('processSearchResults', handleReceivedSearchResults);
   // then populate the serach result on the page
   pubSub.on('processSearchResults', populateSearchResult);
+  pubSub.on('showNextSearchResult', populateSearchResult);
 
   // module variables
   let localSearchResultData = [];
@@ -45,9 +46,9 @@ const restaurantChoose = (function() {
   // show the popup with the two go again/wouldn't go again buttons in it
   function handleAlreadyVisitedBtnClicked() {
     console.log('handleAlreadyVisitedBtnClicked');
-    Users.update(testUser, "history", localSearchResultData[currentSearchResultIndex-1]);
-    console.log('Users after update', Users);
-    populateSearchResult();
+
+    // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
+    pubSub.emit('displayVisitedPopup', {user: testUser, restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
