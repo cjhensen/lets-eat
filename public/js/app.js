@@ -218,13 +218,14 @@ components.restaurantSearch.restaurantSearch.runApp();
 console.log('components built', components, leUtilities);
 console.log('__base', __base, __components);
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
-},{"./components":7,"./models":17,"./utilities":19}],7:[function(require,module,exports){
+},{"./components":7,"./models":20,"./utilities":22}],7:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantSearch: require('./restaurantSearch'),
-  restaurantVisited: require('./restaurantVisited')
+  restaurantVisited: require('./restaurantVisited'),
+  restaurantDetails: require('./restaurantDetails')
 };
-},{"./restaurantChoose":8,"./restaurantSearch":11,"./restaurantVisited":14}],8:[function(require,module,exports){
+},{"./restaurantChoose":8,"./restaurantDetails":11,"./restaurantSearch":14,"./restaurantVisited":17}],8:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantChooseTmpl: require('./restaurantChoose-tmpl')
@@ -250,7 +251,9 @@ const restaurantChooseTmpl = (function() {
           <span class="js-rating rating-stars">${options.rating}</span>
         </div>
         <div class="img-place">
-          <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
+          <a href="#" class="js-link-show-details">
+            <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
+          </a>
         </div>
         <div class="choose-controls">
           <button type="button" class="btn">Eat Here!</button>
@@ -273,7 +276,7 @@ const restaurantChooseTmpl = (function() {
 })();
 
 module.exports = restaurantChooseTmpl;
-},{"../../utilities/utilities":21}],10:[function(require,module,exports){
+},{"../../utilities/utilities":24}],10:[function(require,module,exports){
 const restaurantChoose = (function() {
 
   // Dependencies
@@ -291,6 +294,7 @@ const restaurantChoose = (function() {
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
+  const imgLink = `${component} .js-link-show-details`;
   const templateOptions = {};
 
   // Embedded Components
@@ -309,6 +313,13 @@ const restaurantChoose = (function() {
   // module variables
   let localSearchResultData = [];
   let currentSearchResultIndex = 0;
+
+
+  function handleImgLinkClicked(event) {
+    console.log('handleImgLinkClicked');
+    event.preventDefault();
+    pubSub.emit('showDetailsView', localSearchResultData[currentSearchResultIndex-1]);
+  }
 
   // handleNextBtnClicked:
   // show a different result when user clicks next btn ('Not feeling this place')
@@ -405,6 +416,7 @@ const restaurantChoose = (function() {
     // don't lose their event functionality
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
     componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
+    componentContainer.on('click', imgLink, handleImgLinkClicked);
   }
 
   // render the view to the page
@@ -423,12 +435,131 @@ const restaurantChoose = (function() {
 })();
 
 module.exports = restaurantChoose;
-},{"../../models/userModel":18,"../../utilities/pubSub":20,"../../utilities/utilities":21,"../restaurantVisited/restaurantVisited-tmpl":15,"./restaurantChoose-tmpl":9}],11:[function(require,module,exports){
+},{"../../models/userModel":21,"../../utilities/pubSub":23,"../../utilities/utilities":24,"../restaurantVisited/restaurantVisited-tmpl":18,"./restaurantChoose-tmpl":9}],11:[function(require,module,exports){
+module.exports = {
+  restaurantDetails: require('./restaurantDetails'),
+  restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
+};
+},{"./restaurantDetails":13,"./restaurantDetails-tmpl":12}],12:[function(require,module,exports){
+const restaurantDetailsTmpl = (function() {
+  // Dependencies
+  // _utilities.templateClean
+  const _utilities = require('../../utilities/utilities');
+
+  function generateTemplate(options) {
+
+    options = options || "";
+    // title, rating, price, img_src, img_alt, address, phone, yelp_url
+    console.log('optionssss', options);
+
+    const template = `
+      <div class="js-restaurant-details le-restaurant-details">
+        <div class="top-info">
+          <span class="details-title">${options.title}</span>
+          <span class="details-rating">${options.rating}</span>
+          <span class="details-price">${options.price}</span>
+        </div>
+        <div class="details-img">
+          <img src="${options.img_src}" alt="${options.img_alt}">
+        </div>
+        <div class="bottom-info">
+          <div class="details-address">
+            ${options.address_1}
+            <br />
+            ${options.address_2}
+          </div>
+          <div class="details-phone">
+            ${options.phone}
+          </div>
+          <div class="details-yelp">
+            <a href="${options.yelp_url}" alt="${options.title} on Yelp">
+              <button type="button" class="btn btn-yelp">View on Yelp</button>
+            </a>
+          </div>
+          <button type="button" class="btn btn-eat-here">Eat Here!</button>
+        </div>
+      </div>
+    `;
+
+    return _utilities.templateClean(template);
+  }
+
+
+  return {
+    generateTemplate: generateTemplate
+  }
+
+})();
+
+module.exports = restaurantDetailsTmpl;
+},{"../../utilities/utilities":24}],13:[function(require,module,exports){
+const restaurantDetails = (function() {
+
+  // Dependencies
+  const restaurantDetailsTmpl = require('./restaurantDetails-tmpl');
+  const pubSub = require('../../utilities/pubSub');
+
+  // DOM
+  let template = $(restaurantDetailsTmpl.generateTemplate());
+  const component = '.js-restaurant-details';
+  const btnEatHere = `${component} button.btn-eat-here`;
+  const templateOptions = {};
+
+  // Subscribed Events
+  // on image click in restaurantChoose, pass the current restaurant in
+  // and show the details view
+  pubSub.on('showDetailsView', handleShowDetailsView);
+
+  // handleShowDetailsView:
+  // destroys currently shown template
+  // sets template options to currentRestaurant
+  // re-renders component
+  function handleShowDetailsView(currentRestaurant) {
+    console.log('handleShowDetailsView');
+    destroy();
+    setTemplateOptions(currentRestaurant);
+    render();
+  }
+
+  // setTemplateOptions:
+  // sets template options to received current restaurant
+  function setTemplateOptions(restaurant) {
+    templateOptions.title = restaurant.name;
+    templateOptions.rating = restaurant.rating;
+    templateOptions.price = restaurant.price;
+    templateOptions.img_src = restaurant.image_url;
+    templateOptions.img_alt = restaurant.name;
+    templateOptions.address_1 = restaurant.location.display_address[0];
+    templateOptions.address_2 = restaurant.location.display_address[1];
+    templateOptions.phone = restaurant.display_phone;
+    templateOptions.yelp_url = restaurant.url;
+  }
+
+  // render:
+  // render the component
+  function render() {
+    console.log('restaurantDetails render');
+    template = $(restaurantDetailsTmpl.generateTemplate(templateOptions));
+    APP_CONTAINER.append(template);
+  }
+
+  // destroy:
+  // remove component from DOM
+  function destroy() {
+    console.log('restaurantDetails destroy');
+    $(component).remove();
+  }
+  
+
+})();
+
+module.exports = restaurantDetails;
+},{"../../utilities/pubSub":23,"./restaurantDetails-tmpl":12}],14:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
 };
-},{"./restaurantSearch":13,"./restaurantSearch-tmpl":12}],12:[function(require,module,exports){
+},{"./restaurantSearch":16,"./restaurantSearch-tmpl":15}],15:[function(require,module,exports){
 const restaurantSearchTmpl = (function() {
 
   // Dependencies
@@ -496,7 +627,7 @@ const restaurantSearchTmpl = (function() {
 })();
 
 module.exports = restaurantSearchTmpl;
-},{"../../utilities/utilities":21}],13:[function(require,module,exports){
+},{"../../utilities/utilities":24}],16:[function(require,module,exports){
 const restaurantSearch = (function() {
 
   // Dependencies
@@ -627,12 +758,12 @@ const restaurantSearch = (function() {
 })();
 
 module.exports = restaurantSearch;
-},{"../../utilities/pubSub":20,"./restaurantSearch-tmpl":12}],14:[function(require,module,exports){
+},{"../../utilities/pubSub":23,"./restaurantSearch-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantVisited: require('./restaurantVisited'),
   restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
 };
-},{"./restaurantVisited":16,"./restaurantVisited-tmpl":15}],15:[function(require,module,exports){
+},{"./restaurantVisited":19,"./restaurantVisited-tmpl":18}],18:[function(require,module,exports){
 const restaurantVisitedTmpl = (function() {
 
   // Dependencies
@@ -657,7 +788,7 @@ const restaurantVisitedTmpl = (function() {
 })();
 
 module.exports = restaurantVisitedTmpl;
-},{"../../utilities/utilities":21}],16:[function(require,module,exports){
+},{"../../utilities/utilities":24}],19:[function(require,module,exports){
 const restaurantVisited = (function() {
 
   // Dependencies
@@ -746,11 +877,11 @@ const restaurantVisited = (function() {
 })();
 
 module.exports = restaurantVisited;
-},{"../../models/userModel":18,"../../utilities/pubSub":20,"./restaurantVisited-tmpl":15}],17:[function(require,module,exports){
+},{"../../models/userModel":21,"../../utilities/pubSub":23,"./restaurantVisited-tmpl":18}],20:[function(require,module,exports){
 module.exports = {
   userModel: require('./userModel')
 };
-},{"./userModel":18}],18:[function(require,module,exports){
+},{"./userModel":21}],21:[function(require,module,exports){
 // Dependencies
 const uuid = require('uuid');
 
@@ -810,12 +941,12 @@ function createUsersModel() {
 }
 
 module.exports = {Users: createUsersModel()};
-},{"uuid":1}],19:[function(require,module,exports){
+},{"uuid":1}],22:[function(require,module,exports){
 module.exports = {
   pubSub: require('./pubSub'),
   utilities: require('./utilities')
 };
-},{"./pubSub":20,"./utilities":21}],20:[function(require,module,exports){
+},{"./pubSub":23,"./utilities":24}],23:[function(require,module,exports){
 const pubSub = (function() {
   
   // object that holds events, none created by default
@@ -861,7 +992,7 @@ const pubSub = (function() {
 })();
 
 module.exports = pubSub;
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 const _utilities = (function() {
   
   // templateClean:

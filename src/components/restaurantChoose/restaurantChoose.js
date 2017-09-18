@@ -15,6 +15,7 @@ const restaurantChoose = (function() {
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
+  const imgLink = `${component} .js-link-show-details`;
   const templateOptions = {};
 
   // Embedded Components
@@ -33,6 +34,13 @@ const restaurantChoose = (function() {
   // module variables
   let localSearchResultData = [];
   let currentSearchResultIndex = 0;
+
+
+  function handleImgLinkClicked(event) {
+    console.log('handleImgLinkClicked');
+    event.preventDefault();
+    pubSub.emit('showDetailsView', localSearchResultData[currentSearchResultIndex-1]);
+  }
 
   // handleNextBtnClicked:
   // show a different result when user clicks next btn ('Not feeling this place')
@@ -129,6 +137,7 @@ const restaurantChoose = (function() {
     // don't lose their event functionality
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
     componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
+    componentContainer.on('click', imgLink, handleImgLinkClicked);
   }
 
   // render the view to the page
