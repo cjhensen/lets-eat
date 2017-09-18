@@ -529,6 +529,7 @@ const restaurantDetails = (function() {
   let template = $(restaurantDetailsTmpl.generateTemplate());
   const component = '.js-restaurant-details';
   const btnEatHere = `${component} button.btn-eat-here`;
+  const btnBack = `${component} .js-btn-back`;
   const templateOptions = {};
 
   // Subscribed Events
@@ -536,6 +537,11 @@ const restaurantDetails = (function() {
   // and show the details view
   pubSub.on('showDetailsView', handleShowDetailsView);
   pubSub.on('destroyDetailsView', handleDestroyDetailsView);
+
+  function handleBtnBackClicked() {
+    console.log('handleBtnBackClicked');
+    destroy();
+  }
 
   // handleShowDetailsView:
   // destroys currently shown template
@@ -569,12 +575,17 @@ const restaurantDetails = (function() {
     templateOptions.yelp_url = restaurant.url;
   }
 
+  function assignEventHandlers() {
+    APP_CONTAINER.on('click', btnBack, handleBtnBackClicked);
+  }
+
   // render:
   // render the component
   function render() {
     console.log('restaurantDetails render');
     template = $(restaurantDetailsTmpl.generateTemplate(templateOptions));
     APP_CONTAINER.append(template);
+    assignEventHandlers();
   }
 
   // destroy:
