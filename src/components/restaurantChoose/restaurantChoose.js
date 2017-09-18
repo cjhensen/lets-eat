@@ -48,6 +48,8 @@ const restaurantChoose = (function() {
     console.log('handleNextBtnClicked');
     console.log('btnNextResult', btnNextResult);
     populateSearchResult();
+
+    pubSub.emit('destroyDetailsView');
   }
 
   // handleAlreadyVisitedBtnClicked

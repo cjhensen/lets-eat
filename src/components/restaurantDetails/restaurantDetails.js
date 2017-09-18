@@ -14,6 +14,7 @@ const restaurantDetails = (function() {
   // on image click in restaurantChoose, pass the current restaurant in
   // and show the details view
   pubSub.on('showDetailsView', handleShowDetailsView);
+  pubSub.on('destroyDetailsView', handleDestroyDetailsView);
 
   // handleShowDetailsView:
   // destroys currently shown template
@@ -24,6 +25,13 @@ const restaurantDetails = (function() {
     destroy();
     setTemplateOptions(currentRestaurant);
     render();
+  }
+
+  // handleDestroyDetailsView:
+  // if the component is shown, destroy it, else do nothing
+  function handleDestroyDetailsView() {
+    console.log('handleDestroyDetailsView');
+    destroy();
   }
 
   // setTemplateOptions:
@@ -51,8 +59,10 @@ const restaurantDetails = (function() {
   // destroy:
   // remove component from DOM
   function destroy() {
-    console.log('restaurantDetails destroy');
-    $(component).remove();
+    if($(component).length) {
+      console.log('restaurantDetails destroy');
+      $(component).remove();
+    }
   }
   
 
