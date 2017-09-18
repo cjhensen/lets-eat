@@ -6,10 +6,18 @@ const restaurantSearch = (function() {
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
+  const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
+  // Subscribed Events
+  pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
   
+  function handleRenderRestaurantSearch() {
+    render();
+  }
+
+
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
   function handleSearchBtnClicked(event) {
@@ -21,6 +29,9 @@ const restaurantSearch = (function() {
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
     getDataFromApi(formValues, processSearchResults);
+
+    // remove component from dom
+    destroy();
   }
 
   // getDataFromApi: request yelp search data via my own api
@@ -95,6 +106,16 @@ const restaurantSearch = (function() {
   function render() {
     console.log('restaurantSearch render');
     componentContainer.append(template);
+    assignEventHandlers();
+  }
+
+  // destroy:
+  // remove component from dom
+  function destroy() {
+    if($(component).length) {
+      console.log('restaurantSearch destroy');
+      $(component).remove();
+    }
   }
 
 
