@@ -18,7 +18,9 @@ const restaurantChooseTmpl = (function() {
           <span class="js-rating rating-stars">${options.rating}</span>
         </div>
         <div class="img-place">
-          <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
+          <a href="#" class="js-link-show-details">
+            <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
+          </a>
         </div>
         <div class="choose-controls">
           <button type="button" class="btn">Eat Here!</button>
