@@ -246,6 +246,7 @@ const restaurantChooseTmpl = (function() {
 
     const template = `
       <div class="js-restaurant-choose le-restaurant-choose">
+        <button type="button" class="btn btn-back js-btn-back">Back</button>
         <div class="info-place">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating}</span>
@@ -456,6 +457,7 @@ const restaurantDetailsTmpl = (function() {
 
     const template = `
       <div class="js-restaurant-details le-restaurant-details">
+        <button type="button" class="btn btn-back js-btn-back">Back</button>
         <div class="top-info">
           <span class="details-title">${options.title}</span>
           <span class="details-rating">${options.rating}</span>
