@@ -113,8 +113,11 @@ const restaurantSearch = (function() {
   // remove component from dom
   function destroy() {
     if($(component).length) {
-      console.log('restaurantSearch destroy');
+      console.log('restaurantSearch destroy'); 
       $(component).remove();
+      // $(component).detach();
+      // can either .detach() which keeps event handlers
+      // or can .remove() and re-run assignEventHandlers() in render()
     }
   }
 
