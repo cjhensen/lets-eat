@@ -805,7 +805,6 @@ const restaurantSearch = (function() {
   function runApp() {
     console.log('runApp');
     render();
-    assignEventHandlers();
   }
 
   return {
