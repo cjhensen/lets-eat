@@ -133,6 +133,7 @@ const restaurantChoose = (function() {
       currentSearchResultIndex++;
 
       render();
+      pubSub.emit('destroyLoader');
 
       console.log('templateOptions', templateOptions);
 
