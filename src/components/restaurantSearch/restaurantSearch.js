@@ -145,11 +145,19 @@ const restaurantSearch = (function() {
     render();
   }
 
+  // return private functions
+  // public:
+    // runApp
+  // other:
+    // handleRenderRestaurantSearch (pubSub handler)
   return {
+    handleSearchBtnClicked: handleSearchBtnClicked,
+    getDataFromApi: getDataFromApi,
+    processSearchResults: processSearchResults,
+    getFormValues: getFormValues,
+    _convertMilesToMeters: _convertMilesToMeters,
     render: render,
-    assignEventHandlers: assignEventHandlers,
-    test: test,
-    runApp: runApp
+    destroy: destroy,
   }
 
 })();

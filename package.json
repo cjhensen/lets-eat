@@ -36,6 +36,7 @@
     "less-plugin-glob": "^2.0.1",
     "mocha": "^3.5.0",
     "pump": "^1.0.2",
+    "sinon": "^3.3.0",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
