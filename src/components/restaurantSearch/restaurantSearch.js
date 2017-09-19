@@ -13,6 +13,8 @@ const restaurantSearch = (function() {
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
   
+  // handleRenderRestaurantSearch:
+  // used when receiveing the emitted event when clicking back button from a different component
   function handleRenderRestaurantSearch() {
     render();
   }
@@ -32,6 +34,8 @@ const restaurantSearch = (function() {
 
     // remove component from dom
     destroy();
+
+    pubSub.emit('renderLoader');
   }
 
   // getDataFromApi: request yelp search data via my own api
