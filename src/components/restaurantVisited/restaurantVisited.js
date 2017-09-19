@@ -62,6 +62,7 @@ const restaurantVisited = (function() {
     Users.update(currentUser, "disliked", currentRestaurant);
 
     console.log('Users after update', Users);
+    hideComponent();
     // Send event to show next result in restaurantChoose
     pubSub.emit('showNextSearchResult');
   }

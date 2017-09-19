@@ -15,6 +15,7 @@ const restaurantChoose = (function() {
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
+  const btnBack = `${component} .js-btn-back`;
   const imgLink = `${component} .js-link-show-details`;
   const templateOptions = {};
 
@@ -35,7 +36,18 @@ const restaurantChoose = (function() {
   let localSearchResultData = [];
   let currentSearchResultIndex = 0;
 
+  // handleBtnBackClicked:
+  // destroy choose view
+  // render restaurant search view in restaurantSearch
+  function handleBtnBackClicked() {
+    console.log('handleNextBtnClicked');
+    destroy();
+    pubSub.emit('renderRestaurantSearch');
+  }
 
+  // handleImgLinkClicked:
+  // prevent default scroll to top
+  // emit event to send current restaurant to restaurantDetails so it can be displayed
   function handleImgLinkClicked(event) {
     console.log('handleImgLinkClicked');
     event.preventDefault();
@@ -140,6 +152,7 @@ const restaurantChoose = (function() {
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
     componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
     componentContainer.on('click', imgLink, handleImgLinkClicked);
+    componentContainer.on('click', btnBack, handleBtnBackClicked);
   }
 
   // render the view to the page
@@ -147,6 +160,15 @@ const restaurantChoose = (function() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     componentContainer.html(template);
+  }
+
+  // destroy:
+  // remove component from dom
+  function destroy() {
+    if($(component).length) {
+      console.log('restaurantSearch destroy');
+      $(component).remove();
+    }
   }
 
   assignEventHandlers();

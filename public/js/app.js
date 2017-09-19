@@ -246,6 +246,7 @@ const restaurantChooseTmpl = (function() {
 
     const template = `
       <div class="js-restaurant-choose le-restaurant-choose">
+        <button type="button" class="btn btn-back js-btn-back">Back</button>
         <div class="info-place">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating}</span>
@@ -294,6 +295,7 @@ const restaurantChoose = (function() {
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
+  const btnBack = `${component} .js-btn-back`;
   const imgLink = `${component} .js-link-show-details`;
   const templateOptions = {};
 
@@ -314,7 +316,18 @@ const restaurantChoose = (function() {
   let localSearchResultData = [];
   let currentSearchResultIndex = 0;
 
+  // handleBtnBackClicked:
+  // destroy choose view
+  // render restaurant search view in restaurantSearch
+  function handleBtnBackClicked() {
+    console.log('handleNextBtnClicked');
+    destroy();
+    pubSub.emit('renderRestaurantSearch');
+  }
 
+  // handleImgLinkClicked:
+  // prevent default scroll to top
+  // emit event to send current restaurant to restaurantDetails so it can be displayed
   function handleImgLinkClicked(event) {
     console.log('handleImgLinkClicked');
     event.preventDefault();
@@ -419,6 +432,7 @@ const restaurantChoose = (function() {
     componentContainer.on('click', btnNextResult, handleNextBtnClicked);
     componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
     componentContainer.on('click', imgLink, handleImgLinkClicked);
+    componentContainer.on('click', btnBack, handleBtnBackClicked);
   }
 
   // render the view to the page
@@ -426,6 +440,15 @@ const restaurantChoose = (function() {
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
     componentContainer.html(template);
+  }
+
+  // destroy:
+  // remove component from dom
+  function destroy() {
+    if($(component).length) {
+      console.log('restaurantSearch destroy');
+      $(component).remove();
+    }
   }
 
   assignEventHandlers();
@@ -456,6 +479,7 @@ const restaurantDetailsTmpl = (function() {
 
     const template = `
       <div class="js-restaurant-details le-restaurant-details">
+        <button type="button" class="btn btn-back js-btn-back">Back</button>
         <div class="top-info">
           <span class="details-title">${options.title}</span>
           <span class="details-rating">${options.rating}</span>
@@ -505,6 +529,7 @@ const restaurantDetails = (function() {
   let template = $(restaurantDetailsTmpl.generateTemplate());
   const component = '.js-restaurant-details';
   const btnEatHere = `${component} button.btn-eat-here`;
+  const btnBack = `${component} .js-btn-back`;
   const templateOptions = {};
 
   // Subscribed Events
@@ -512,6 +537,11 @@ const restaurantDetails = (function() {
   // and show the details view
   pubSub.on('showDetailsView', handleShowDetailsView);
   pubSub.on('destroyDetailsView', handleDestroyDetailsView);
+
+  function handleBtnBackClicked() {
+    console.log('handleBtnBackClicked');
+    destroy();
+  }
 
   // handleShowDetailsView:
   // destroys currently shown template
@@ -545,12 +575,17 @@ const restaurantDetails = (function() {
     templateOptions.yelp_url = restaurant.url;
   }
 
+  function assignEventHandlers() {
+    APP_CONTAINER.on('click', btnBack, handleBtnBackClicked);
+  }
+
   // render:
   // render the component
   function render() {
     console.log('restaurantDetails render');
     template = $(restaurantDetailsTmpl.generateTemplate(templateOptions));
     APP_CONTAINER.append(template);
+    assignEventHandlers();
   }
 
   // destroy:
@@ -648,10 +683,18 @@ const restaurantSearch = (function() {
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
+  const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
 
+  // Subscribed Events
+  pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
   
+  function handleRenderRestaurantSearch() {
+    render();
+  }
+
+
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
   function handleSearchBtnClicked(event) {
@@ -663,6 +706,9 @@ const restaurantSearch = (function() {
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
     getDataFromApi(formValues, processSearchResults);
+
+    // remove component from dom
+    destroy();
   }
 
   // getDataFromApi: request yelp search data via my own api
@@ -737,6 +783,19 @@ const restaurantSearch = (function() {
   function render() {
     console.log('restaurantSearch render');
     componentContainer.append(template);
+    assignEventHandlers();
+  }
+
+  // destroy:
+  // remove component from dom
+  function destroy() {
+    if($(component).length) {
+      console.log('restaurantSearch destroy'); 
+      $(component).remove();
+      // $(component).detach();
+      // can either .detach() which keeps event handlers
+      // or can .remove() and re-run assignEventHandlers() in render()
+    }
   }
 
 
@@ -757,7 +816,6 @@ const restaurantSearch = (function() {
   function runApp() {
     console.log('runApp');
     render();
-    assignEventHandlers();
   }
 
   return {
@@ -865,6 +923,7 @@ const restaurantVisited = (function() {
     Users.update(currentUser, "disliked", currentRestaurant);
 
     console.log('Users after update', Users);
+    hideComponent();
     // Send event to show next result in restaurantChoose
     pubSub.emit('showNextSearchResult');
   }
