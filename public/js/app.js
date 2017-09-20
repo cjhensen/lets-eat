@@ -366,6 +366,7 @@ const leMenu = (function() {
   // on menu item clicked, bring to that view, and hide menu
   function handleMenuItemClicked() {
     console.log('handleMenuItemClicked');
+    event.preventDefault();
     toggleNavVisibility();
     toggleMenuButtonText();
 
@@ -376,7 +377,7 @@ const leMenu = (function() {
     console.log('itemClicked', itemClicked);
 
     if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
-      pubSub.emit('renderRestaurantList', itemClicked);
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
     }
   }
 
@@ -807,13 +808,13 @@ const restaurantListsTmpl = (function() {
   function generateTemplate(options) {
 
     options = options || "";
-    const testArray = [{id: "test1"}, {id: "test2"}, {id: "test3"}];
-    // pass in title and array to options
+    // pass in title and array (list) to options
 
     const template = `
-      <div class="le-multi-item-list js-multi-item-list">
+      <div class="js-restaurant-list js-restaurant-list">
+      <h3>${options.title}</h3>
         <ul>
-          ${buildListFromArray(testArray)}
+          ${buildListFromArray(options.list)}
         </ul>
       </div>
     `;
@@ -821,16 +822,25 @@ const restaurantListsTmpl = (function() {
     return _utilities.templateClean(template);
   }
 
+  // function checkIfOptions(options) {
+  //   if(options == "") {
+  //     return "";
+  //   } else {
+  //     buildListFromArray(options.list);
+  //   }
+  // }
+
   // buildListFromArray:
   // iterates through passed in array to build a list element for each item
   function buildListFromArray(array) {
     console.log('buildListFromArray');
-    let listTemplate = "";
+      let listTemplate = "";
 
-    array.forEach(function(object) {
-      listTemplate = listTemplate + `<li>${object.id}</li>`;
-    });
-    return listTemplate;
+      array.forEach(function(object) {
+        listTemplate = listTemplate + `<li>${object.id}</li>`;
+      });
+
+      return listTemplate;
   }
 
   return {
@@ -850,25 +860,43 @@ const restaurantLists = (function() {
 
   // DOM
   const component = '.js-restaurant-list';
-  let template = $(restaurantListsTmpl.generateTemplate());
+  // let template = $(restaurantListsTmpl.generateTemplate());
   const templateOptions = {};
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
 
-  function handleRenderRestaurantList(listType) {
-    console.log('listType', listType);
+  function handleRenderRestaurantList(dataReceived) {
+    console.log('dataReceived', dataReceived);
     console.log(Users);
 
+    // remove from dom if it already exists
+    destroy();
+    
+    // get list from users based on nav item clicked
+    const listToDisplay = Users.get(TEST_USER, dataReceived.itemClicked);
+    console.log('listToDisplay', listToDisplay);
+    
+    // setTemplateOptions
+    templateOptions.title = dataReceived.itemClicked;
+    templateOptions.list = listToDisplay;
+    console.log('templateOptions', templateOptions);
+    
+    render();
   }
 
   function render() {
     console.log('restaurantLists render');
-    template = $(restaurantListsTmpl.generateTemplate(templateOptions));
+    let template = $(restaurantListsTmpl.generateTemplate(templateOptions));
     APP_CONTAINER.append(template);
   }
 
-  render();
+  function destroy() {
+    if($(component).length) {
+      console.log('restaurantLists destroy');
+      $(component).remove();
+    }
+  }
 
 })();
 

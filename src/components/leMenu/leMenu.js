@@ -23,6 +23,7 @@ const leMenu = (function() {
   // on menu item clicked, bring to that view, and hide menu
   function handleMenuItemClicked() {
     console.log('handleMenuItemClicked');
+    event.preventDefault();
     toggleNavVisibility();
     toggleMenuButtonText();
 
@@ -33,7 +34,7 @@ const leMenu = (function() {
     console.log('itemClicked', itemClicked);
 
     if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
-      pubSub.emit('renderRestaurantList', itemClicked);
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
     }
   }
 

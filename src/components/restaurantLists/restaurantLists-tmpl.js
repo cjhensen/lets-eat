@@ -10,13 +10,13 @@ const restaurantListsTmpl = (function() {
   function generateTemplate(options) {
 
     options = options || "";
-    const testArray = [{id: "test1"}, {id: "test2"}, {id: "test3"}];
-    // pass in title and array to options
+    // pass in title and array (list) to options
 
     const template = `
-      <div class="le-multi-item-list js-multi-item-list">
+      <div class="js-restaurant-list js-restaurant-list">
+      <h3>${options.title}</h3>
         <ul>
-          ${buildListFromArray(testArray)}
+          ${buildListFromArray(options.list)}
         </ul>
       </div>
     `;
@@ -24,16 +24,25 @@ const restaurantListsTmpl = (function() {
     return _utilities.templateClean(template);
   }
 
+  // function checkIfOptions(options) {
+  //   if(options == "") {
+  //     return "";
+  //   } else {
+  //     buildListFromArray(options.list);
+  //   }
+  // }
+
   // buildListFromArray:
   // iterates through passed in array to build a list element for each item
   function buildListFromArray(array) {
     console.log('buildListFromArray');
-    let listTemplate = "";
+      let listTemplate = "";
 
-    array.forEach(function(object) {
-      listTemplate = listTemplate + `<li>${object.id}</li>`;
-    });
-    return listTemplate;
+      array.forEach(function(object) {
+        listTemplate = listTemplate + `<li>${object.id}</li>`;
+      });
+
+      return listTemplate;
   }
 
   return {
