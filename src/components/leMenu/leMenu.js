@@ -5,7 +5,7 @@ const leMenu = (function() {
   const leMenuTmpl = require('./leMenu-tmpl');
 
   // DOM
-  const component = '.le-menu';
+  const component = '.js-menu';
   const template = $(leMenuTmpl.generateTemplate());
   const leMenuToggle = `${component} .le-menu-toggle`;
   const leMenuNav = `${component} nav`;

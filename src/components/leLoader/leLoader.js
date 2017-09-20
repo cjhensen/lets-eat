@@ -5,7 +5,7 @@ const leLoader = (function() {
   const leLoaderTmpl = require('./leLoader-tmpl');
 
   // DOM
-  const component = '.le-loader';
+  const component = '.js-loader';
   const template = $(leLoaderTmpl.generateTemplate());
 
   // Subscribed Events
