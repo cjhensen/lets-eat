@@ -24,14 +24,6 @@ const restaurantListsTmpl = (function() {
     return _utilities.templateClean(template);
   }
 
-  // function checkIfOptions(options) {
-  //   if(options == "") {
-  //     return "";
-  //   } else {
-  //     buildListFromArray(options.list);
-  //   }
-  // }
-
   // buildListFromArray:
   // iterates through passed in array to build a list element for each item
   function buildListFromArray(array) {
