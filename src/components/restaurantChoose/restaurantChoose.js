@@ -7,7 +7,6 @@ const restaurantChoose = (function() {
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
   const {Users} = require('../../models/userModel');
-  const testUser = Users.create("christian", "password");
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
@@ -71,7 +70,7 @@ const restaurantChoose = (function() {
     console.log('handleAlreadyVisitedBtnClicked');
 
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
-    pubSub.emit('displayVisitedPopup', {user: testUser, restaurant: localSearchResultData[currentSearchResultIndex-1]});
+    pubSub.emit('displayVisitedPopup', {user: TEST_USER, restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
@@ -96,7 +95,7 @@ const restaurantChoose = (function() {
     // if tryNew is true
     if(tryNew) {
       // get the user history
-      const userHistory = Users.get(testUser, "history");
+      const userHistory = Users.get(TEST_USER, "history");
 
       // Replace localSearchResultData with only the places
       // where the user has not been

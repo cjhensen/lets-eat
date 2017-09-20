@@ -25,7 +25,16 @@ const leMenu = (function() {
     console.log('handleMenuItemClicked');
     toggleNavVisibility();
     toggleMenuButtonText();
+
     // bring to appropriate view
+    // get the item clicked in the menu
+    // send event to restaurantLists with the item to render the appropriate component
+    const itemClicked = $(this).attr('data-item');
+    console.log('itemClicked', itemClicked);
+
+    if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
+      pubSub.emit('renderRestaurantList', itemClicked);
+    }
   }
 
   // toggleNavVisibility:
