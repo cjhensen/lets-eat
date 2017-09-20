@@ -1,4 +1,4 @@
 module.exports = {
-  leMulitItemList: require('./leMulitItemList'),
-  leMulitItemListTmpl: require('./leMulitItemList-tmpl')
+  leMultiItemList: require('./leMultiItemList'),
+  leMultuItemListTmpl: require('./leMultiItemList-tmpl')
 };
