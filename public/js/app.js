@@ -315,11 +315,11 @@ const leMenuTmpl = (function() {
       <div class="le-menu">
         <button class="le-menu-toggle btn" type="button">MENU</button>
         <nav class="nav">
-          <a class="nav-item" href="" alt="">Login/Logout</a>
-          <a class="nav-item" href="" alt="">Search</a>
-          <a class="nav-item" href="" alt="">History</a>
-          <a class="nav-item" href="" alt="">Liked Restaurants</a>
-          <a class="nav-item" href="" alt="">Disliked Restaurants</a>
+          <a class="nav-item" href="#" alt="">Login/Logout</a>
+          <a class="nav-item" href="#" alt="">Search</a>
+          <a class="nav-item" href="#" alt="">History</a>
+          <a class="nav-item" href="#" alt="">Liked Restaurants</a>
+          <a class="nav-item" href="#" alt="">Disliked Restaurants</a>
         </nav>
       </div>
     `;
@@ -346,17 +346,45 @@ const leMenu = (function() {
   const template = $(leMenuTmpl.generateTemplate());
   const leMenuToggle = `${component} .le-menu-toggle`;
   const leMenuNav = `${component} nav`;
+  const leMenuNavItem = `${component} .nav-item`;
 
+  // handleMenuClicked:
+  // on menu button click, show menu
   function handleMenuClicked() {
+    console.log('handleMenuClicked');
     toggleNavVisibility();
+    toggleMenuButtonText();
   }
 
+  // handleMenuItemClicked:
+  // on menu item clicked, bring to that view, and hide menu
+  function handleMenuItemClicked() {
+    console.log('handleMenuItemClicked');
+    toggleNavVisibility();
+    toggleMenuButtonText();
+    // bring to appropriate view
+  }
+
+  // toggleNavVisibility:
+  // toggle nav visibility through show-nav class
   function toggleNavVisibility() {
     $(leMenuNav).toggleClass('show-nav');
   }
 
+  // toggleMenuButtonText:
+  // if text is MENU, change to X. If X, change to MENU
+  function toggleMenuButtonText() {
+    const currentText = $(leMenuToggle).text();
+    if(currentText === "MENU") {
+      $(leMenuToggle).text("X");
+    } else {
+      $(leMenuToggle).text("MENU");
+    }
+  }
+
   function assignEventHandlers() {
     APP_CONTAINER.on('click', leMenuToggle, handleMenuClicked);
+    APP_CONTAINER.on('click', leMenuNavItem, handleMenuItemClicked);
   }
 
   function render() {

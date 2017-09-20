@@ -10,11 +10,11 @@ const leMenuTmpl = (function() {
       <div class="le-menu">
         <button class="le-menu-toggle btn" type="button">MENU</button>
         <nav class="nav">
-          <a class="nav-item" href="" alt="">Login/Logout</a>
-          <a class="nav-item" href="" alt="">Search</a>
-          <a class="nav-item" href="" alt="">History</a>
-          <a class="nav-item" href="" alt="">Liked Restaurants</a>
-          <a class="nav-item" href="" alt="">Disliked Restaurants</a>
+          <a class="nav-item" href="#" alt="">Login/Logout</a>
+          <a class="nav-item" href="#" alt="">Search</a>
+          <a class="nav-item" href="#" alt="">History</a>
+          <a class="nav-item" href="#" alt="">Liked Restaurants</a>
+          <a class="nav-item" href="#" alt="">Disliked Restaurants</a>
         </nav>
       </div>
     `;
