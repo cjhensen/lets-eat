@@ -3,5 +3,6 @@ module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantVisited: require('./restaurantVisited'),
   restaurantDetails: require('./restaurantDetails'),
-  leLoader: require('./leLoader')
+  leLoader: require('./leLoader'),
+  leMenu: require('./leMenu')
 };
