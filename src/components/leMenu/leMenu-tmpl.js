@@ -7,7 +7,7 @@ const leMenuTmpl = (function() {
 
   function generateTemplate() {
     const template = `
-      <div class="le-menu">
+      <div class="le-menu js-menu">
         <button class="le-menu-toggle btn" type="button">MENU</button>
         <nav class="nav">
           <a class="nav-item" href="#" alt="">Login/Logout</a>

@@ -218,16 +218,17 @@ components.restaurantSearch.restaurantSearch.runApp();
 console.log('components built', components, leUtilities);
 console.log('__base', __base, __components);
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
-},{"./components":7,"./models":26,"./utilities":28}],7:[function(require,module,exports){
+},{"./components":7,"./models":29,"./utilities":31}],7:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantSearch: require('./restaurantSearch'),
   restaurantVisited: require('./restaurantVisited'),
   restaurantDetails: require('./restaurantDetails'),
   leLoader: require('./leLoader'),
-  leMenu: require('./leMenu')
+  leMenu: require('./leMenu'),
+  leMultiItemList: require('./leMultiItemList')
 };
-},{"./leLoader":8,"./leMenu":11,"./restaurantChoose":14,"./restaurantDetails":17,"./restaurantSearch":20,"./restaurantVisited":23}],8:[function(require,module,exports){
+},{"./leLoader":8,"./leMenu":11,"./leMultiItemList":14,"./restaurantChoose":17,"./restaurantDetails":20,"./restaurantSearch":23,"./restaurantVisited":26}],8:[function(require,module,exports){
 module.exports = {
   leLoader: require('./leLoader'),
   leLoaderTmpl: require('./leLoader-tmpl')
@@ -256,7 +257,7 @@ const leLoaderTmpl = (function() {
 })();
 
 module.exports = leLoaderTmpl;
-},{"../../utilities/utilities":30}],10:[function(require,module,exports){
+},{"../../utilities/utilities":33}],10:[function(require,module,exports){
 const leLoader = (function() {
 
   // Dependencies
@@ -264,7 +265,7 @@ const leLoader = (function() {
   const leLoaderTmpl = require('./leLoader-tmpl');
 
   // DOM
-  const component = '.le-loader';
+  const component = '.js-loader';
   const template = $(leLoaderTmpl.generateTemplate());
 
   // Subscribed Events
@@ -297,7 +298,7 @@ const leLoader = (function() {
 })();
 
 module.exports = leLoader;
-},{"../../utilities/pubSub":29,"./leLoader-tmpl":9}],11:[function(require,module,exports){
+},{"../../utilities/pubSub":32,"./leLoader-tmpl":9}],11:[function(require,module,exports){
 module.exports = {
   leMenu: require('./leMenu'),
   leMenuTmpl: require('./leMenu-tmpl')
@@ -312,7 +313,7 @@ const leMenuTmpl = (function() {
 
   function generateTemplate() {
     const template = `
-      <div class="le-menu">
+      <div class="le-menu js-menu">
         <button class="le-menu-toggle btn" type="button">MENU</button>
         <nav class="nav">
           <a class="nav-item" href="#" alt="">Login/Logout</a>
@@ -334,7 +335,7 @@ const leMenuTmpl = (function() {
 })();
 
 module.exports = leMenuTmpl;
-},{"../../utilities/utilities":30}],13:[function(require,module,exports){
+},{"../../utilities/utilities":33}],13:[function(require,module,exports){
 const leMenu = (function() {
 
   // Dependencies
@@ -342,7 +343,7 @@ const leMenu = (function() {
   const leMenuTmpl = require('./leMenu-tmpl');
 
   // DOM
-  const component = '.le-menu';
+  const component = '.js-menu';
   const template = $(leMenuTmpl.generateTemplate());
   const leMenuToggle = `${component} .le-menu-toggle`;
   const leMenuNav = `${component} nav`;
@@ -398,12 +399,88 @@ const leMenu = (function() {
 })();
 
 module.exports = leMenu;
-},{"../../utilities/pubSub":29,"./leMenu-tmpl":12}],14:[function(require,module,exports){
+},{"../../utilities/pubSub":32,"./leMenu-tmpl":12}],14:[function(require,module,exports){
+module.exports = {
+  leMultiItemList: require('./leMultiItemList'),
+  leMultuItemListTmpl: require('./leMultiItemList-tmpl')
+};
+},{"./leMultiItemList":16,"./leMultiItemList-tmpl":15}],15:[function(require,module,exports){
+const leMultiItemListTmpl = (function() {
+
+  // Dependencies
+  // _utilities.templateClean
+  const _utilities = require('../../utilities/utilities');
+
+  // generateTemplate:
+  // this template generation is different due to the fact that it calls a function
+  // inside the literal to generate the list based on an array from the options
+  function generateTemplate(options) {
+
+    options = options || "";
+    const testArray = [{id: "test1"}, {id: "test2"}, {id: "test3"}];
+    // pass in array to options
+
+    const template = `
+      <div class="le-multi-item-list js-multi-item-list">
+        <ul>
+          ${buildListFromArray(testArray)}
+        </ul>
+      </div>
+    `;
+
+    return _utilities.templateClean(template);
+  }
+
+  // buildListFromArray:
+  // iterates through passed in array to build a list element for each item
+  function buildListFromArray(array) {
+    console.log('buildListFromArray');
+    let listTemplate = "";
+
+    array.forEach(function(object) {
+      listTemplate = listTemplate + `<li>${object.id}</li>`;
+    });
+    return listTemplate;
+  }
+
+  return {
+    generateTemplate: generateTemplate
+  }
+
+})();
+
+module.exports = leMultiItemListTmpl;
+},{"../../utilities/utilities":33}],16:[function(require,module,exports){
+const leMultiItemList = (function() {
+
+  // Dependencies
+  const pubSub = require('../../utilities/pubSub');
+  const leMultiItemListTmpl = require('./leMultiItemList-tmpl');
+
+  // DOM
+  const component = '.js-multi-item-list';
+  let template = $(leMultiItemListTmpl.generateTemplate());
+
+  function render() {
+    console.log('leMultiItemList render');
+    APP_CONTAINER.append(template);
+  }
+
+  function destroy() {
+    console.log('leMultiItemList destroy');
+  }
+
+  render();
+
+})();
+
+module.exports = leMultiItemList;
+},{"../../utilities/pubSub":32,"./leMultiItemList-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantChooseTmpl: require('./restaurantChoose-tmpl')
 };
-},{"./restaurantChoose":16,"./restaurantChoose-tmpl":15}],15:[function(require,module,exports){
+},{"./restaurantChoose":19,"./restaurantChoose-tmpl":18}],18:[function(require,module,exports){
 const restaurantChooseTmpl = (function() {
 
   // Dependencies
@@ -450,7 +527,7 @@ const restaurantChooseTmpl = (function() {
 })();
 
 module.exports = restaurantChooseTmpl;
-},{"../../utilities/utilities":30}],16:[function(require,module,exports){
+},{"../../utilities/utilities":33}],19:[function(require,module,exports){
 const restaurantChoose = (function() {
 
   // Dependencies
@@ -634,12 +711,12 @@ const restaurantChoose = (function() {
 })();
 
 module.exports = restaurantChoose;
-},{"../../models/userModel":27,"../../utilities/pubSub":29,"../../utilities/utilities":30,"../restaurantVisited/restaurantVisited-tmpl":24,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
+},{"../../models/userModel":30,"../../utilities/pubSub":32,"../../utilities/utilities":33,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":18}],20:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
 };
-},{"./restaurantDetails":19,"./restaurantDetails-tmpl":18}],18:[function(require,module,exports){
+},{"./restaurantDetails":22,"./restaurantDetails-tmpl":21}],21:[function(require,module,exports){
 const restaurantDetailsTmpl = (function() {
   // Dependencies
   // _utilities.templateClean
@@ -692,7 +769,7 @@ const restaurantDetailsTmpl = (function() {
 })();
 
 module.exports = restaurantDetailsTmpl;
-},{"../../utilities/utilities":30}],19:[function(require,module,exports){
+},{"../../utilities/utilities":33}],22:[function(require,module,exports){
 const restaurantDetails = (function() {
 
   // Dependencies
@@ -775,12 +852,12 @@ const restaurantDetails = (function() {
 })();
 
 module.exports = restaurantDetails;
-},{"../../utilities/pubSub":29,"./restaurantDetails-tmpl":18}],20:[function(require,module,exports){
+},{"../../utilities/pubSub":32,"./restaurantDetails-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
 };
-},{"./restaurantSearch":22,"./restaurantSearch-tmpl":21}],21:[function(require,module,exports){
+},{"./restaurantSearch":25,"./restaurantSearch-tmpl":24}],24:[function(require,module,exports){
 const restaurantSearchTmpl = (function() {
 
   // Dependencies
@@ -848,7 +925,7 @@ const restaurantSearchTmpl = (function() {
 })();
 
 module.exports = restaurantSearchTmpl;
-},{"../../utilities/utilities":30}],22:[function(require,module,exports){
+},{"../../utilities/utilities":33}],25:[function(require,module,exports){
 const restaurantSearch = (function() {
 
   // Dependencies
@@ -1006,12 +1083,12 @@ const restaurantSearch = (function() {
 })();
 
 module.exports = restaurantSearch;
-},{"../../utilities/pubSub":29,"./restaurantSearch-tmpl":21}],23:[function(require,module,exports){
+},{"../../utilities/pubSub":32,"./restaurantSearch-tmpl":24}],26:[function(require,module,exports){
 module.exports = {
   restaurantVisited: require('./restaurantVisited'),
   restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
 };
-},{"./restaurantVisited":25,"./restaurantVisited-tmpl":24}],24:[function(require,module,exports){
+},{"./restaurantVisited":28,"./restaurantVisited-tmpl":27}],27:[function(require,module,exports){
 const restaurantVisitedTmpl = (function() {
 
   // Dependencies
@@ -1036,7 +1113,7 @@ const restaurantVisitedTmpl = (function() {
 })();
 
 module.exports = restaurantVisitedTmpl;
-},{"../../utilities/utilities":30}],25:[function(require,module,exports){
+},{"../../utilities/utilities":33}],28:[function(require,module,exports){
 const restaurantVisited = (function() {
 
   // Dependencies
@@ -1126,11 +1203,11 @@ const restaurantVisited = (function() {
 })();
 
 module.exports = restaurantVisited;
-},{"../../models/userModel":27,"../../utilities/pubSub":29,"./restaurantVisited-tmpl":24}],26:[function(require,module,exports){
+},{"../../models/userModel":30,"../../utilities/pubSub":32,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   userModel: require('./userModel')
 };
-},{"./userModel":27}],27:[function(require,module,exports){
+},{"./userModel":30}],30:[function(require,module,exports){
 // Dependencies
 const uuid = require('uuid');
 
@@ -1190,12 +1267,12 @@ function createUsersModel() {
 }
 
 module.exports = {Users: createUsersModel()};
-},{"uuid":1}],28:[function(require,module,exports){
+},{"uuid":1}],31:[function(require,module,exports){
 module.exports = {
   pubSub: require('./pubSub'),
   utilities: require('./utilities')
 };
-},{"./pubSub":29,"./utilities":30}],29:[function(require,module,exports){
+},{"./pubSub":32,"./utilities":33}],32:[function(require,module,exports){
 const pubSub = (function() {
   
   // object that holds events, none created by default
@@ -1241,7 +1318,7 @@ const pubSub = (function() {
 })();
 
 module.exports = pubSub;
-},{}],30:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 const _utilities = (function() {
   
   // templateClean:
