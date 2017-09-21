@@ -1,4 +1,4 @@
-const restaurantLists = (function() {
+// restaurantLists
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -44,7 +44,3 @@ const restaurantLists = (function() {
       $(component).remove();
     }
   }
-
-})();
-
-module.exports = restaurantLists;

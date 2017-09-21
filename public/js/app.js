@@ -769,7 +769,7 @@ module.exports = {
   restaurantListsTmpl: require('./restaurantLists-tmpl')
 };
 },{"./restaurantLists":22,"./restaurantLists-tmpl":21}],21:[function(require,module,exports){
-const restaurantListsTmpl = (function() {
+// restaurantLists-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -808,15 +808,11 @@ const restaurantListsTmpl = (function() {
       return listTemplate;
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantListsTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
 },{"../../utilities/utilities":33}],22:[function(require,module,exports){
-const restaurantLists = (function() {
+// restaurantLists
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -862,10 +858,6 @@ const restaurantLists = (function() {
       $(component).remove();
     }
   }
-
-})();
-
-module.exports = restaurantLists;
 },{"../../models/userModel":30,"../../utilities/pubSub":32,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),

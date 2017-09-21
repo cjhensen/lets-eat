@@ -1,4 +1,4 @@
-const restaurantListsTmpl = (function() {
+// restaurantLists-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -37,10 +37,6 @@ const restaurantListsTmpl = (function() {
       return listTemplate;
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantListsTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
