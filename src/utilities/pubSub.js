@@ -1,4 +1,4 @@
-const pubSub = (function() {
+// pubSub
   
   // object that holds events, none created by default
   const events = {};
@@ -34,12 +34,8 @@ const pubSub = (function() {
     }
   }
 
-  return {
-    on: on,
-    off: off,
-    emit: emit
-  }
-
-})();
-
-module.exports = pubSub;
+module.exports = {
+  on: on,
+  off: off,
+  emit: emit
+};

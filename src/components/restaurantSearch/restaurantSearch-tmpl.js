@@ -1,8 +1,8 @@
 const restaurantSearchTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
   
 
   // TODO: for cuisine selections, have an array of cuisines and for each item
@@ -55,7 +55,7 @@ const restaurantSearchTmpl = (function() {
     // remove line breaks,
     // remove whitespace between element tags, 
     // remove leading and trailing whitespace
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   return {

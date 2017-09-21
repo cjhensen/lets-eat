@@ -242,8 +242,8 @@ module.exports = {
 const leLoaderTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
   function generateTemplate() {
     const template = `
@@ -252,7 +252,7 @@ const leLoaderTmpl = (function() {
       </div>
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   return {
@@ -312,8 +312,8 @@ module.exports = {
 const leMenuTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
 
   function generateTemplate() {
@@ -330,7 +330,7 @@ const leMenuTmpl = (function() {
       </div>
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   return {
@@ -423,8 +423,8 @@ module.exports = {
 const restaurantChooseTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
 
   function generateTemplate(options) {
@@ -456,7 +456,7 @@ const restaurantChooseTmpl = (function() {
       </div>
       `;
 
-      return _utilities.templateClean(template);
+      return utilities.templateClean(template);
   }
 
   return {
@@ -470,8 +470,8 @@ module.exports = restaurantChooseTmpl;
 const restaurantChoose = (function() {
 
   // Dependencies
-  // _utilities.shuffleArray
-  const _utilities = require('../../utilities/utilities');
+  // utilities.shuffleArray
+  const utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
@@ -578,7 +578,7 @@ const restaurantChoose = (function() {
 
     // shuffle localSearchResultData for showing a random result
     // is it better to only shuffle indexes? 
-    _utilities.shuffleArray(localSearchResultData);
+    utilities.shuffleArray(localSearchResultData);
   }
 
   // populateSearchResult:
@@ -657,8 +657,8 @@ module.exports = {
 },{"./restaurantDetails":19,"./restaurantDetails-tmpl":18}],18:[function(require,module,exports){
 const restaurantDetailsTmpl = (function() {
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
   function generateTemplate(options) {
 
@@ -696,7 +696,7 @@ const restaurantDetailsTmpl = (function() {
       </div>
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
 
@@ -799,8 +799,8 @@ module.exports = {
 const restaurantListsTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
   // generateTemplate:
   // this template generation is different due to the fact that it calls a function
@@ -819,7 +819,7 @@ const restaurantListsTmpl = (function() {
       </div>
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   // buildListFromArray:
@@ -902,8 +902,8 @@ module.exports = {
 const restaurantSearchTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
   
 
   // TODO: for cuisine selections, have an array of cuisines and for each item
@@ -956,7 +956,7 @@ const restaurantSearchTmpl = (function() {
     // remove line breaks,
     // remove whitespace between element tags, 
     // remove leading and trailing whitespace
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   return {
@@ -1133,8 +1133,8 @@ module.exports = {
 const restaurantVisitedTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
   function generateTemplate() {
     const template = `
@@ -1144,7 +1144,7 @@ const restaurantVisitedTmpl = (function() {
       </div><!-- / le-restaurant-visited -->
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   return {
@@ -1314,7 +1314,7 @@ module.exports = {
   utilities: require('./utilities')
 };
 },{"./pubSub":32,"./utilities":33}],32:[function(require,module,exports){
-const pubSub = (function() {
+// pubSub
   
   // object that holds events, none created by default
   const events = {};
@@ -1350,17 +1350,13 @@ const pubSub = (function() {
     }
   }
 
-  return {
-    on: on,
-    off: off,
-    emit: emit
-  }
-
-})();
-
-module.exports = pubSub;
+module.exports = {
+  on: on,
+  off: off,
+  emit: emit
+};
 },{}],33:[function(require,module,exports){
-const _utilities = (function() {
+// utilities
   
   // templateClean:
   // remove line breaks,
@@ -1401,13 +1397,9 @@ const _utilities = (function() {
     return array;
   }
 
-  return {
-    templateClean: templateClean,
-    randomIntBetweenNums: randomIntBetweenNums,
-    shuffleArray: shuffleArray
-  }
-
-})();
-
-module.exports = _utilities;
+module.exports = {
+  templateClean: templateClean,
+  randomIntBetweenNums: randomIntBetweenNums,
+  shuffleArray: shuffleArray
+};
 },{}]},{},[6]);

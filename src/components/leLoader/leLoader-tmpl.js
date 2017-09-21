@@ -1,8 +1,8 @@
 const leLoaderTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
   function generateTemplate() {
     const template = `
@@ -11,7 +11,7 @@ const leLoaderTmpl = (function() {
       </div>
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   return {

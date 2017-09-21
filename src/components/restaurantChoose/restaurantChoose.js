@@ -1,8 +1,8 @@
 const restaurantChoose = (function() {
 
   // Dependencies
-  // _utilities.shuffleArray
-  const _utilities = require('../../utilities/utilities');
+  // utilities.shuffleArray
+  const utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
@@ -109,7 +109,7 @@ const restaurantChoose = (function() {
 
     // shuffle localSearchResultData for showing a random result
     // is it better to only shuffle indexes? 
-    _utilities.shuffleArray(localSearchResultData);
+    utilities.shuffleArray(localSearchResultData);
   }
 
   // populateSearchResult:

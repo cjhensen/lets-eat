@@ -1,8 +1,8 @@
 const restaurantListsTmpl = (function() {
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
   // generateTemplate:
   // this template generation is different due to the fact that it calls a function
@@ -21,7 +21,7 @@ const restaurantListsTmpl = (function() {
       </div>
     `;
 
-    return _utilities.templateClean(template);
+    return utilities.templateClean(template);
   }
 
   // buildListFromArray:
