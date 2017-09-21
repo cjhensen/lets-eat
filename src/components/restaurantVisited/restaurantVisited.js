@@ -1,4 +1,4 @@
-const restaurantVisited = (function() {
+// restaurantVisited
 
   // Dependencies
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
@@ -83,7 +83,3 @@ const restaurantVisited = (function() {
 
   // component starts out hidden via css
   assignEventHandlers();
-
-})();
-
-module.exports = restaurantVisited;

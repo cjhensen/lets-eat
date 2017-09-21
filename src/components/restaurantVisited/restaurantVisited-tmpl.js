@@ -1,4 +1,4 @@
-const restaurantVisitedTmpl = (function() {
+// restaurantVisited-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -15,10 +15,6 @@ const restaurantVisitedTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-  
-})();
-
-module.exports = restaurantVisitedTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};

@@ -1087,7 +1087,7 @@ module.exports = {
   restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
 };
 },{"./restaurantVisited":28,"./restaurantVisited-tmpl":27}],27:[function(require,module,exports){
-const restaurantVisitedTmpl = (function() {
+// restaurantVisited-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -1104,15 +1104,11 @@ const restaurantVisitedTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-  
-})();
-
-module.exports = restaurantVisitedTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
 },{"../../utilities/utilities":33}],28:[function(require,module,exports){
-const restaurantVisited = (function() {
+// restaurantVisited
 
   // Dependencies
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
@@ -1197,10 +1193,6 @@ const restaurantVisited = (function() {
 
   // component starts out hidden via css
   assignEventHandlers();
-
-})();
-
-module.exports = restaurantVisited;
 },{"../../models/userModel":30,"../../utilities/pubSub":32,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   userModel: require('./userModel')
