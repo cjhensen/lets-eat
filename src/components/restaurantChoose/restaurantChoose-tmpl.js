@@ -1,8 +1,8 @@
-const restaurantChooseTmpl = (function() {
+// restaurantChoose-tmpl
 
   // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
+  // utilities.templateClean
+  const utilities = require('../../utilities/utilities');
 
 
   function generateTemplate(options) {
@@ -34,13 +34,9 @@ const restaurantChooseTmpl = (function() {
       </div>
       `;
 
-      return _utilities.templateClean(template);
+      return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantChooseTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};

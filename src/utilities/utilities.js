@@ -1,4 +1,4 @@
-const _utilities = (function() {
+// utilities
   
   // templateClean:
   // remove line breaks,
@@ -39,12 +39,8 @@ const _utilities = (function() {
     return array;
   }
 
-  return {
-    templateClean: templateClean,
-    randomIntBetweenNums: randomIntBetweenNums,
-    shuffleArray: shuffleArray
-  }
-
-})();
-
-module.exports = _utilities;
+module.exports = {
+  templateClean: templateClean,
+  randomIntBetweenNums: randomIntBetweenNums,
+  shuffleArray: shuffleArray
+};

@@ -1,4 +1,4 @@
-const restaurantDetails = (function() {
+// restaurantDetails
 
   // Dependencies
   const restaurantDetailsTmpl = require('./restaurantDetails-tmpl');
@@ -75,8 +75,3 @@ const restaurantDetails = (function() {
       $(component).remove();
     }
   }
-  
-
-})();
-
-module.exports = restaurantDetails;

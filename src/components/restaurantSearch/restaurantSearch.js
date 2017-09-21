@@ -1,4 +1,4 @@
-const restaurantSearch = (function() {
+// restaurantSearch
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -145,13 +145,9 @@ const restaurantSearch = (function() {
     render();
   }
 
-  return {
-    render: render,
-    assignEventHandlers: assignEventHandlers,
-    test: test,
-    runApp: runApp
-  }
-
-})();
-
-module.exports = restaurantSearch;
+module.exports = {
+  render: render,
+  assignEventHandlers: assignEventHandlers,
+  test: test,
+  runApp: runApp
+};
