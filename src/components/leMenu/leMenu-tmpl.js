@@ -1,4 +1,4 @@
-const leMenuTmpl = (function() {
+// leMenu-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -22,10 +22,6 @@ const leMenuTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = leMenuTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};

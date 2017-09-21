@@ -1,4 +1,4 @@
-const leMenu = (function() {
+// leMenu
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -67,7 +67,3 @@ const leMenu = (function() {
 
   render();
   assignEventHandlers();
-
-})();
-
-module.exports = leMenu;

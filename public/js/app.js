@@ -303,7 +303,7 @@ module.exports = {
   leMenuTmpl: require('./leMenu-tmpl')
 };
 },{"./leMenu":13,"./leMenu-tmpl":12}],12:[function(require,module,exports){
-const leMenuTmpl = (function() {
+// leMenu-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -327,15 +327,11 @@ const leMenuTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = leMenuTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
 },{"../../utilities/utilities":33}],13:[function(require,module,exports){
-const leMenu = (function() {
+// leMenu
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -404,10 +400,6 @@ const leMenu = (function() {
 
   render();
   assignEventHandlers();
-
-})();
-
-module.exports = leMenu;
 },{"../../utilities/pubSub":32,"./leMenu-tmpl":12}],14:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
