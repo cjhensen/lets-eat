@@ -1,4 +1,4 @@
-const leLoader = (function() {
+// leLoader
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -35,6 +35,4 @@ const leLoader = (function() {
     }
   }
 
-})();
-
-module.exports = leLoader;
+// module.exports = leLoader;

@@ -1,4 +1,4 @@
-const leLoaderTmpl = (function() {
+// leLoader-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -14,10 +14,6 @@ const leLoaderTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-  
-})();
-
-module.exports = leLoaderTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};

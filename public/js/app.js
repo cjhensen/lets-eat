@@ -239,7 +239,7 @@ module.exports = {
   leLoaderTmpl: require('./leLoader-tmpl')
 };
 },{"./leLoader":10,"./leLoader-tmpl":9}],9:[function(require,module,exports){
-const leLoaderTmpl = (function() {
+// leLoader-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -255,15 +255,11 @@ const leLoaderTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-  
-})();
-
-module.exports = leLoaderTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
 },{"../../utilities/utilities":33}],10:[function(require,module,exports){
-const leLoader = (function() {
+// leLoader
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -300,9 +296,7 @@ const leLoader = (function() {
     }
   }
 
-})();
-
-module.exports = leLoader;
+// module.exports = leLoader;
 },{"../../utilities/pubSub":32,"./leLoader-tmpl":9}],11:[function(require,module,exports){
 module.exports = {
   leMenu: require('./leMenu'),
