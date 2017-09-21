@@ -205,6 +205,7 @@ module.exports = v4;
 
 },{"./lib/bytesToUuid":2,"./lib/rng":3}],6:[function(require,module,exports){
 (function (global,__dirname){
+
 // Globals
 global.__base = __dirname + '/';
 global.__components = __dirname + '/components';
@@ -215,8 +216,12 @@ const models = require('./models');
 const components = require('./components');
 
 components.restaurantSearch.restaurantSearch.runApp();
-console.log('components built', components, leUtilities);
+console.log('components built', components, leUtilities, models);
 console.log('__base', __base, __components);
+
+// Create a global test user
+const {Users} = models.userModel;
+global.TEST_USER = Users.create("christian", "password");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
 },{"./components":7,"./models":29,"./utilities":31}],7:[function(require,module,exports){
 module.exports = {
@@ -226,9 +231,9 @@ module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   leLoader: require('./leLoader'),
   leMenu: require('./leMenu'),
-  leMultiItemList: require('./leMultiItemList')
+  restaurantLists: require('./restaurantLists')
 };
-},{"./leLoader":8,"./leMenu":11,"./leMultiItemList":14,"./restaurantChoose":17,"./restaurantDetails":20,"./restaurantSearch":23,"./restaurantVisited":26}],8:[function(require,module,exports){
+},{"./leLoader":8,"./leMenu":11,"./restaurantChoose":14,"./restaurantDetails":17,"./restaurantLists":20,"./restaurantSearch":23,"./restaurantVisited":26}],8:[function(require,module,exports){
 module.exports = {
   leLoader: require('./leLoader'),
   leLoaderTmpl: require('./leLoader-tmpl')
@@ -316,11 +321,11 @@ const leMenuTmpl = (function() {
       <div class="le-menu js-menu">
         <button class="le-menu-toggle btn" type="button">MENU</button>
         <nav class="nav">
-          <a class="nav-item" href="#" alt="">Login/Logout</a>
-          <a class="nav-item" href="#" alt="">Search</a>
-          <a class="nav-item" href="#" alt="">History</a>
-          <a class="nav-item" href="#" alt="">Liked Restaurants</a>
-          <a class="nav-item" href="#" alt="">Disliked Restaurants</a>
+          <a class="nav-item" href="#" alt="" data-item="log">Login/Logout</a>
+          <a class="nav-item" href="#" alt="" data-item="search">Search</a>
+          <a class="nav-item" href="#" alt="" data-item="history">History</a>
+          <a class="nav-item" href="#" alt="" data-item="liked">Liked Restaurants</a>
+          <a class="nav-item" href="#" alt="" data-item="disliked">Disliked Restaurants</a>
         </nav>
       </div>
     `;
@@ -361,9 +366,19 @@ const leMenu = (function() {
   // on menu item clicked, bring to that view, and hide menu
   function handleMenuItemClicked() {
     console.log('handleMenuItemClicked');
+    event.preventDefault();
     toggleNavVisibility();
     toggleMenuButtonText();
+
     // bring to appropriate view
+    // get the item clicked in the menu
+    // send event to restaurantLists with the item to render the appropriate component
+    const itemClicked = $(this).attr('data-item');
+    console.log('itemClicked', itemClicked);
+
+    if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
+    }
   }
 
   // toggleNavVisibility:
@@ -401,86 +416,10 @@ const leMenu = (function() {
 module.exports = leMenu;
 },{"../../utilities/pubSub":32,"./leMenu-tmpl":12}],14:[function(require,module,exports){
 module.exports = {
-  leMultiItemList: require('./leMultiItemList'),
-  leMultuItemListTmpl: require('./leMultiItemList-tmpl')
-};
-},{"./leMultiItemList":16,"./leMultiItemList-tmpl":15}],15:[function(require,module,exports){
-const leMultiItemListTmpl = (function() {
-
-  // Dependencies
-  // _utilities.templateClean
-  const _utilities = require('../../utilities/utilities');
-
-  // generateTemplate:
-  // this template generation is different due to the fact that it calls a function
-  // inside the literal to generate the list based on an array from the options
-  function generateTemplate(options) {
-
-    options = options || "";
-    const testArray = [{id: "test1"}, {id: "test2"}, {id: "test3"}];
-    // pass in array to options
-
-    const template = `
-      <div class="le-multi-item-list js-multi-item-list">
-        <ul>
-          ${buildListFromArray(testArray)}
-        </ul>
-      </div>
-    `;
-
-    return _utilities.templateClean(template);
-  }
-
-  // buildListFromArray:
-  // iterates through passed in array to build a list element for each item
-  function buildListFromArray(array) {
-    console.log('buildListFromArray');
-    let listTemplate = "";
-
-    array.forEach(function(object) {
-      listTemplate = listTemplate + `<li>${object.id}</li>`;
-    });
-    return listTemplate;
-  }
-
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = leMultiItemListTmpl;
-},{"../../utilities/utilities":33}],16:[function(require,module,exports){
-const leMultiItemList = (function() {
-
-  // Dependencies
-  const pubSub = require('../../utilities/pubSub');
-  const leMultiItemListTmpl = require('./leMultiItemList-tmpl');
-
-  // DOM
-  const component = '.js-multi-item-list';
-  let template = $(leMultiItemListTmpl.generateTemplate());
-
-  function render() {
-    console.log('leMultiItemList render');
-    APP_CONTAINER.append(template);
-  }
-
-  function destroy() {
-    console.log('leMultiItemList destroy');
-  }
-
-  render();
-
-})();
-
-module.exports = leMultiItemList;
-},{"../../utilities/pubSub":32,"./leMultiItemList-tmpl":15}],17:[function(require,module,exports){
-module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantChooseTmpl: require('./restaurantChoose-tmpl')
 };
-},{"./restaurantChoose":19,"./restaurantChoose-tmpl":18}],18:[function(require,module,exports){
+},{"./restaurantChoose":16,"./restaurantChoose-tmpl":15}],15:[function(require,module,exports){
 const restaurantChooseTmpl = (function() {
 
   // Dependencies
@@ -527,7 +466,7 @@ const restaurantChooseTmpl = (function() {
 })();
 
 module.exports = restaurantChooseTmpl;
-},{"../../utilities/utilities":33}],19:[function(require,module,exports){
+},{"../../utilities/utilities":33}],16:[function(require,module,exports){
 const restaurantChoose = (function() {
 
   // Dependencies
@@ -537,7 +476,6 @@ const restaurantChoose = (function() {
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
   const {Users} = require('../../models/userModel');
-  const testUser = Users.create("christian", "password");
 
   // DOM
   const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
@@ -601,7 +539,7 @@ const restaurantChoose = (function() {
     console.log('handleAlreadyVisitedBtnClicked');
 
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
-    pubSub.emit('displayVisitedPopup', {user: testUser, restaurant: localSearchResultData[currentSearchResultIndex-1]});
+    pubSub.emit('displayVisitedPopup', {user: TEST_USER, restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
@@ -626,7 +564,7 @@ const restaurantChoose = (function() {
     // if tryNew is true
     if(tryNew) {
       // get the user history
-      const userHistory = Users.get(testUser, "history");
+      const userHistory = Users.get(TEST_USER, "history");
 
       // Replace localSearchResultData with only the places
       // where the user has not been
@@ -711,12 +649,12 @@ const restaurantChoose = (function() {
 })();
 
 module.exports = restaurantChoose;
-},{"../../models/userModel":30,"../../utilities/pubSub":32,"../../utilities/utilities":33,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":18}],20:[function(require,module,exports){
+},{"../../models/userModel":30,"../../utilities/pubSub":32,"../../utilities/utilities":33,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
 };
-},{"./restaurantDetails":22,"./restaurantDetails-tmpl":21}],21:[function(require,module,exports){
+},{"./restaurantDetails":19,"./restaurantDetails-tmpl":18}],18:[function(require,module,exports){
 const restaurantDetailsTmpl = (function() {
   // Dependencies
   // _utilities.templateClean
@@ -769,7 +707,7 @@ const restaurantDetailsTmpl = (function() {
 })();
 
 module.exports = restaurantDetailsTmpl;
-},{"../../utilities/utilities":33}],22:[function(require,module,exports){
+},{"../../utilities/utilities":33}],19:[function(require,module,exports){
 const restaurantDetails = (function() {
 
   // Dependencies
@@ -852,7 +790,110 @@ const restaurantDetails = (function() {
 })();
 
 module.exports = restaurantDetails;
-},{"../../utilities/pubSub":32,"./restaurantDetails-tmpl":21}],23:[function(require,module,exports){
+},{"../../utilities/pubSub":32,"./restaurantDetails-tmpl":18}],20:[function(require,module,exports){
+module.exports = {
+  restaurantLists: require('./restaurantLists'),
+  restaurantListsTmpl: require('./restaurantLists-tmpl')
+};
+},{"./restaurantLists":22,"./restaurantLists-tmpl":21}],21:[function(require,module,exports){
+const restaurantListsTmpl = (function() {
+
+  // Dependencies
+  // _utilities.templateClean
+  const _utilities = require('../../utilities/utilities');
+
+  // generateTemplate:
+  // this template generation is different due to the fact that it calls a function
+  // inside the literal to generate the list based on an array from the options
+  function generateTemplate(options) {
+
+    options = options || "";
+    // pass in title and array (list) to options
+
+    const template = `
+      <div class="js-restaurant-list js-restaurant-list">
+      <h3>${options.title}</h3>
+        <ul>
+          ${buildListFromArray(options.list)}
+        </ul>
+      </div>
+    `;
+
+    return _utilities.templateClean(template);
+  }
+
+  // buildListFromArray:
+  // iterates through passed in array to build a list element for each item
+  function buildListFromArray(array) {
+    console.log('buildListFromArray');
+      let listTemplate = "";
+
+      array.forEach(function(object) {
+        listTemplate = listTemplate + `<li>${object.id}</li>`;
+      });
+
+      return listTemplate;
+  }
+
+  return {
+    generateTemplate: generateTemplate
+  }
+
+})();
+
+module.exports = restaurantListsTmpl;
+},{"../../utilities/utilities":33}],22:[function(require,module,exports){
+const restaurantLists = (function() {
+
+  // Dependencies
+  const pubSub = require('../../utilities/pubSub');
+  const restaurantListsTmpl = require('./restaurantLists-tmpl');
+  const {Users} = require('../../models/userModel');
+
+  // DOM
+  const component = '.js-restaurant-list';
+  // let template = $(restaurantListsTmpl.generateTemplate());
+  const templateOptions = {};
+
+  // Subscribed Events
+  pubSub.on('renderRestaurantList', handleRenderRestaurantList);
+
+  function handleRenderRestaurantList(dataReceived) {
+    console.log('dataReceived', dataReceived);
+    console.log(Users);
+
+    // remove from dom if it already exists
+    destroy();
+    
+    // get list from users based on nav item clicked
+    const listToDisplay = Users.get(TEST_USER, dataReceived.itemClicked);
+    console.log('listToDisplay', listToDisplay);
+    
+    // setTemplateOptions
+    templateOptions.title = dataReceived.itemClicked;
+    templateOptions.list = listToDisplay;
+    console.log('templateOptions', templateOptions);
+    
+    render();
+  }
+
+  function render() {
+    console.log('restaurantLists render');
+    let template = $(restaurantListsTmpl.generateTemplate(templateOptions));
+    APP_CONTAINER.append(template);
+  }
+
+  function destroy() {
+    if($(component).length) {
+      console.log('restaurantLists destroy');
+      $(component).remove();
+    }
+  }
+
+})();
+
+module.exports = restaurantLists;
+},{"../../models/userModel":30,"../../utilities/pubSub":32,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')

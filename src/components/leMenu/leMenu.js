@@ -23,9 +23,19 @@ const leMenu = (function() {
   // on menu item clicked, bring to that view, and hide menu
   function handleMenuItemClicked() {
     console.log('handleMenuItemClicked');
+    event.preventDefault();
     toggleNavVisibility();
     toggleMenuButtonText();
+
     // bring to appropriate view
+    // get the item clicked in the menu
+    // send event to restaurantLists with the item to render the appropriate component
+    const itemClicked = $(this).attr('data-item');
+    console.log('itemClicked', itemClicked);
+
+    if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
+    }
   }
 
   // toggleNavVisibility:
