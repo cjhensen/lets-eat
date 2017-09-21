@@ -1,4 +1,4 @@
-const restaurantChoose = (function() {
+// restaurantChoose
 
   // Dependencies
   // utilities.shuffleArray
@@ -173,10 +173,6 @@ const restaurantChoose = (function() {
 
   assignEventHandlers();
 
-  return {
-    render: render
-  }
-
-})();
-
-module.exports = restaurantChoose;
+module.exports = {
+  render: render
+};

@@ -406,7 +406,7 @@ module.exports = {
   restaurantChooseTmpl: require('./restaurantChoose-tmpl')
 };
 },{"./restaurantChoose":16,"./restaurantChoose-tmpl":15}],15:[function(require,module,exports){
-const restaurantChooseTmpl = (function() {
+// restaurantChoose-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -445,15 +445,11 @@ const restaurantChooseTmpl = (function() {
       return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantChooseTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
 },{"../../utilities/utilities":33}],16:[function(require,module,exports){
-const restaurantChoose = (function() {
+// restaurantChoose
 
   // Dependencies
   // utilities.shuffleArray
@@ -628,13 +624,9 @@ const restaurantChoose = (function() {
 
   assignEventHandlers();
 
-  return {
-    render: render
-  }
-
-})();
-
-module.exports = restaurantChoose;
+module.exports = {
+  render: render
+};
 },{"../../models/userModel":30,"../../utilities/pubSub":32,"../../utilities/utilities":33,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),

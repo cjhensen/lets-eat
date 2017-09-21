@@ -1,4 +1,4 @@
-const restaurantChooseTmpl = (function() {
+// restaurantChoose-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -37,10 +37,6 @@ const restaurantChooseTmpl = (function() {
       return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantChooseTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
