@@ -686,7 +686,7 @@ const restaurantDetailsTmpl = (function() {
 
 module.exports = restaurantDetailsTmpl;
 },{"../../utilities/utilities":33}],19:[function(require,module,exports){
-const restaurantDetails = (function() {
+// restaurantDetails
 
   // Dependencies
   const restaurantDetailsTmpl = require('./restaurantDetails-tmpl');
@@ -763,11 +763,6 @@ const restaurantDetails = (function() {
       $(component).remove();
     }
   }
-  
-
-})();
-
-module.exports = restaurantDetails;
 },{"../../utilities/pubSub":32,"./restaurantDetails-tmpl":18}],20:[function(require,module,exports){
 module.exports = {
   restaurantLists: require('./restaurantLists'),
