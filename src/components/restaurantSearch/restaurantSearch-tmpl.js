@@ -1,4 +1,4 @@
-const restaurantSearchTmpl = (function() {
+// restaurantSearch-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -58,10 +58,6 @@ const restaurantSearchTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantSearchTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};

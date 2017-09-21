@@ -864,7 +864,7 @@ module.exports = {
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
 };
 },{"./restaurantSearch":25,"./restaurantSearch-tmpl":24}],24:[function(require,module,exports){
-const restaurantSearchTmpl = (function() {
+// restaurantSearch-tmpl
 
   // Dependencies
   // utilities.templateClean
@@ -924,15 +924,11 @@ const restaurantSearchTmpl = (function() {
     return utilities.templateClean(template);
   }
 
-  return {
-    generateTemplate: generateTemplate
-  }
-
-})();
-
-module.exports = restaurantSearchTmpl;
+module.exports = {
+  generateTemplate: generateTemplate
+};
 },{"../../utilities/utilities":33}],25:[function(require,module,exports){
-const restaurantSearch = (function() {
+// restaurantSearch
 
   // Dependencies
   const pubSub = require('../../utilities/pubSub');
@@ -1079,16 +1075,12 @@ const restaurantSearch = (function() {
     render();
   }
 
-  return {
-    render: render,
-    assignEventHandlers: assignEventHandlers,
-    test: test,
-    runApp: runApp
-  }
-
-})();
-
-module.exports = restaurantSearch;
+module.exports = {
+  render: render,
+  assignEventHandlers: assignEventHandlers,
+  test: test,
+  runApp: runApp
+};
 },{"../../utilities/pubSub":32,"./restaurantSearch-tmpl":24}],26:[function(require,module,exports){
 module.exports = {
   restaurantVisited: require('./restaurantVisited'),
