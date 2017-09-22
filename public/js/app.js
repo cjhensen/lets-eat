@@ -296,7 +296,10 @@ module.exports = {
     }
   }
 
-// module.exports = leLoader;
+module.exports = {
+  render: render,
+  destroy: destroy
+};
 },{"../../utilities/pubSub":32,"./leLoader-tmpl":9}],11:[function(require,module,exports){
 module.exports = {
   leMenu: require('./leMenu'),

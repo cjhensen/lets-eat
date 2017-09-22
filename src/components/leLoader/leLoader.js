@@ -35,4 +35,7 @@
     }
   }
 
-// module.exports = leLoader;
+module.exports = {
+  render: render,
+  destroy: destroy
+};
