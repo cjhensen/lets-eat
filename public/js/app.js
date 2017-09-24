@@ -281,22 +281,40 @@ module.exports = {
     destroy();
   }
 
-  function render() {
+  function render(container) {
+    container = container || APP_CONTAINER;
+    
     console.log('leLoader render');
-    APP_CONTAINER.prepend(template);
+    container.prepend(template);
   }
 
-  function destroy() {
+  function renderTextTemplate(container) {
+    const template = leLoaderTmpl.generateTemplate();
+    container.prepend($(template));
+  }
+
+  function destroy(container) {
+    container = container || APP_CONTAINER;
     console.log('leLoader destroy');
-    if($(component).length) {
-      console.log('leLoader destroy'); 
-      $(component).remove();
-      // $(component).detach();
-      // can either .detach() which keeps event handlers
+    
+    // need to pass in a container in order to make it testable
+    if(container.find(component).length) {
+      container.find(component).remove();
     }
+
+    // if($(component).length) {
+    //   console.log('leLoader destroy'); 
+    //   $(component).remove();
+    //   // $(component).detach();
+    //   // can either .detach() which keeps event handlers
+    // }
   }
 
-// module.exports = leLoader;
+module.exports = {
+  render: render,
+  destroy: destroy,
+  renderTextTemplate: renderTextTemplate
+};
 },{"../../utilities/pubSub":32,"./leLoader-tmpl":9}],11:[function(require,module,exports){
 module.exports = {
   leMenu: require('./leMenu'),
