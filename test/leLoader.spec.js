@@ -23,11 +23,11 @@ describe('leLoader', function() {
 
   it('should render the loader template to the DOM', function() {
     leLoader.render(APP_CONTAINER);
-    expect(APP_CONTAINER.find('.le-loader').length).to.equal(1);
+    expect(APP_CONTAINER.find('.js-loader').length).to.equal(1);
   });
 
   it('should remove the loader template from the DOM', function() {
     leLoader.destroy(APP_CONTAINER);
-    expect(APP_CONTAINER.find('.le-loader').length).to.equal(0);
+    expect(APP_CONTAINER.find('.js-loader').length).to.equal(0);
   });
 });
