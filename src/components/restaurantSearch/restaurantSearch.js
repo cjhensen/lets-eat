@@ -1,11 +1,12 @@
 // restaurantSearch
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
-  const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
+  const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-search-container');
   const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 

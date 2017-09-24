@@ -1,6 +1,7 @@
 // restaurantVisited
 
   // Dependencies
+  const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
   const pubSub = require('../../utilities/pubSub');
   const {Users} = require('../../models/userModel');
@@ -69,8 +70,8 @@
 
   function assignEventHandlers() {
     console.log('restaurantVisited assignEventHandlers');
-    APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
-    APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
+    globals.APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
+    globals.APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
   }
 
   function showComponent() {

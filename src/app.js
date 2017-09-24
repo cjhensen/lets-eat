@@ -3,7 +3,6 @@
 console.log('SETTING UP GLOBALS');
 global.__base = __dirname + '/';
 global.__components = __dirname + '/components';
-global.APP_CONTAINER = $('#le-app');
 
 console.log('REQUIRING GLOBALS, UTILITIES, MODELS, COMPONENTS');
 const globals = require('./globals');

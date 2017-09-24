@@ -2,6 +2,7 @@
 
   // Dependencies
   // utilities.shuffleArray
+  const globals = require('../../globals');
   const utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
@@ -9,7 +10,7 @@
   const {Users} = require('../../models/userModel');
 
   // DOM
-  const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
+  const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
