@@ -212,7 +212,8 @@ global.__base = __dirname + '/';
 global.__components = __dirname + '/components';
 global.APP_CONTAINER = $('#le-app');
 
-console.log('REQUIRING UTILITIES, MODELS, COMPONENTS');
+console.log('REQUIRING GLOBALS, UTILITIES, MODELS, COMPONENTS');
+const globals = require('./globals');
 const leUtilities = require('./utilities');
 const models = require('./models');
 const components = require('./components');
@@ -226,7 +227,7 @@ console.log('__base', __base, __components);
 const {Users} = models.userModel;
 global.TEST_USER = Users.create("christian", "password");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
-},{"./components":7,"./models":30,"./utilities":32}],7:[function(require,module,exports){
+},{"./components":7,"./globals":29,"./models":30,"./utilities":32}],7:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantSearch: require('./restaurantSearch'),

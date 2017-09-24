@@ -5,7 +5,8 @@ global.__base = __dirname + '/';
 global.__components = __dirname + '/components';
 global.APP_CONTAINER = $('#le-app');
 
-console.log('REQUIRING UTILITIES, MODELS, COMPONENTS');
+console.log('REQUIRING GLOBALS, UTILITIES, MODELS, COMPONENTS');
+const globals = require('./globals');
 const leUtilities = require('./utilities');
 const models = require('./models');
 const components = require('./components');

@@ -11,7 +11,7 @@ const {app, runServer, closeServer} = require('../server/server');
 // use chai should
 const should = chai.should();
 
-xdescribe('Lets Eat API', function() {
+describe('Lets Eat API', function() {
   before(function() {
     return runServer();
   });
