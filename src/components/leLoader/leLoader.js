@@ -46,6 +46,5 @@
 
 module.exports = {
   render: render,
-  destroy: destroy,
-  renderTextTemplate: renderTextTemplate
+  destroy: destroy
 };
