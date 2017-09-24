@@ -1,6 +1,7 @@
 // leMenu
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const leMenuTmpl = require('./leMenu-tmpl');
 
@@ -56,14 +57,20 @@
   }
 
   function assignEventHandlers() {
-    APP_CONTAINER.on('click', leMenuToggle, handleMenuClicked);
-    APP_CONTAINER.on('click', leMenuNavItem, handleMenuItemClicked);
+    globals.APP_CONTAINER.on('click', leMenuToggle, handleMenuClicked);
+    globals.APP_CONTAINER.on('click', leMenuNavItem, handleMenuItemClicked);
   }
 
-  function render() {
+  function render(container) {
+    container = container || globals.APP_CONTAINER;
+
     console.log('leMenu render');
-    APP_CONTAINER.append(template);
+    container.append(template);
   }
 
   render();
   assignEventHandlers();
+
+  module.exports = {
+    render: render
+  }
