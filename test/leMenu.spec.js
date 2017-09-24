@@ -8,7 +8,7 @@ const {JSDOM} = jsdom;
 
 const simulant = require('jsdom-simulant');
 
-const dom = new JSDOM('<body><div id="le-app"></div></body>', {runScripts: "outside-only"});
+const dom = new JSDOM('<body><div id="le-app"></div></body>', {runScripts: "dangerously"});
 const jsdomWindow = dom.window;
 const jsdomDocument = dom.window.document;
 
@@ -20,7 +20,7 @@ const APP_CONTAINER = $(jsdomDocument).find('#le-app');
 
 const leMenu = require('../src/components/leMenu').leMenu;
 
-describe.only('leMenu', function() {
+describe('leMenu', function() {
   it('should render the component to the DOM', function() {
     leMenu.render(APP_CONTAINER);
     expect(APP_CONTAINER.find('.le-menu').length).to.equal(1);
@@ -31,7 +31,7 @@ describe.only('leMenu', function() {
       expect(APP_CONTAINER.find('.le-menu-toggle').text()).to.equal('MENU');
     });
 
-    it('should show "X" text on button on menu open state', function() {
+    xit('should show "X" text on button on menu open state', function() {
       const event = simulant(jsdomWindow, 'click');
       // const element = APP_CONTAINER.find('.le-menu-toggle');
       const element = jsdomDocument.getElementsByClassName('le-menu-toggle')[0];
