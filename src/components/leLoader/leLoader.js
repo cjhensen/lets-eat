@@ -27,11 +27,6 @@
     container.prepend(template);
   }
 
-  function renderTextTemplate(container) {
-    const template = leLoaderTmpl.generateTemplate();
-    container.prepend($(template));
-  }
-
   function destroy(container) {
     container = container || APP_CONTAINER;
     console.log('leLoader destroy');
