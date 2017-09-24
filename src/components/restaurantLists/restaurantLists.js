@@ -1,6 +1,7 @@
 // restaurantLists
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
   const {Users} = require('../../models/userModel');
@@ -35,7 +36,7 @@
   function render() {
     console.log('restaurantLists render');
     let template = $(restaurantListsTmpl.generateTemplate(templateOptions));
-    APP_CONTAINER.append(template);
+    globals.APP_CONTAINER.append(template);
   }
 
   function destroy() {

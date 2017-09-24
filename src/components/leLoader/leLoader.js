@@ -1,6 +1,7 @@
 // leLoader
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const leLoaderTmpl = require('./leLoader-tmpl');
 
@@ -21,14 +22,14 @@
   }
 
   function render(container) {
-    container = container || APP_CONTAINER;
+    container = container || globals.APP_CONTAINER;
     
     console.log('leLoader render');
     container.prepend(template);
   }
 
   function destroy(container) {
-    container = container || APP_CONTAINER;
+    container = container || globals.APP_CONTAINER;
     console.log('leLoader destroy');
     
     // need to pass in a container in order to make it testable

@@ -210,7 +210,6 @@ module.exports = v4;
 console.log('SETTING UP GLOBALS');
 global.__base = __dirname + '/';
 global.__components = __dirname + '/components';
-global.APP_CONTAINER = $('#le-app');
 
 console.log('REQUIRING GLOBALS, UTILITIES, MODELS, COMPONENTS');
 const globals = require('./globals');
@@ -266,6 +265,7 @@ module.exports = {
 // leLoader
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const leLoaderTmpl = require('./leLoader-tmpl');
 
@@ -286,14 +286,14 @@ module.exports = {
   }
 
   function render(container) {
-    container = container || APP_CONTAINER;
+    container = container || globals.APP_CONTAINER;
     
     console.log('leLoader render');
     container.prepend(template);
   }
 
   function destroy(container) {
-    container = container || APP_CONTAINER;
+    container = container || globals.APP_CONTAINER;
     console.log('leLoader destroy');
     
     // need to pass in a container in order to make it testable
@@ -313,7 +313,7 @@ module.exports = {
   render: render,
   destroy: destroy
 };
-},{"../../utilities/pubSub":33,"./leLoader-tmpl":9}],11:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"./leLoader-tmpl":9}],11:[function(require,module,exports){
 module.exports = {
   leMenu: require('./leMenu'),
   leMenuTmpl: require('./leMenu-tmpl')
@@ -476,6 +476,7 @@ module.exports = {
 
   // Dependencies
   // utilities.shuffleArray
+  const globals = require('../../globals');
   const utilities = require('../../utilities/utilities');
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
@@ -483,7 +484,7 @@ module.exports = {
   const {Users} = require('../../models/userModel');
 
   // DOM
-  const componentContainer = APP_CONTAINER.find('.js-restaurant-choose-container');
+  const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-choose-container');
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
@@ -650,7 +651,7 @@ module.exports = {
 module.exports = {
   render: render
 };
-},{"../../models/userModel":31,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
+},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
@@ -712,6 +713,7 @@ module.exports = restaurantDetailsTmpl;
 // restaurantDetails
 
   // Dependencies
+  const globals = require('../../globals');
   const restaurantDetailsTmpl = require('./restaurantDetails-tmpl');
   const pubSub = require('../../utilities/pubSub');
 
@@ -766,7 +768,7 @@ module.exports = restaurantDetailsTmpl;
   }
 
   function assignEventHandlers() {
-    APP_CONTAINER.on('click', btnBack, handleBtnBackClicked);
+    globals.APP_CONTAINER.on('click', btnBack, handleBtnBackClicked);
   }
 
   // render:
@@ -774,7 +776,7 @@ module.exports = restaurantDetailsTmpl;
   function render() {
     console.log('restaurantDetails render');
     template = $(restaurantDetailsTmpl.generateTemplate(templateOptions));
-    APP_CONTAINER.append(template);
+    globals.APP_CONTAINER.append(template);
     assignEventHandlers();
   }
 
@@ -786,7 +788,7 @@ module.exports = restaurantDetailsTmpl;
       $(component).remove();
     }
   }
-},{"../../utilities/pubSub":33,"./restaurantDetails-tmpl":18}],20:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantDetails-tmpl":18}],20:[function(require,module,exports){
 module.exports = {
   restaurantLists: require('./restaurantLists'),
   restaurantListsTmpl: require('./restaurantLists-tmpl')
@@ -838,6 +840,7 @@ module.exports = {
 // restaurantLists
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
   const {Users} = require('../../models/userModel');
@@ -872,7 +875,7 @@ module.exports = {
   function render() {
     console.log('restaurantLists render');
     let template = $(restaurantListsTmpl.generateTemplate(templateOptions));
-    APP_CONTAINER.append(template);
+    globals.APP_CONTAINER.append(template);
   }
 
   function destroy() {
@@ -881,7 +884,7 @@ module.exports = {
       $(component).remove();
     }
   }
-},{"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
+},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
@@ -954,11 +957,12 @@ module.exports = {
 // restaurantSearch
 
   // Dependencies
+  const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const restaurantSearchTmpl = require('./restaurantSearch-tmpl');
 
   // DOM
-  const componentContainer = APP_CONTAINER.find('.js-restaurant-search-container');
+  const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-search-container');
   const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
@@ -1104,7 +1108,7 @@ module.exports = {
   test: test,
   runApp: runApp
 };
-},{"../../utilities/pubSub":33,"./restaurantSearch-tmpl":24}],26:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantSearch-tmpl":24}],26:[function(require,module,exports){
 module.exports = {
   restaurantVisited: require('./restaurantVisited'),
   restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
@@ -1134,6 +1138,7 @@ module.exports = {
 // restaurantVisited
 
   // Dependencies
+  const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
   const pubSub = require('../../utilities/pubSub');
   const {Users} = require('../../models/userModel');
@@ -1202,8 +1207,8 @@ module.exports = {
 
   function assignEventHandlers() {
     console.log('restaurantVisited assignEventHandlers');
-    APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
-    APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
+    globals.APP_CONTAINER.on('click', btnGoBack, handleBtnGoBackClicked);
+    globals.APP_CONTAINER.on('click', btnNotGoBack, handleBtnNotGoBackClicked);
   }
 
   function showComponent() {
@@ -1216,7 +1221,7 @@ module.exports = {
 
   // component starts out hidden via css
   assignEventHandlers();
-},{"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
+},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   APP_CONTAINER: $('#le-app')
 };

@@ -1,6 +1,7 @@
 // restaurantDetails
 
   // Dependencies
+  const globals = require('../../globals');
   const restaurantDetailsTmpl = require('./restaurantDetails-tmpl');
   const pubSub = require('../../utilities/pubSub');
 
@@ -55,7 +56,7 @@
   }
 
   function assignEventHandlers() {
-    APP_CONTAINER.on('click', btnBack, handleBtnBackClicked);
+    globals.APP_CONTAINER.on('click', btnBack, handleBtnBackClicked);
   }
 
   // render:
@@ -63,7 +64,7 @@
   function render() {
     console.log('restaurantDetails render');
     template = $(restaurantDetailsTmpl.generateTemplate(templateOptions));
-    APP_CONTAINER.append(template);
+    globals.APP_CONTAINER.append(template);
     assignEventHandlers();
   }
 
