@@ -24,7 +24,6 @@ describe('leLoader', function() {
   it('should render the loader template to the DOM', function() {
     leLoader.render(APP_CONTAINER);
     expect(APP_CONTAINER.find('.le-loader').length).to.equal(1);
-    console.log('after render', APP_CONTAINER.html());
   });
 
   it('should remove the loader template from the DOM', function() {
