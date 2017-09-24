@@ -157,10 +157,11 @@
   }
 
   // render the view to the page
-  function render() {
+  function render(container) {
+    container = container || componentContainer;
     console.log('restaurantChoose render');
     template = $(restaurantChooseTmpl.generateTemplate(templateOptions));
-    componentContainer.html(template);
+    container.html(template);
   }
 
   // destroy:
