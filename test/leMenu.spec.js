@@ -6,7 +6,9 @@ chai.use(spies);
 const jsdom = require('jsdom');
 const {JSDOM} = jsdom;
 
-const dom = new JSDOM('<body><div id="le-app"></div></body>', {runScripts: "outside-only"});
+const simulant = require('jsdom-simulant');
+
+const dom = new JSDOM('<body><div id="le-app"></div></body>', {runScripts: "dangerously"});
 const jsdomWindow = dom.window;
 const jsdomDocument = dom.window.document;
 
@@ -30,9 +32,12 @@ describe('leMenu', function() {
     });
 
     xit('should show "X" text on button on menu open state', function() {
-      const element = APP_CONTAINER.find('button.le-menu-toggle');
+      const event = simulant(jsdomWindow, 'click');
+      // const element = APP_CONTAINER.find('.le-menu-toggle');
+      const element = jsdomDocument.getElementsByClassName('le-menu-toggle')[0];
       console.log(APP_CONTAINER.find('button.le-menu-toggle').text());
-
+      // APP_CONTAINER.find('.le-menu-toggle').trigger(event);
+      simulant.fire(element, 'click');
       console.log(APP_CONTAINER.find('button.le-menu-toggle').text());
     });
   });

@@ -34,6 +34,7 @@
     "gulp-notify": "^3.0.0",
     "gulp-watch": "^4.3.11",
     "jsdom": "^11.2.0",
+    "jsdom-simulant": "^1.1.2",
     "less-plugin-glob": "^2.0.1",
     "mocha": "^3.5.0",
     "pump": "^1.0.2",
