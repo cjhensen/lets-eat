@@ -640,17 +640,24 @@ module.exports = {
 
   // destroy:
   // remove component from dom
-  function destroy() {
-    if($(component).length) {
+  function destroy(container) {
+    container = container || componentContainer;
+    // if($(component).length) {
+    //   $(component).remove();
+    // }
+
+    // need to pass in a container in order to make it testable
+    if(container.find(component).length) {
       console.log('restaurantSearch destroy');
-      $(component).remove();
+      container.find(component).remove();
     }
   }
 
   assignEventHandlers();
 
 module.exports = {
-  render: render
+  render: render,
+  destroy: destroy
 };
 },{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
 module.exports = {

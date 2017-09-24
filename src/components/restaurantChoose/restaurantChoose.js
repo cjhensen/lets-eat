@@ -166,15 +166,22 @@
 
   // destroy:
   // remove component from dom
-  function destroy() {
-    if($(component).length) {
+  function destroy(container) {
+    container = container || componentContainer;
+    // if($(component).length) {
+    //   $(component).remove();
+    // }
+
+    // need to pass in a container in order to make it testable
+    if(container.find(component).length) {
       console.log('restaurantSearch destroy');
-      $(component).remove();
+      container.find(component).remove();
     }
   }
 
   assignEventHandlers();
 
 module.exports = {
-  render: render
+  render: render,
+  destroy: destroy
 };
