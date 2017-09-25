@@ -226,7 +226,7 @@ console.log('__base', __base, __components);
 const {Users} = models.userModel;
 global.TEST_USER = Users.create("christian", "password");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
-},{"./components":7,"./globals":29,"./models":30,"./utilities":32}],7:[function(require,module,exports){
+},{"./components":7,"./globals":32,"./models":33,"./utilities":35}],7:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantSearch: require('./restaurantSearch'),
@@ -234,14 +234,24 @@ module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   leLoader: require('./leLoader'),
   leMenu: require('./leMenu'),
-  restaurantLists: require('./restaurantLists')
+  restaurantLists: require('./restaurantLists'),
+  leAuth: require('./leAuth')
 };
-},{"./leLoader":8,"./leMenu":11,"./restaurantChoose":14,"./restaurantDetails":17,"./restaurantLists":20,"./restaurantSearch":23,"./restaurantVisited":26}],8:[function(require,module,exports){
+},{"./leAuth":8,"./leLoader":11,"./leMenu":14,"./restaurantChoose":17,"./restaurantDetails":20,"./restaurantLists":23,"./restaurantSearch":26,"./restaurantVisited":29}],8:[function(require,module,exports){
+module.exports = {
+  leAuth: require('./leAuth'),
+  leAuthTmpl: require('./leAuth-tmpl')
+};
+},{"./leAuth":10,"./leAuth-tmpl":9}],9:[function(require,module,exports){
+
+},{}],10:[function(require,module,exports){
+arguments[4][9][0].apply(exports,arguments)
+},{"dup":9}],11:[function(require,module,exports){
 module.exports = {
   leLoader: require('./leLoader'),
   leLoaderTmpl: require('./leLoader-tmpl')
 };
-},{"./leLoader":10,"./leLoader-tmpl":9}],9:[function(require,module,exports){
+},{"./leLoader":13,"./leLoader-tmpl":12}],12:[function(require,module,exports){
 // leLoader-tmpl
 
   // Dependencies
@@ -261,7 +271,7 @@ module.exports = {
 module.exports = {
   generateTemplate: generateTemplate
 };
-},{"../../utilities/utilities":34}],10:[function(require,module,exports){
+},{"../../utilities/utilities":37}],13:[function(require,module,exports){
 // leLoader
 
   // Dependencies
@@ -313,12 +323,12 @@ module.exports = {
   render: render,
   destroy: destroy
 };
-},{"../../globals":29,"../../utilities/pubSub":33,"./leLoader-tmpl":9}],11:[function(require,module,exports){
+},{"../../globals":32,"../../utilities/pubSub":36,"./leLoader-tmpl":12}],14:[function(require,module,exports){
 module.exports = {
   leMenu: require('./leMenu'),
   leMenuTmpl: require('./leMenu-tmpl')
 };
-},{"./leMenu":13,"./leMenu-tmpl":12}],12:[function(require,module,exports){
+},{"./leMenu":16,"./leMenu-tmpl":15}],15:[function(require,module,exports){
 // leMenu-tmpl
 
   // Dependencies
@@ -346,7 +356,7 @@ module.exports = {
 module.exports = {
   generateTemplate: generateTemplate
 };
-},{"../../utilities/utilities":34}],13:[function(require,module,exports){
+},{"../../utilities/utilities":37}],16:[function(require,module,exports){
 // leMenu
 
   // Dependencies
@@ -423,12 +433,12 @@ module.exports = {
   module.exports = {
     render: render
   }
-},{"../../globals":29,"../../utilities/pubSub":33,"./leMenu-tmpl":12}],14:[function(require,module,exports){
+},{"../../globals":32,"../../utilities/pubSub":36,"./leMenu-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantChoose: require('./restaurantChoose'),
   restaurantChooseTmpl: require('./restaurantChoose-tmpl')
 };
-},{"./restaurantChoose":16,"./restaurantChoose-tmpl":15}],15:[function(require,module,exports){
+},{"./restaurantChoose":19,"./restaurantChoose-tmpl":18}],18:[function(require,module,exports){
 // restaurantChoose-tmpl
 
   // Dependencies
@@ -471,7 +481,7 @@ module.exports = {
 module.exports = {
   generateTemplate: generateTemplate
 };
-},{"../../utilities/utilities":34}],16:[function(require,module,exports){
+},{"../../utilities/utilities":37}],19:[function(require,module,exports){
 // restaurantChoose
 
   // Dependencies
@@ -651,12 +661,12 @@ module.exports = {
 module.exports = {
   render: render
 };
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
+},{"../../globals":32,"../../models/userModel":34,"../../utilities/pubSub":36,"../../utilities/utilities":37,"../restaurantVisited/restaurantVisited-tmpl":30,"./restaurantChoose-tmpl":18}],20:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
 };
-},{"./restaurantDetails":19,"./restaurantDetails-tmpl":18}],18:[function(require,module,exports){
+},{"./restaurantDetails":22,"./restaurantDetails-tmpl":21}],21:[function(require,module,exports){
 const restaurantDetailsTmpl = (function() {
   // Dependencies
   // utilities.templateClean
@@ -709,7 +719,7 @@ const restaurantDetailsTmpl = (function() {
 })();
 
 module.exports = restaurantDetailsTmpl;
-},{"../../utilities/utilities":34}],19:[function(require,module,exports){
+},{"../../utilities/utilities":37}],22:[function(require,module,exports){
 // restaurantDetails
 
   // Dependencies
@@ -788,12 +798,12 @@ module.exports = restaurantDetailsTmpl;
       $(component).remove();
     }
   }
-},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantDetails-tmpl":18}],20:[function(require,module,exports){
+},{"../../globals":32,"../../utilities/pubSub":36,"./restaurantDetails-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantLists: require('./restaurantLists'),
   restaurantListsTmpl: require('./restaurantLists-tmpl')
 };
-},{"./restaurantLists":22,"./restaurantLists-tmpl":21}],21:[function(require,module,exports){
+},{"./restaurantLists":25,"./restaurantLists-tmpl":24}],24:[function(require,module,exports){
 // restaurantLists-tmpl
 
   // Dependencies
@@ -836,7 +846,7 @@ module.exports = {
 module.exports = {
   generateTemplate: generateTemplate
 };
-},{"../../utilities/utilities":34}],22:[function(require,module,exports){
+},{"../../utilities/utilities":37}],25:[function(require,module,exports){
 // restaurantLists
 
   // Dependencies
@@ -884,12 +894,12 @@ module.exports = {
       $(component).remove();
     }
   }
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
+},{"../../globals":32,"../../models/userModel":34,"../../utilities/pubSub":36,"./restaurantLists-tmpl":24}],26:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
 };
-},{"./restaurantSearch":25,"./restaurantSearch-tmpl":24}],24:[function(require,module,exports){
+},{"./restaurantSearch":28,"./restaurantSearch-tmpl":27}],27:[function(require,module,exports){
 // restaurantSearch-tmpl
 
   // Dependencies
@@ -953,7 +963,7 @@ module.exports = {
 module.exports = {
   generateTemplate: generateTemplate
 };
-},{"../../utilities/utilities":34}],25:[function(require,module,exports){
+},{"../../utilities/utilities":37}],28:[function(require,module,exports){
 // restaurantSearch
 
   // Dependencies
@@ -1108,12 +1118,12 @@ module.exports = {
   test: test,
   runApp: runApp
 };
-},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantSearch-tmpl":24}],26:[function(require,module,exports){
+},{"../../globals":32,"../../utilities/pubSub":36,"./restaurantSearch-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   restaurantVisited: require('./restaurantVisited'),
   restaurantVisitedTmpl: require('./restaurantVisited-tmpl')
 };
-},{"./restaurantVisited":28,"./restaurantVisited-tmpl":27}],27:[function(require,module,exports){
+},{"./restaurantVisited":31,"./restaurantVisited-tmpl":30}],30:[function(require,module,exports){
 // restaurantVisited-tmpl
 
   // Dependencies
@@ -1134,7 +1144,7 @@ module.exports = {
 module.exports = {
   generateTemplate: generateTemplate
 };
-},{"../../utilities/utilities":34}],28:[function(require,module,exports){
+},{"../../utilities/utilities":37}],31:[function(require,module,exports){
 // restaurantVisited
 
   // Dependencies
@@ -1221,15 +1231,15 @@ module.exports = {
 
   // component starts out hidden via css
   assignEventHandlers();
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
+},{"../../globals":32,"../../models/userModel":34,"../../utilities/pubSub":36,"./restaurantVisited-tmpl":30}],32:[function(require,module,exports){
 module.exports = {
   APP_CONTAINER: $('#le-app')
 };
-},{}],30:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = {
   userModel: require('./userModel')
 };
-},{"./userModel":31}],31:[function(require,module,exports){
+},{"./userModel":34}],34:[function(require,module,exports){
 // Dependencies
 const uuid = require('uuid');
 
@@ -1289,12 +1299,12 @@ function createUsersModel() {
 }
 
 module.exports = {Users: createUsersModel()};
-},{"uuid":1}],32:[function(require,module,exports){
+},{"uuid":1}],35:[function(require,module,exports){
 module.exports = {
   pubSub: require('./pubSub'),
   utilities: require('./utilities')
 };
-},{"./pubSub":33,"./utilities":34}],33:[function(require,module,exports){
+},{"./pubSub":36,"./utilities":37}],36:[function(require,module,exports){
 // pubSub
   
   // object that holds events, none created by default
@@ -1336,7 +1346,7 @@ module.exports = {
   off: off,
   emit: emit
 };
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // utilities
   
   // templateClean:
