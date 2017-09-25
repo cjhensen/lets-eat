@@ -1191,8 +1191,8 @@ module.exports = {
     console.log('handleBtnGoBackClicked');
 
     // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", currentRestaurant);
-    Users.update(currentUser, "liked", currentRestaurant);
+    Users.update(currentUser, "history", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
+    Users.update(currentUser, "liked", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
 
     console.log('Users after update', Users);
     // Send event to show next result in restaurantChoose
@@ -1206,8 +1206,8 @@ module.exports = {
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", currentRestaurant);
-    Users.update(currentUser, "disliked", currentRestaurant);
+    Users.update(currentUser, "history", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
+    Users.update(currentUser, "disliked", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
 
     console.log('Users after update', Users);
     hideComponent();

@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 // Yelp Integration
 const yelp = require('yelp-fusion');
 
@@ -52,4 +54,50 @@ function createYelpSearchModel() {
   return storage;
 }
 
-module.exports = {YelpSearch: createYelpSearchModel()};
+const userSchema = mongoose.Schema({
+  userInfo: {
+    username: String,
+    password: String
+  },
+  history: [{
+    id: String,
+    image_url: String,
+    name: String,
+    price: String,
+    rating: Number,
+    url: String
+  }],
+  liked: [{
+    id: String,
+    image_url: String,
+    name: String,
+    price: String,
+    rating: Number,
+    url: String
+  }],
+  disliked: [{
+    id: String,
+    image_url: String,
+    name: String,
+    price: String,
+    rating: Number,
+    url: String
+  }]
+});
+
+userSchema.methods.apiRepr = function() {
+  return {
+    id: this._id,
+    username: this.userInfo.username,
+    history: this.history,
+    liked: this.liked,
+    disliked: this.disliked
+  }
+}
+
+const Users = mongoose.model('Users', userSchema);
+
+module.exports = {
+  YelpSearch: createYelpSearchModel(),
+  Users
+};
