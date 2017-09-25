@@ -20,7 +20,7 @@ const restaurantChooseContainer = $(jsdomDocument).find('.js-restaurant-search-c
 const restaurantChoose = require('../src/components/restaurantChoose').restaurantChoose;
 
 describe('restaurantChoose', function() {
-  describe.only('render', function() {
+  describe('render', function() {
     it('should render the restaurantChoose component to the page', function() {
       restaurantChoose.render(restaurantChooseContainer);
       expect(APP_CONTAINER.find('.js-restaurant-choose').length).to.equal(1);

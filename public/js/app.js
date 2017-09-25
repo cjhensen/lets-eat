@@ -421,7 +421,9 @@ module.exports = {
   assignEventHandlers();
 
   module.exports = {
-    render: render
+    render: render,
+    toggleMenuButtonText: toggleMenuButtonText,
+    toggleNavVisibility: toggleNavVisibility
   }
 },{"../../globals":29,"../../utilities/pubSub":33,"./leMenu-tmpl":12}],14:[function(require,module,exports){
 module.exports = {

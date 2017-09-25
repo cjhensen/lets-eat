@@ -72,5 +72,7 @@
   assignEventHandlers();
 
   module.exports = {
-    render: render
+    render: render,
+    toggleMenuButtonText: toggleMenuButtonText,
+    toggleNavVisibility: toggleNavVisibility
   }
