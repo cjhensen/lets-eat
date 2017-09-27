@@ -3,6 +3,9 @@
 
 const express = require('express');
 const router = express.Router();
+const pathVar = require('path');
+
+const app = express();
 
 const mongoose = require('mongoose');
 const passport = require('passport');
@@ -11,59 +14,31 @@ mongoose.Promise = global.Promise;
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-// access to request body
 const jsonParser = bodyParser.json();
 const session = require('express-session');
 
+// config
 const configDB = require('./config/database.js');
 const configPort = require('./config/port.js');
-// pass in passport for configuration
 require('./config/passport.js')(passport);
 
-const app = express();
+// static files
+// app.use(express.static('dist/public'));
+// app.use('/app', express.static('dist/app'));
 
-
-app.use(express.static('public')); // might need to change this due to server being in a folder
-
-// read cookies
 app.use(cookieParser());
-
-// get info from html forms
 app.use(bodyParser());
-
-// passport
-app.use(session({ secret: 'letseatappv1 '}));
+app.use(session({ secret: 'letseatappv1'}));
 app.use(passport.initialize());
-// persistent login sessions
 app.use(passport.session());
-// flash messages stored in session
 app.use(flash());
 
 // load routes and pass in app and configured passport
-require('./routes.js')(app, passport);
-
-
-
-
-
-
-
-
-
-
-
-// require some request router
-// const initialRouter = require('./initialRouter');
+require('./routes.js')(app, passport, express, pathVar);
 const yelpApiRouter = require('./yelpApiRouter');
-// const authRouter = require('./authRouter');
-
-// setting up public directory
-
-
-// use some request router
-// app.use('/', initialRouter);
 app.use('/restaurant-search', yelpApiRouter);
-// app.use('/login', authRouter);
+
+
 
 let server;
 

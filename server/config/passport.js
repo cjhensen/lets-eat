@@ -12,15 +12,20 @@ module.exports = function(passport) {
     });
   });
 
+  // SIGNUP
   passport.use('local-signup', new LocalStrategy(
     function(username, password, done) {
-      User.findOne({username: username}, function(err, user) {
+      console.log('signing up');
+      User.findOne({"userInfo.username": username}, function(err, user) {
         if(err) {
+          console.log('signup error');
           return done(err);
         }
         if(user) {
+          console.log('signup username already taken');
           return done(null, false, {message: 'Username already taken'});
         } else {
+          console.log('creating new user');
           const newUser = new User();
           newUser.userInfo.username = username;
           newUser.userInfo.password = newUser.generateHash(password);
@@ -36,5 +41,27 @@ module.exports = function(passport) {
     }
   ));
 
+  // LOGIN
+  passport.use('local-login', new LocalStrategy(
+    function(username, password, done) {
+      User.findOne({"userInfo.username": username}, function(err, user) {
+        if(err) { 
+          return done(err); 
+          console.log('login error');
+        }
+        if(!user) {
+          console.log('login incorrect username (user not found)');
+          return done(null, false, {message: 'Incorrect username (no user found)'});
+        }
+        if(!user.validPassword(password)) {
+          console.log('login incorrect password');
+          return done(null, false, {message: 'Incorrect password'});
+        }
+        console.log('login passed');
+        return done(null, user);
+
+      });
+    }
+  ));
 
 }

@@ -19,7 +19,8 @@ const notify = require('gulp-notify');
 const del = require('del');
 // allows for a callback when piping more than two streams together
 const pump = require('pump');
-// allows for watching added and deleted files
+// allows for merging and returning of two multiple src streams
+const merge = require('gulp-merge');
 
 // JS
 // minifies js files
@@ -38,12 +39,14 @@ const lessGlob = require('less-plugin-glob');
 
 const folders = {
   src: './src/',
-  build: './public/'
+  build: './dist/',
+  build_public: './dist/public/',
+  build_private: './dist/app/'
 };
 
 // gulp defaults
 gulp.task('default', ['clean', 'server', 'watch'], function() {
-  gulp.start('less', 'html', 'browserify')
+  gulp.start('less', 'html', 'browserify', 'less-public', 'html-public', 'browserify-public')
 });
 
 
@@ -58,37 +61,72 @@ gulp.task('watch', function() {
   livereload.listen();
   watch([
     `${folders.src}/less/**/*.less`, 
-    `${folders.src}/components/**/*.less`
+    `${folders.src}/components/**/*.less`,
+    `!${folders.src}/public/**`
     ], function() { gulp.start('less'); });
-  watch(`${folders.src}/**/*.html`, function() { gulp.start('html'); });
+
+  watch(`${folders.src}/public/**/*.less`, function() { gulp.start('less-public'); });
+
+  watch([
+    `${folders.src}/**/*.html`, 
+    `!${folders.src}/public/**`
+    ], function() { gulp.start('html'); });
+
+  watch(`${folders.src}/public/**/*.html`, function() { gulp.start('html-public'); });
+
   watch([
     `${folders.src}/app.js`, 
     `${folders.src}/utilities/**/*.js`, 
     `${folders.src}/components/**/*.js`,
     `${folders.src}/models/**/*.js`
     ], function() { gulp.start('browserify'); });
+
+  watch([
+    `${folders.src}/public/auth.js`,
+    `${folders.src}/public/**/*.js`
+    ], function() { gulp.start('browserify-public'); });
 });
 
 // compile less
 gulp.task('less', function() {
-  return gulp.src(`${folders.src}/less/app.less`)
-  .pipe(less({
-    plugins: [lessGlob]
-  }))
-  .pipe(minifycss())
-  .pipe(gulp.dest(`${folders.build}/css`))
-  .pipe(livereload())
-  .pipe(notify({ message: 'LESS compiled successfully' }));
+  return gulp.src([`${folders.src}/less/app.less`, `!${folders.src}/public/**`])
+    .pipe(less({
+      plugins: [lessGlob]
+    }))
+    .pipe(minifycss())
+    .pipe(gulp.dest(`${folders.build_private}/css`))
+    .pipe(livereload())
+    .pipe(notify({ message: 'LESS compiled successfully' }));
+});
+
+gulp.task('less-public', function() {
+  return gulp.src(`${folders.src}/public/**/*.less`)
+    .pipe(less({
+      plugins: [lessGlob]
+    }))
+    .pipe(minifycss())
+    .pipe(gulp.dest(`${folders.build_public}/css`))
+    .pipe(livereload())
+    .pipe(notify({ message: 'LESS compiled successfully' }));
 });
 
 // migrate html
 gulp.task('html', function() {
-  return gulp.src(`${folders.src}/**/*.html`)
-    .pipe(newer(`${folders.build}`))
-    .pipe(gulp.dest(`${folders.build}/`))
+  return gulp.src([`${folders.src}/**/*.html`, `!${folders.src}/public/**`])
+    .pipe(newer(`${folders.build_private}`))
+    .pipe(gulp.dest(`${folders.build_private}/`))
     .pipe(livereload())
     .pipe(notify({ message: 'HTML moved to dev_build successfully' }));
 });
+
+gulp.task('html-public', function() {
+  return gulp.src([`${folders.src}/public/**/*.html`])
+    .pipe(newer(`${folders.build_public}`))
+    .pipe(gulp.dest(`${folders.build_public}/`))
+    .pipe(livereload())
+    .pipe(notify({ message: 'HTML moved to dev_build successfully' }));
+});
+
 
 // bundle js files and minimize
 // TODO: switch to commonjs via browserify for modules and builds
@@ -104,7 +142,7 @@ gulp.task('html', function() {
 //     //     keepClassName: true
 //     //   }
 //     // }),
-//     gulp.dest(`${folders.build}/js`),
+//     gulp.dest(`${folders.build_private}/js`),
 //     livereload(),
 //     notify({ message: 'JS compiled successfully' })
 //     ],
@@ -120,7 +158,20 @@ gulp.task('browserify', function() {
       this.emit('end');
     })
     .pipe(source('app.js'))
-    .pipe(gulp.dest(`${folders.build}/js`))
+    .pipe(gulp.dest(`${folders.build_private}/js`))
+    .pipe(livereload())
+    .pipe(notify({ message: 'Browserify build successful' }));
+});
+
+gulp.task('browserify-public', function() {
+  return browserify([`${folders.src}/public/auth.js`])
+    .bundle()
+    .on('error', function(err) {
+      console.log(err.toString());
+      this.emit('end');
+    })
+    .pipe(source('auth.js'))
+    .pipe(gulp.dest(`${folders.build_public}/js`))
     .pipe(livereload())
     .pipe(notify({ message: 'Browserify build successful' }));
 });

@@ -1,28 +1,47 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, express, pathVar) {
+  
+  app.use(express.static('dist/public'));  
+  // app.use('/app', express.static(pathVar.join(__dirname) + 'dist/app'));
+  // app.use('/app', isLoggedIn);
+  // app.use('/app', express.static('dist/app'));
+  // app.use(express.static(pathVar.join(__dirname, '/../dist/app')));
+  
 
-  // home page (login form/signup form)
+  // HOME
   app.get('/', function(request, response) {
     // response.render('');
     console.log('new router works');
-    response.sendFile('index.html', { root: '/public/'});
+    response.sendFile('index.html', { root: '/dist/public/' });
   });
 
-
-  // app.post('/login', passport stuff);
+  // SIGNUP
   app.post('/signup', 
     passport.authenticate('local-signup', {
       successRedirect: '/app',
-      failureRedirect: '/signup',
+      failureRedirect: '/',
       failureFlash: true
     })
   );
 
-  // protected app
+  // LOGIN
+  app.post('/login', 
+    passport.authenticate('local-login', {
+      successRedirect: '/app',
+      failureRedirect: '/',
+      failureFlash: true
+    })
+  );
+
+  // PROTECTED APP
   app.get('/app', isLoggedIn, function(request, response) {
-    response.sendFile('app.html', { root: '/public/'});
+    console.log('dirname', __dirname);
+    app.use(express.static(pathVar.join(__dirname, '/../dist/app')))
+
+
+    response.sendFile('index.html', { root: `${__dirname}/../dist/app/` });
   });
 
-  // logout
+  // LOGOUT
   app.get('/logout', function(request, response) {
     request.logout();
     response.redirect('/');
@@ -32,12 +51,11 @@ module.exports = function(app, passport) {
   function isLoggedIn(request, response, next) {
     if(request.isAuthenticated()) {
       console.log('user is authenticated');
-      return next;
+      next();
     } else {
       console.log('not authenticated');
       response.redirect('/');
     }
   }
-
-
+  
 }

@@ -5,6 +5,5 @@ module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   leLoader: require('./leLoader'),
   leMenu: require('./leMenu'),
-  restaurantLists: require('./restaurantLists'),
-  leAuth: require('./leAuth')
+  restaurantLists: require('./restaurantLists')
 };

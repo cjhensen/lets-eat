@@ -43,10 +43,12 @@ userSchema.methods.apiRepr = function() {
 }
 
 userSchema.methods.generateHash = function(password) {
+  console.log('generating password hash');
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
   }
 
 userSchema.methods.validPassword = function(password) {
+  console.log('validating password');
   return bcrypt.compareSync(password, this.userInfo.password);
 }
 
