@@ -95,6 +95,10 @@ userSchema.methods.apiRepr = function() {
   }
 }
 
+userSchema.methods.validPassword = function(pwd) {
+  return this.userInfo.password === pwd;
+}
+
 const Users = mongoose.model('Users', userSchema);
 
 module.exports = {

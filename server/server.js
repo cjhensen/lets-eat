@@ -13,6 +13,7 @@ const router = express.Router();
 
 // create new app
 const app = express();
+app.use(express.static('public')); // might need to change this due to server being in a folder
 
 // require some request router
 const initialRouter = require('./initialRouter');
@@ -20,7 +21,7 @@ const yelpApiRouter = require('./yelpApiRouter');
 const authRouter = require('./authRouter');
 
 // setting up public directory
-app.use(express.static('public')); // might need to change this due to server being in a folder
+
 
 // use some request router
 app.use('/', initialRouter);

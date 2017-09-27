@@ -24,11 +24,11 @@ const router = express.Router();
 
 // GET
 router.get('/', (request, response) => {
-  response.sendFile('index.html', { root: '/public/'});
+  response.sendFile('app.html', { root: '/public/'});
 });
 router.get('/', (request, response) => {
   console.log('get works!');
-  response.sendFile('index.html', { root: '/public/'});
+  response.sendFile('app.html', { root: '/public/'});
   // or
   // response.sendFile('index.html', { root: path.join(__dirname, '../public')});
 });
