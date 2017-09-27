@@ -2,10 +2,12 @@
 
 
 const express = require('express');
+const router = express.Router();
 
 const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
+mongoose.Promise = global.Promise;
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -15,15 +17,10 @@ const session = require('express-session');
 
 const configDB = require('./config/database.js');
 const configPort = require('./config/port.js');
+// pass in passport for configuration
+require('./config/passport.js')(passport);
 
-mongoose.Promise = global.Promise;
-
-
-const router = express.Router();
 const app = express();
-
-
-
 
 
 app.use(express.static('public')); // might need to change this due to server being in a folder
@@ -58,7 +55,7 @@ require('./routes.js')(app, passport);
 // require some request router
 // const initialRouter = require('./initialRouter');
 const yelpApiRouter = require('./yelpApiRouter');
-const authRouter = require('./authRouter');
+// const authRouter = require('./authRouter');
 
 // setting up public directory
 
@@ -66,7 +63,7 @@ const authRouter = require('./authRouter');
 // use some request router
 // app.use('/', initialRouter);
 app.use('/restaurant-search', yelpApiRouter);
-app.use('/login', authRouter);
+// app.use('/login', authRouter);
 
 let server;
 
