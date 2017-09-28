@@ -35,7 +35,7 @@ module.exports = function(app, passport, express, pathVar) {
   // PROTECTED APP
   app.get('/app', isLoggedIn, function(request, response) {
     console.log('dirname', __dirname);
-    app.use(express.static(pathVar.join(__dirname, '/../dist/app')))
+    app.use(express.static(pathVar.join(__dirname, '/../dist/app')));
 
 
     response.sendFile('index.html', { root: `${__dirname}/../dist/app/` });
