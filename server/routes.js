@@ -91,7 +91,7 @@ module.exports = function(app, passport, express, pathVar) {
     console.log('ftu', fieldsToUpdate);
 
     User
-      .findByIdAndUpdate(request.user._id, {$addToSet: fieldsToUpdate})
+      .findOneAndUpdate({_id: request.user._id}, {$addToSet: fieldsToUpdate})
       .exec()
       .then(user => response.status(204).end())
       .catch(err => response.status(500).json({message: 'Internal server error'}));

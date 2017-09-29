@@ -12,7 +12,8 @@ const userSchema = mongoose.Schema({
     name: String,
     price: String,
     rating: Number,
-    url: String
+    url: String,
+    _id: false
   }],
   liked: [{
     id: String,
@@ -20,7 +21,8 @@ const userSchema = mongoose.Schema({
     name: String,
     price: String,
     rating: Number,
-    url: String
+    url: String,
+    _id: false
   }],
   disliked: [{
     id: String,
@@ -28,7 +30,8 @@ const userSchema = mongoose.Schema({
     name: String,
     price: String,
     rating: Number,
-    url: String
+    url: String,
+    _id: false
   }]
 });
 
