@@ -2,6 +2,7 @@
 
   // Dependencies
   const globals = require('../../globals');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
 
@@ -13,28 +14,6 @@
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
 
-  // getDataFromDb:
-  // uses a promise to get a specified list from the user from the db
-  function getDataFromDb(arrayToGet) {
-    return new Promise(function(resolve, reject) {
-      const settings = {
-        url: '/userdata',
-        data: {
-          "arrayToGet": arrayToGet
-        },
-        dataType: 'json',
-        type: 'GET',
-        success: function(data) {
-          resolve(data);
-        },
-        error: function(err) {
-          reject(err);
-        }
-      };
-      $.ajax(settings);
-    });
-  }
-
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
 
@@ -42,9 +21,9 @@
     destroy();
     
     let listToDisplay = []; 
-
+    
     // get list from users based on nav item clicked
-    getDataFromDb(dataReceived.itemClicked).then(function(data) {
+    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
       listToDisplay = data;
       console.log('listToDisplay', listToDisplay);
 

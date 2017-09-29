@@ -543,28 +543,6 @@ module.exports = {
     pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
-  // getDataFromDb:
-  // uses a promise to get a specified list from the user from the db
-  function getDataFromDb(arrayToGet) {
-    return new Promise(function(resolve, reject) {
-      const settings = {
-        url: '/userdata',
-        data: {
-          "arrayToGet": arrayToGet
-        },
-        dataType: 'json',
-        type: 'GET',
-        success: function(data) {
-          resolve(data);
-        },
-        error: function(err) {
-          reject(err);
-        }
-      };
-      $.ajax(settings);
-    });
-  }
-
   // handleReceivedSearchResults:
   // Callback function for receiving search results from restaurantSearch.
   // Sets the results passed in to a local variable for reuse.
@@ -589,8 +567,7 @@ module.exports = {
       
       let userHistory = []; 
 
-      // get the user history
-      getDataFromDb("history").then(function(data) {
+      utilities.makeDbRequest('GET', 'history').then(function(data) {
         userHistory = data;
 
         // Replace localSearchResultData with only the places
@@ -866,6 +843,7 @@ module.exports = {
 
   // Dependencies
   const globals = require('../../globals');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
 
@@ -877,28 +855,6 @@ module.exports = {
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
 
-  // getDataFromDb:
-  // uses a promise to get a specified list from the user from the db
-  function getDataFromDb(arrayToGet) {
-    return new Promise(function(resolve, reject) {
-      const settings = {
-        url: '/userdata',
-        data: {
-          "arrayToGet": arrayToGet
-        },
-        dataType: 'json',
-        type: 'GET',
-        success: function(data) {
-          resolve(data);
-        },
-        error: function(err) {
-          reject(err);
-        }
-      };
-      $.ajax(settings);
-    });
-  }
-
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
 
@@ -906,9 +862,9 @@ module.exports = {
     destroy();
     
     let listToDisplay = []; 
-
+    
     // get list from users based on nav item clicked
-    getDataFromDb(dataReceived.itemClicked).then(function(data) {
+    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
       listToDisplay = data;
       console.log('listToDisplay', listToDisplay);
 
@@ -934,7 +890,7 @@ module.exports = {
       $(component).remove();
     }
   }
-},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
@@ -1190,6 +1146,7 @@ module.exports = {
   // Dependencies
   const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
 
   // DOM
@@ -1206,6 +1163,9 @@ module.exports = {
   let currentUser = {};
   let currentRestaurant = {};
 
+  // set up an object for db insertion based on schema
+  let objForInsert = {};
+
   // handleReceivedPopupData:
   // set the local data equal to received data so it can be passed around in the module
   // show the component
@@ -1219,29 +1179,16 @@ module.exports = {
     // set local data equal to received data from showing popup via click
     currentUser = data.user;
     currentRestaurant = data.restaurant;
+    objForInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
 
     showComponent();
-  }
-
-  function putDataInDb(objToInsert, array1, array2) {
-    return new Promise(function(resolve, reject) {
-        const settings = {
-          url: '/userdata',
-          data: {
-          },
-          dataType: 'json',
-          type: 'PUT',
-          success: function(data) {
-            resolve(data);
-          },
-          error: function(err) {
-            reject(err);
-          }
-        };
-        settings.data[array1] = objToInsert;
-        settings.data[array2] = objToInsert
-        $.ajax(settings);
-    });
   }
 
   // handleBtnGoBackClicked:
@@ -1253,16 +1200,13 @@ module.exports = {
     console.log('currentRestaurant', currentRestaurant);
 
     // Add restaurant to history list and liked list
-    let objToInsert = {
-      id: currentRestaurant.id, 
-      name: currentRestaurant.name, 
-      price: currentRestaurant.price, 
-      rating: currentRestaurant.rating, 
-      url: currentRestaurant.url, 
-      image_url: currentRestaurant.image_url
+
+    let data = {
+      "history" : objForInsert,
+      "liked": objForInsert
     };
 
-    putDataInDb(objToInsert, "history", "liked").then(function(data) {
+    utilities.makeDbRequest('PUT', data).then(function(data) {
       pubSub.emit('showNextSearchResult');
     }).catch(function(err) {
       console.log(err);
@@ -1276,19 +1220,14 @@ module.exports = {
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    let objToInsert = {
-      id: currentRestaurant.id, 
-      name: currentRestaurant.name, 
-      price: currentRestaurant.price, 
-      rating: currentRestaurant.rating, 
-      url: currentRestaurant.url, 
-      image_url: currentRestaurant.image_url
+    let data = {
+      "history" : objForInsert,
+      "disliked" : objForInsert
     };
-    putDataInDb(objToInsert, "history", "disliked").then(function(data) {
-      hideComponent();
 
-      // Send event to show next result in restaurantChoose
-      pubSub.emit('showNextSearchResult');   
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      hideComponent();
+      pubSub.emit('showNextSearchResult');
     }).catch(function(err) {
       console.log(err);
     });
@@ -1310,7 +1249,7 @@ module.exports = {
 
   // component starts out hidden via css
   assignEventHandlers();
-},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   APP_CONTAINER: $('#le-app')
 };
@@ -1467,9 +1406,45 @@ module.exports = {
     return array;
   }
 
+  // makeDbRequest:
+  // make a request to the mongo db
+  // pass in a data object
+  // supports GET and PUT operations
+  function makeDbRequest(requestType, data) {
+    return new Promise(function(resolve, reject) {
+      const settings = {
+        url: '/userdata',
+        dataType: 'json',
+        data: {},
+        type: requestType,
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      };
+
+      if(requestType === 'GET') {
+        console.log('requestType', requestType);
+        // data === 'history', 'liked', 'disliked'...
+        settings.data.arrayToGet = data;
+      }
+      // data === {'history': objToInsert, 'liked': objToInsert}
+      if(requestType === 'PUT') {
+        console.log('requestType', requestType);
+        settings.data = data;
+        console.log('put data', data);
+        console.log('settings.data', settings.data);
+      }
+      $.ajax(settings);
+    });
+  }
+
 module.exports = {
   templateClean: templateClean,
   randomIntBetweenNums: randomIntBetweenNums,
-  shuffleArray: shuffleArray
+  shuffleArray: shuffleArray,
+  makeDbRequest: makeDbRequest
 };
 },{}]},{},[6]);

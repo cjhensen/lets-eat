@@ -73,28 +73,6 @@
     pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
-  // getDataFromDb:
-  // uses a promise to get a specified list from the user from the db
-  function getDataFromDb(arrayToGet) {
-    return new Promise(function(resolve, reject) {
-      const settings = {
-        url: '/userdata',
-        data: {
-          "arrayToGet": arrayToGet
-        },
-        dataType: 'json',
-        type: 'GET',
-        success: function(data) {
-          resolve(data);
-        },
-        error: function(err) {
-          reject(err);
-        }
-      };
-      $.ajax(settings);
-    });
-  }
-
   // handleReceivedSearchResults:
   // Callback function for receiving search results from restaurantSearch.
   // Sets the results passed in to a local variable for reuse.
@@ -119,8 +97,7 @@
       
       let userHistory = []; 
 
-      // get the user history
-      getDataFromDb("history").then(function(data) {
+      utilities.makeDbRequest('GET', 'history').then(function(data) {
         userHistory = data;
 
         // Replace localSearchResultData with only the places

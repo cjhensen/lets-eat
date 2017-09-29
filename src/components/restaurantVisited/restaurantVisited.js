@@ -3,6 +3,7 @@
   // Dependencies
   const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
 
   // DOM
@@ -19,6 +20,9 @@
   let currentUser = {};
   let currentRestaurant = {};
 
+  // set up an object for db insertion based on schema
+  let objForInsert = {};
+
   // handleReceivedPopupData:
   // set the local data equal to received data so it can be passed around in the module
   // show the component
@@ -32,29 +36,16 @@
     // set local data equal to received data from showing popup via click
     currentUser = data.user;
     currentRestaurant = data.restaurant;
+    objForInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
 
     showComponent();
-  }
-
-  function putDataInDb(objToInsert, array1, array2) {
-    return new Promise(function(resolve, reject) {
-        const settings = {
-          url: '/userdata',
-          data: {
-          },
-          dataType: 'json',
-          type: 'PUT',
-          success: function(data) {
-            resolve(data);
-          },
-          error: function(err) {
-            reject(err);
-          }
-        };
-        settings.data[array1] = objToInsert;
-        settings.data[array2] = objToInsert
-        $.ajax(settings);
-    });
   }
 
   // handleBtnGoBackClicked:
@@ -66,16 +57,13 @@
     console.log('currentRestaurant', currentRestaurant);
 
     // Add restaurant to history list and liked list
-    let objToInsert = {
-      id: currentRestaurant.id, 
-      name: currentRestaurant.name, 
-      price: currentRestaurant.price, 
-      rating: currentRestaurant.rating, 
-      url: currentRestaurant.url, 
-      image_url: currentRestaurant.image_url
+
+    let data = {
+      "history" : objForInsert,
+      "liked": objForInsert
     };
 
-    putDataInDb(objToInsert, "history", "liked").then(function(data) {
+    utilities.makeDbRequest('PUT', data).then(function(data) {
       pubSub.emit('showNextSearchResult');
     }).catch(function(err) {
       console.log(err);
@@ -89,19 +77,14 @@
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    let objToInsert = {
-      id: currentRestaurant.id, 
-      name: currentRestaurant.name, 
-      price: currentRestaurant.price, 
-      rating: currentRestaurant.rating, 
-      url: currentRestaurant.url, 
-      image_url: currentRestaurant.image_url
+    let data = {
+      "history" : objForInsert,
+      "disliked" : objForInsert
     };
-    putDataInDb(objToInsert, "history", "disliked").then(function(data) {
-      hideComponent();
 
-      // Send event to show next result in restaurantChoose
-      pubSub.emit('showNextSearchResult');   
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      hideComponent();
+      pubSub.emit('showNextSearchResult');
     }).catch(function(err) {
       console.log(err);
     });
