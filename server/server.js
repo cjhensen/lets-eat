@@ -9,7 +9,7 @@ const app = express();
 
 const mongoose = require('mongoose');
 const passport = require('passport');
-const flash = require('connect-flash');
+const flash = require('connect-flash'); // not using, get rid of it
 mongoose.Promise = global.Promise;
 
 const cookieParser = require('cookie-parser');

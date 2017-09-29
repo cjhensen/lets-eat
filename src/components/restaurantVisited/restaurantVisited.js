@@ -37,19 +37,51 @@
     showComponent();
   }
 
+  function putDataInDb(objToInsert, array1, array2) {
+    return new Promise(function(resolve, reject) {
+        const settings = {
+          url: '/userdata',
+          data: {
+          },
+          dataType: 'json',
+          type: 'PUT',
+          success: function(data) {
+            resolve(data);
+          },
+          error: function(err) {
+            reject(err);
+          }
+        };
+        settings.data[array1] = objToInsert;
+        settings.data[array2] = objToInsert
+        $.ajax(settings);
+    });
+  }
+
   // handleBtnGoBackClicked:
   // updates the current user history and liked lists with currentRestaurant
   // emits event to show next search result in restaurantChoose
   function handleBtnGoBackClicked() {
     console.log('handleBtnGoBackClicked');
 
-    // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
-    Users.update(currentUser, "liked", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
+    console.log('currentRestaurant', currentRestaurant);
 
-    console.log('Users after update', Users);
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+    // Add restaurant to history list and liked list
+    let objToInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
+
+    putDataInDb(objToInsert, "history", "liked").then(function(data) {
+      console.log('Users after update', Users);      
+      pubSub.emit('showNextSearchResult');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   // handleBtnNotGoBackClicked:
@@ -59,13 +91,23 @@
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
-    Users.update(currentUser, "disliked", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
+    let objToInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
+    putDataInDb(objToInsert, "history", "disliked").then(function(data) {
+      console.log('Users after update', Users);
+      hideComponent();
 
-    console.log('Users after update', Users);
-    hideComponent();
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+      // Send event to show next result in restaurantChoose
+      pubSub.emit('showNextSearchResult');   
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   function assignEventHandlers() {

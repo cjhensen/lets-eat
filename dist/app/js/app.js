@@ -221,10 +221,6 @@ console.log('RUNNING APP');
 components.restaurantSearch.restaurantSearch.runApp();
 console.log('components built', components, leUtilities, models);
 console.log('__base', __base, __components);
-
-// Create a global test user
-const {Users} = models.userModel;
-global.TEST_USER = Users.create("christian", "password");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
 },{"./components":7,"./globals":29,"./models":30,"./utilities":32}],7:[function(require,module,exports){
 module.exports = {
@@ -384,7 +380,7 @@ module.exports = {
     console.log('itemClicked', itemClicked);
 
     if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
-      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked});
     }
   }
 
@@ -481,7 +477,6 @@ module.exports = {
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-choose-container');
@@ -545,7 +540,29 @@ module.exports = {
     console.log('handleAlreadyVisitedBtnClicked');
 
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
-    pubSub.emit('displayVisitedPopup', {user: TEST_USER, restaurant: localSearchResultData[currentSearchResultIndex-1]});
+    pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
+  }
+
+  // getDataFromDb:
+  // uses a promise to get a specified list from the user from the db
+  function getDataFromDb(arrayToGet) {
+    return new Promise(function(resolve, reject) {
+      const settings = {
+        url: '/userdata',
+        data: {
+          "arrayToGet": arrayToGet
+        },
+        dataType: 'json',
+        type: 'GET',
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      };
+      $.ajax(settings);
+    });
   }
 
   // handleReceivedSearchResults:
@@ -563,21 +580,29 @@ module.exports = {
     // set local data equal to received search result data
     localSearchResultData = searchResultData.data;
 
-    const tryNew = searchResultData.tryNew;
+    let tryNew = searchResultData.tryNew;
     console.log('try new in handleReceivedSearchResults', tryNew);
 
 
     // if tryNew is true
     if(tryNew) {
-      // get the user history
-      const userHistory = Users.get(TEST_USER, "history");
+      
+      let userHistory = []; 
 
-      // Replace localSearchResultData with only the places
-      // where the user has not been
-      localSearchResultData = localSearchResultData.filter(function(placeObj) {
-        return !userHistory.some(function(placeObj2) {
-          return placeObj.id == placeObj2.id;
+      // get the user history
+      getDataFromDb("history").then(function(data) {
+        userHistory = data;
+
+        // Replace localSearchResultData with only the places
+        // where the user has not been
+        localSearchResultData = localSearchResultData.filter(function(placeObj) {
+          return !userHistory.some(function(placeObj2) {
+            return placeObj.id == placeObj2.id;
+          });
         });
+
+      }).catch(function(err) {
+        console.log(err);
       });
     }
 
@@ -651,7 +676,7 @@ module.exports = {
 module.exports = {
   render: render
 };
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
@@ -853,6 +878,28 @@ module.exports = {
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
 
+  // getDataFromDb:
+  // uses a promise to get a specified list from the user from the db
+  function getDataFromDb(arrayToGet) {
+    return new Promise(function(resolve, reject) {
+      const settings = {
+        url: '/userdata',
+        data: {
+          "arrayToGet": arrayToGet
+        },
+        dataType: 'json',
+        type: 'GET',
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      };
+      $.ajax(settings);
+    });
+  }
+
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
     console.log(Users);
@@ -860,16 +907,21 @@ module.exports = {
     // remove from dom if it already exists
     destroy();
     
+    let listToDisplay = []; 
+
     // get list from users based on nav item clicked
-    const listToDisplay = Users.get(TEST_USER, dataReceived.itemClicked);
-    console.log('listToDisplay', listToDisplay);
-    
-    // setTemplateOptions
-    templateOptions.title = dataReceived.itemClicked;
-    templateOptions.list = listToDisplay;
-    console.log('templateOptions', templateOptions);
-    
-    render();
+    getDataFromDb(dataReceived.itemClicked).then(function(data) {
+      listToDisplay = data;
+      console.log('listToDisplay', listToDisplay);
+
+      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.list = listToDisplay;
+      console.log('templateOptions', templateOptions);
+      render();
+    }).catch(function(err) {
+      console.log(err);
+    });
+
   }
 
   function render() {
@@ -966,6 +1018,7 @@ module.exports = {
   const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
+  const btnTest = $('.button-test', template);
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
@@ -975,7 +1028,6 @@ module.exports = {
   function handleRenderRestaurantSearch() {
     render();
   }
-
 
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
@@ -1174,19 +1226,51 @@ module.exports = {
     showComponent();
   }
 
+  function putDataInDb(objToInsert, array1, array2) {
+    return new Promise(function(resolve, reject) {
+        const settings = {
+          url: '/userdata',
+          data: {
+          },
+          dataType: 'json',
+          type: 'PUT',
+          success: function(data) {
+            resolve(data);
+          },
+          error: function(err) {
+            reject(err);
+          }
+        };
+        settings.data[array1] = objToInsert;
+        settings.data[array2] = objToInsert
+        $.ajax(settings);
+    });
+  }
+
   // handleBtnGoBackClicked:
   // updates the current user history and liked lists with currentRestaurant
   // emits event to show next search result in restaurantChoose
   function handleBtnGoBackClicked() {
     console.log('handleBtnGoBackClicked');
 
-    // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
-    Users.update(currentUser, "liked", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
+    console.log('currentRestaurant', currentRestaurant);
 
-    console.log('Users after update', Users);
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+    // Add restaurant to history list and liked list
+    let objToInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
+
+    putDataInDb(objToInsert, "history", "liked").then(function(data) {
+      console.log('Users after update', Users);      
+      pubSub.emit('showNextSearchResult');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   // handleBtnNotGoBackClicked:
@@ -1196,13 +1280,23 @@ module.exports = {
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
-    Users.update(currentUser, "disliked", {id: currentRestaurant.id, name: currentRestaurant.name, price: currentRestaurant.price, rating: currentRestaurant.rating, url: currentRestaurant.url, image_url: currentRestaurant.image_url});
+    let objToInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
+    putDataInDb(objToInsert, "history", "disliked").then(function(data) {
+      console.log('Users after update', Users);
+      hideComponent();
 
-    console.log('Users after update', Users);
-    hideComponent();
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+      // Send event to show next result in restaurantChoose
+      pubSub.emit('showNextSearchResult');   
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   function assignEventHandlers() {

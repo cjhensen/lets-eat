@@ -14,6 +14,28 @@
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
 
+  // getDataFromDb:
+  // uses a promise to get a specified list from the user from the db
+  function getDataFromDb(arrayToGet) {
+    return new Promise(function(resolve, reject) {
+      const settings = {
+        url: '/userdata',
+        data: {
+          "arrayToGet": arrayToGet
+        },
+        dataType: 'json',
+        type: 'GET',
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      };
+      $.ajax(settings);
+    });
+  }
+
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
     console.log(Users);
@@ -21,16 +43,21 @@
     // remove from dom if it already exists
     destroy();
     
+    let listToDisplay = []; 
+
     // get list from users based on nav item clicked
-    const listToDisplay = Users.get(TEST_USER, dataReceived.itemClicked);
-    console.log('listToDisplay', listToDisplay);
-    
-    // setTemplateOptions
-    templateOptions.title = dataReceived.itemClicked;
-    templateOptions.list = listToDisplay;
-    console.log('templateOptions', templateOptions);
-    
-    render();
+    getDataFromDb(dataReceived.itemClicked).then(function(data) {
+      listToDisplay = data;
+      console.log('listToDisplay', listToDisplay);
+
+      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.list = listToDisplay;
+      console.log('templateOptions', templateOptions);
+      render();
+    }).catch(function(err) {
+      console.log(err);
+    });
+
   }
 
   function render() {

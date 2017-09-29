@@ -10,6 +10,7 @@
   const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
+  const btnTest = $('.button-test', template);
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
@@ -19,7 +20,6 @@
   function handleRenderRestaurantSearch() {
     render();
   }
-
 
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'

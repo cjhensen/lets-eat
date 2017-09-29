@@ -1,4 +1,6 @@
 module.exports = function(app, passport, express, pathVar) {
+
+  const {User} = require('./models/user.js');
   
   app.use(express.static('dist/public'));  
   // app.use('/app', express.static(pathVar.join(__dirname) + 'dist/app'));
@@ -57,5 +59,42 @@ module.exports = function(app, passport, express, pathVar) {
       response.redirect('/');
     }
   }
+
+
+  // User Data Routes
+  // Get list by user id
+  app.get('/userdata', isLoggedIn, function(request, response) {
+    console.log('request.user', request.user);
+    console.log('request', request.query);
+    const arrayToGet = request.query.arrayToGet;
+    console.log('arrayToGet', arrayToGet);
+    User
+      .findById(request.user._id)
+      .exec()
+      .then(user => response.json(user[arrayToGet]))
+      .catch(err => {
+        console.error(err);
+        response.status(500).json({message: "Internal server error"});
+      });
+  });
+
+  app.put('/userdata', isLoggedIn, function(request, response) {
+    const fieldsToUpdate = {};
+    const updateableFields = ['history', 'liked', 'disliked'];
+
+    console.log('rb', request.body);
+    updateableFields.forEach(field => {
+      if(field in request.body) {
+        fieldsToUpdate[field] = request.body[field];
+      }
+    });
+    console.log('ftu', fieldsToUpdate);
+
+    User
+      .findByIdAndUpdate(request.user._id, {$addToSet: fieldsToUpdate})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
   
 }
