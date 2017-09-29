@@ -4,7 +4,6 @@
   const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
   const pubSub = require('../../utilities/pubSub');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
@@ -77,7 +76,6 @@
     };
 
     putDataInDb(objToInsert, "history", "liked").then(function(data) {
-      console.log('Users after update', Users);      
       pubSub.emit('showNextSearchResult');
     }).catch(function(err) {
       console.log(err);
@@ -100,7 +98,6 @@
       image_url: currentRestaurant.image_url
     };
     putDataInDb(objToInsert, "history", "disliked").then(function(data) {
-      console.log('Users after update', Users);
       hideComponent();
 
       // Send event to show next result in restaurantChoose

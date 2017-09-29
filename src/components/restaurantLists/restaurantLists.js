@@ -4,7 +4,6 @@
   const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const component = '.js-restaurant-list';
@@ -38,7 +37,6 @@
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
-    console.log(Users);
 
     // remove from dom if it already exists
     destroy();

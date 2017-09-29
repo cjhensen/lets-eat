@@ -868,7 +868,6 @@ module.exports = {
   const globals = require('../../globals');
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const component = '.js-restaurant-list';
@@ -902,7 +901,6 @@ module.exports = {
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
-    console.log(Users);
 
     // remove from dom if it already exists
     destroy();
@@ -936,7 +934,7 @@ module.exports = {
       $(component).remove();
     }
   }
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
@@ -1193,7 +1191,6 @@ module.exports = {
   const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
   const pubSub = require('../../utilities/pubSub');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
@@ -1266,7 +1263,6 @@ module.exports = {
     };
 
     putDataInDb(objToInsert, "history", "liked").then(function(data) {
-      console.log('Users after update', Users);      
       pubSub.emit('showNextSearchResult');
     }).catch(function(err) {
       console.log(err);
@@ -1289,7 +1285,6 @@ module.exports = {
       image_url: currentRestaurant.image_url
     };
     putDataInDb(objToInsert, "history", "disliked").then(function(data) {
-      console.log('Users after update', Users);
       hideComponent();
 
       // Send event to show next result in restaurantChoose
@@ -1315,7 +1310,7 @@ module.exports = {
 
   // component starts out hidden via css
   assignEventHandlers();
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   APP_CONTAINER: $('#le-app')
 };
