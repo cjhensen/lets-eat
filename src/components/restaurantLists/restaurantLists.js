@@ -2,9 +2,9 @@
 
   // Dependencies
   const globals = require('../../globals');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const component = '.js-restaurant-list';
@@ -16,21 +16,25 @@
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
-    console.log(Users);
 
     // remove from dom if it already exists
     destroy();
     
+    let listToDisplay = []; 
+    
     // get list from users based on nav item clicked
-    const listToDisplay = Users.get(TEST_USER, dataReceived.itemClicked);
-    console.log('listToDisplay', listToDisplay);
-    
-    // setTemplateOptions
-    templateOptions.title = dataReceived.itemClicked;
-    templateOptions.list = listToDisplay;
-    console.log('templateOptions', templateOptions);
-    
-    render();
+    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
+      listToDisplay = data;
+      console.log('listToDisplay', listToDisplay);
+
+      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.list = listToDisplay;
+      console.log('templateOptions', templateOptions);
+      render();
+    }).catch(function(err) {
+      console.log(err);
+    });
+
   }
 
   function render() {

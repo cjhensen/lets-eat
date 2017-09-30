@@ -35,7 +35,7 @@
     console.log('itemClicked', itemClicked);
 
     if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
-      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked});
     }
   }
 

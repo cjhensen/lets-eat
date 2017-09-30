@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" name="description" content="">
+
+  <title></title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/auth.css">
+</head>
+<body>
+  <header role="banner">
+  </header>
+  <section role="main">
+    <div>
+    login
+      <form action="/login" method="post">
+        <div>
+          <label>Username:</label>
+          <input type="text" name="username"/>
+        </div>
+        <div>
+          <label>Password:</label>
+          <input type="password" name="password"/>
+        </div>
+        <div>
+          <input type="submit" value="Log In"/>
+        </div>
+      </form>
+    </div>
+
+    <div>
+    signup
+      <form action="/signup" method="post">
+          <div>
+            <label>Username:</label>
+            <input type="text" name="username"/>
+          </div>
+          <div>
+            <label>Password:</label>
+            <input type="password" name="password"/>
+          </div>
+          <div>
+            <input type="submit" value="Sign Up"/>
+          </div>
+        </form>
+    </div>
+  </section>
+  <footer role="contentinfo"></footer>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/auth.js"></script>
+</body>
+</html>

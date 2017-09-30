@@ -221,10 +221,6 @@ console.log('RUNNING APP');
 components.restaurantSearch.restaurantSearch.runApp();
 console.log('components built', components, leUtilities, models);
 console.log('__base', __base, __components);
-
-// Create a global test user
-const {Users} = models.userModel;
-global.TEST_USER = Users.create("christian", "password");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},"/src")
 },{"./components":7,"./globals":29,"./models":30,"./utilities":32}],7:[function(require,module,exports){
 module.exports = {
@@ -384,7 +380,7 @@ module.exports = {
     console.log('itemClicked', itemClicked);
 
     if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
-      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked, user: TEST_USER});
+      pubSub.emit('renderRestaurantList', {itemClicked: itemClicked});
     }
   }
 
@@ -481,7 +477,6 @@ module.exports = {
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-choose-container');
@@ -545,7 +540,7 @@ module.exports = {
     console.log('handleAlreadyVisitedBtnClicked');
 
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
-    pubSub.emit('displayVisitedPopup', {user: TEST_USER, restaurant: localSearchResultData[currentSearchResultIndex-1]});
+    pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
@@ -563,21 +558,28 @@ module.exports = {
     // set local data equal to received search result data
     localSearchResultData = searchResultData.data;
 
-    const tryNew = searchResultData.tryNew;
+    let tryNew = searchResultData.tryNew;
     console.log('try new in handleReceivedSearchResults', tryNew);
 
 
     // if tryNew is true
     if(tryNew) {
-      // get the user history
-      const userHistory = Users.get(TEST_USER, "history");
+      
+      let userHistory = []; 
 
-      // Replace localSearchResultData with only the places
-      // where the user has not been
-      localSearchResultData = localSearchResultData.filter(function(placeObj) {
-        return !userHistory.some(function(placeObj2) {
-          return placeObj.id == placeObj2.id;
+      utilities.makeDbRequest('GET', 'history').then(function(data) {
+        userHistory = data;
+
+        // Replace localSearchResultData with only the places
+        // where the user has not been
+        localSearchResultData = localSearchResultData.filter(function(placeObj) {
+          return !userHistory.some(function(placeObj2) {
+            return placeObj.id == placeObj2.id;
+          });
         });
+
+      }).catch(function(err) {
+        console.log(err);
       });
     }
 
@@ -651,7 +653,7 @@ module.exports = {
 module.exports = {
   render: render
 };
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"../restaurantVisited/restaurantVisited-tmpl":27,"./restaurantChoose-tmpl":15}],17:[function(require,module,exports){
 module.exports = {
   restaurantDetails: require('./restaurantDetails'),
   restaurantDetailsTmpl: require('./restaurantDetails-tmpl')
@@ -841,9 +843,9 @@ module.exports = {
 
   // Dependencies
   const globals = require('../../globals');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
   const restaurantListsTmpl = require('./restaurantLists-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const component = '.js-restaurant-list';
@@ -855,21 +857,25 @@ module.exports = {
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
-    console.log(Users);
 
     // remove from dom if it already exists
     destroy();
     
+    let listToDisplay = []; 
+    
     // get list from users based on nav item clicked
-    const listToDisplay = Users.get(TEST_USER, dataReceived.itemClicked);
-    console.log('listToDisplay', listToDisplay);
-    
-    // setTemplateOptions
-    templateOptions.title = dataReceived.itemClicked;
-    templateOptions.list = listToDisplay;
-    console.log('templateOptions', templateOptions);
-    
-    render();
+    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
+      listToDisplay = data;
+      console.log('listToDisplay', listToDisplay);
+
+      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.list = listToDisplay;
+      console.log('templateOptions', templateOptions);
+      render();
+    }).catch(function(err) {
+      console.log(err);
+    });
+
   }
 
   function render() {
@@ -884,7 +890,7 @@ module.exports = {
       $(component).remove();
     }
   }
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
   restaurantSearchTmpl: require('./restaurantSearch-tmpl')
@@ -966,6 +972,7 @@ module.exports = {
   const component = '.js-restaurant-search';
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
+  const btnTest = $('.button-test', template);
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
@@ -975,7 +982,6 @@ module.exports = {
   function handleRenderRestaurantSearch() {
     render();
   }
-
 
   // handleSearchBtnClicked: Handle clicking the search button
   // TODO: handle 'new restaurants only'
@@ -1140,8 +1146,8 @@ module.exports = {
   // Dependencies
   const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
@@ -1157,6 +1163,9 @@ module.exports = {
   let currentUser = {};
   let currentRestaurant = {};
 
+  // set up an object for db insertion based on schema
+  let objForInsert = {};
+
   // handleReceivedPopupData:
   // set the local data equal to received data so it can be passed around in the module
   // show the component
@@ -1170,6 +1179,14 @@ module.exports = {
     // set local data equal to received data from showing popup via click
     currentUser = data.user;
     currentRestaurant = data.restaurant;
+    objForInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
 
     showComponent();
   }
@@ -1180,13 +1197,20 @@ module.exports = {
   function handleBtnGoBackClicked() {
     console.log('handleBtnGoBackClicked');
 
-    // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", currentRestaurant);
-    Users.update(currentUser, "liked", currentRestaurant);
+    console.log('currentRestaurant', currentRestaurant);
 
-    console.log('Users after update', Users);
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+    // Add restaurant to history list and liked list
+
+    let data = {
+      "history" : objForInsert,
+      "liked": objForInsert
+    };
+
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      pubSub.emit('showNextSearchResult');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   // handleBtnNotGoBackClicked:
@@ -1196,13 +1220,17 @@ module.exports = {
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", currentRestaurant);
-    Users.update(currentUser, "disliked", currentRestaurant);
+    let data = {
+      "history" : objForInsert,
+      "disliked" : objForInsert
+    };
 
-    console.log('Users after update', Users);
-    hideComponent();
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      hideComponent();
+      pubSub.emit('showNextSearchResult');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   function assignEventHandlers() {
@@ -1221,7 +1249,7 @@ module.exports = {
 
   // component starts out hidden via css
   assignEventHandlers();
-},{"../../globals":29,"../../models/userModel":31,"../../utilities/pubSub":33,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
+},{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
   APP_CONTAINER: $('#le-app')
 };
@@ -1378,9 +1406,45 @@ module.exports = {
     return array;
   }
 
+  // makeDbRequest:
+  // make a request to the mongo db
+  // pass in a data object
+  // supports GET and PUT operations
+  function makeDbRequest(requestType, data) {
+    return new Promise(function(resolve, reject) {
+      const settings = {
+        url: '/userdata',
+        dataType: 'json',
+        data: {},
+        type: requestType,
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      };
+
+      if(requestType === 'GET') {
+        console.log('requestType', requestType);
+        // data === 'history', 'liked', 'disliked'...
+        settings.data.arrayToGet = data;
+      }
+      // data === {'history': objToInsert, 'liked': objToInsert}
+      if(requestType === 'PUT') {
+        console.log('requestType', requestType);
+        settings.data = data;
+        console.log('put data', data);
+        console.log('settings.data', settings.data);
+      }
+      $.ajax(settings);
+    });
+  }
+
 module.exports = {
   templateClean: templateClean,
   randomIntBetweenNums: randomIntBetweenNums,
-  shuffleArray: shuffleArray
+  shuffleArray: shuffleArray,
+  makeDbRequest: makeDbRequest
 };
 },{}]},{},[6]);

@@ -7,7 +7,6 @@
   const pubSub = require('../../utilities/pubSub');
   const restaurantChooseTmpl = require('./restaurantChoose-tmpl');
   const restaurantVisitedTmpl = require('../restaurantVisited/restaurantVisited-tmpl');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   const componentContainer = globals.APP_CONTAINER.find('.js-restaurant-choose-container');
@@ -71,7 +70,7 @@
     console.log('handleAlreadyVisitedBtnClicked');
 
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
-    pubSub.emit('displayVisitedPopup', {user: TEST_USER, restaurant: localSearchResultData[currentSearchResultIndex-1]});
+    pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
   }
 
   // handleReceivedSearchResults:
@@ -89,21 +88,28 @@
     // set local data equal to received search result data
     localSearchResultData = searchResultData.data;
 
-    const tryNew = searchResultData.tryNew;
+    let tryNew = searchResultData.tryNew;
     console.log('try new in handleReceivedSearchResults', tryNew);
 
 
     // if tryNew is true
     if(tryNew) {
-      // get the user history
-      const userHistory = Users.get(TEST_USER, "history");
+      
+      let userHistory = []; 
 
-      // Replace localSearchResultData with only the places
-      // where the user has not been
-      localSearchResultData = localSearchResultData.filter(function(placeObj) {
-        return !userHistory.some(function(placeObj2) {
-          return placeObj.id == placeObj2.id;
+      utilities.makeDbRequest('GET', 'history').then(function(data) {
+        userHistory = data;
+
+        // Replace localSearchResultData with only the places
+        // where the user has not been
+        localSearchResultData = localSearchResultData.filter(function(placeObj) {
+          return !userHistory.some(function(placeObj2) {
+            return placeObj.id == placeObj2.id;
+          });
         });
+
+      }).catch(function(err) {
+        console.log(err);
       });
     }
 

@@ -1,49 +1,101 @@
 'use strict';
 
-// require express
+
 const express = require('express');
-
-// use express router for modular routes
 const router = express.Router();
+const pathVar = require('path');
 
-// create new app
 const app = express();
 
-// require some request router
-const initialRouter = require('./initialRouter');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const flash = require('connect-flash'); // not using, get rid of it
+mongoose.Promise = global.Promise;
+
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+const session = require('express-session');
+
+// config
+const configDB = require('./config/database.js');
+const configPort = require('./config/port.js');
+require('./config/passport.js')(passport);
+
+// static files
+// app.use(express.static('dist/public'));
+// app.use('/app', express.static('dist/app'));
+
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(session({ secret: 'letseatappv1'}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+// load routes and pass in app and configured passport
+require('./routes.js')(app, passport, express, pathVar);
 const yelpApiRouter = require('./yelpApiRouter');
-
-// setting up public directory
-app.use(express.static('public')); // might need to change this due to server being in a folder
-
-// use some request router
-app.use('/', initialRouter);
 app.use('/restaurant-search', yelpApiRouter);
+
+
 
 let server;
 
 // serve app to port
-function runServer() {
-  const port = process.env.PORT || 8080;
+// function runServer() {
+//   const port = process.env.PORT || 8080;
+//   return new Promise((resolve, reject) => {
+//     server = app.listen(port, () => {
+//       console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
+//       resolve(server);
+//     }).on('error', err => {
+//       reject(err);
+//     });
+//   });
+// }
+
+function runServer(databaseUrl = configDB.DATABASE_URL, port = configPort.PORT) {
   return new Promise((resolve, reject) => {
-    server = app.listen(port, () => {
-      console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
-      resolve(server);
-    }).on('error', err => {
-      reject(err);
+    mongoose.connect(databaseUrl, err => {
+      if (err) {
+        return reject(err);
+      }
+      server = app.listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+        resolve();
+      })
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
     });
   });
 }
 
+// function closeServer() {
+//   return new Promise((resolve, reject) => {
+//     console.log('Closing server');
+//     server.close(err => {
+//       if(err) {
+//         reject(err);
+//         return;
+//       }
+//       resolve();
+//     });
+//   });
+// }
+
 function closeServer() {
-  return new Promise((resolve, reject) => {
-    console.log('Closing server');
-    server.close(err => {
-      if(err) {
-        reject(err);
-        return;
-      }
-      resolve();
+  return mongoose.disconnect().then(() => {
+    return new Promise((resolve, reject) => {
+      console.log('Closing server');
+      server.close(err => {
+        if(err) {
+          return reject(err);
+        }
+        resolve();
+      });
     });
   });
 }

@@ -39,8 +39,44 @@
     return array;
   }
 
+  // makeDbRequest:
+  // make a request to the mongo db
+  // pass in a data object
+  // supports GET and PUT operations
+  function makeDbRequest(requestType, data) {
+    return new Promise(function(resolve, reject) {
+      const settings = {
+        url: '/userdata',
+        dataType: 'json',
+        data: {},
+        type: requestType,
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      };
+
+      if(requestType === 'GET') {
+        console.log('requestType', requestType);
+        // data === 'history', 'liked', 'disliked'...
+        settings.data.arrayToGet = data;
+      }
+      // data === {'history': objToInsert, 'liked': objToInsert}
+      if(requestType === 'PUT') {
+        console.log('requestType', requestType);
+        settings.data = data;
+        console.log('put data', data);
+        console.log('settings.data', settings.data);
+      }
+      $.ajax(settings);
+    });
+  }
+
 module.exports = {
   templateClean: templateClean,
   randomIntBetweenNums: randomIntBetweenNums,
-  shuffleArray: shuffleArray
+  shuffleArray: shuffleArray,
+  makeDbRequest: makeDbRequest
 };

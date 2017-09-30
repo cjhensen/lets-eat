@@ -3,8 +3,8 @@
   // Dependencies
   const globals = require('../../globals');
   const restaurantVisitedTmpl = require('./restaurantVisited-tmpl');
+  const utilities = require('../../utilities/utilities'); // for makeDbRequest
   const pubSub = require('../../utilities/pubSub');
-  const {Users} = require('../../models/userModel');
 
   // DOM
   let template = $(restaurantVisitedTmpl.generateTemplate());
@@ -20,6 +20,9 @@
   let currentUser = {};
   let currentRestaurant = {};
 
+  // set up an object for db insertion based on schema
+  let objForInsert = {};
+
   // handleReceivedPopupData:
   // set the local data equal to received data so it can be passed around in the module
   // show the component
@@ -33,6 +36,14 @@
     // set local data equal to received data from showing popup via click
     currentUser = data.user;
     currentRestaurant = data.restaurant;
+    objForInsert = {
+      id: currentRestaurant.id, 
+      name: currentRestaurant.name, 
+      price: currentRestaurant.price, 
+      rating: currentRestaurant.rating, 
+      url: currentRestaurant.url, 
+      image_url: currentRestaurant.image_url
+    };
 
     showComponent();
   }
@@ -43,13 +54,20 @@
   function handleBtnGoBackClicked() {
     console.log('handleBtnGoBackClicked');
 
-    // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", currentRestaurant);
-    Users.update(currentUser, "liked", currentRestaurant);
+    console.log('currentRestaurant', currentRestaurant);
 
-    console.log('Users after update', Users);
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+    // Add restaurant to history list and liked list
+
+    let data = {
+      "history" : objForInsert,
+      "liked": objForInsert
+    };
+
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      pubSub.emit('showNextSearchResult');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   // handleBtnNotGoBackClicked:
@@ -59,13 +77,17 @@
     console.log('handleBtnNotGoBackClicked');
 
     // Add restaurant to history list and liked list
-    Users.update(currentUser, "history", currentRestaurant);
-    Users.update(currentUser, "disliked", currentRestaurant);
+    let data = {
+      "history" : objForInsert,
+      "disliked" : objForInsert
+    };
 
-    console.log('Users after update', Users);
-    hideComponent();
-    // Send event to show next result in restaurantChoose
-    pubSub.emit('showNextSearchResult');
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      hideComponent();
+      pubSub.emit('showNextSearchResult');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   function assignEventHandlers() {
