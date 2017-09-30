@@ -3,19 +3,20 @@ const chai = require('chai');
 
 // require http assertion library
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 // faker for mocking data
 const faker = require('faker');
 const mongoose = require('mongoose');
+
+// use chai should
+const should = chai.should();
 
 // bring in user model, test db url, and server exports
 const {User} = require('../server/models/user');
 const {TEST_DATABASE_URL} = require('../server/config/database');
 const {app, runServer, closeServer} = require('../server/server');
 
-// use chai should
-const should = chai.should();
+chai.use(chaiHttp);
 
 function seedUserData() {
   console.log('seeding User data');
@@ -103,5 +104,5 @@ describe.only('Lets Eat API', function() {
         done();
     });
   });
-  
+
 });
