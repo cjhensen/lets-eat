@@ -1,3 +1,100 @@
-.authDiv {
-  color: red;
+@import "../vendor/bootstrap.min.css";
+@import "../less/variables.less";
+
+* {
+  box-sizing: border-box;
+}
+.cover-wrapper {
+  background: url('/img/bg.png');
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+}
+
+#wrapper {
+  padding: 30px 0 0 0;
+  // padding: 30px 15px 0;
+}
+
+
+.le-logo {
+  .base-font(@weight: 600);
+  text-align: center;
+  color: @white;
+
+  a {
+    display: block;
+  }
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+
+.le-login {
+  width: 100%;
+  position: absolute;
+  background: @main-bright;
+  margin-left: -15px;
+  bottom: 0;
+  height: 50px;
+  overflow: hidden;
+  max-height: 410px;
+
+  transition: height .4s linear;
+
+  .login-form {
+    margin-top: 30px;
+    margin-bottom: 15px;
+
+
+    form {
+      label {
+        display: none;
+      }
+      input {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #fff;
+        margin-bottom: 30px;
+        padding-left: 0;
+        padding-right: 0;
+
+        &::placeholder {
+          .base-font(@size: 18px, @weight: 200);
+          color: @white;
+          opacity: 1;
+        }
+      }
+    }
+  
+  }
+}
+
+.btn-login-open {
+  .base-font(@size: 20px, @weight: 400);
+  color: @white;
+  display: block;
+  width: 100%;
+  height: 50px;
+}
+
+.btn-login {
+  .base-font(@size: 20px, @weight: 300);
+  background: @white;
+  border: none;
+  height: 40px;
+  border-radius: 2px;
+}
+
+.sign-up {
+  .base-font(@size: 16px, @weight: 200);
+  text-decoration: underline;
+  color: #000;
+  text-align: center;
+}
+
+.login-expand {
+  height: 100%;
 }

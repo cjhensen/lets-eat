@@ -46,7 +46,7 @@ const folders = {
 
 // gulp defaults
 gulp.task('default', ['clean', 'server', 'watch'], function() {
-  gulp.start('less', 'html', 'browserify', 'less-public', 'html-public', 'browserify-public')
+  gulp.start('less', 'html', 'browserify', 'less-public', 'html-public', 'browserify-public', 'images-public')
 });
 
 
@@ -85,6 +85,10 @@ gulp.task('watch', function() {
     `${folders.src}/public/auth.js`,
     `${folders.src}/public/**/*.js`
     ], function() { gulp.start('browserify-public'); });
+
+  watch([
+    `${folders.src}/public/img/**`
+    ], function() { gulp.start('images-public'); });
 });
 
 // compile less
@@ -125,6 +129,12 @@ gulp.task('html-public', function() {
     .pipe(gulp.dest(`${folders.build_public}/`))
     .pipe(livereload())
     .pipe(notify({ message: 'HTML moved to dev_build successfully' }));
+});
+
+gulp.task('images-public', function() {
+  return gulp.src(`${folders.src}/public/img/**`)
+  .pipe(gulp.dest(`${folders.build_public}/img`))
+  .pipe(notify({ message: 'Images moved successfully'}));
 });
 
 
