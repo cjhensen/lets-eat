@@ -2,10 +2,6 @@
 * {
   box-sizing: border-box;
 }
-
-body {
-  // background: #efefef;
-}
 header .wrapper {
   // border-bottom: none;
   // text-align: center;
@@ -21,5 +17,37 @@ header .wrapper {
   // position: relative;
 }
 @import "./variables.less";
+@import './reusable.less';
 @import "../vendor/bootstrap.min.css";
 @import "../components/**/*.less";
+
+
+// COLOR SCHEME ALL VARIABLES
+body {
+  background: @light-grey;
+
+  // gradient background
+  // background: @main-dark;
+  // background: -moz-linear-gradient(top,  @main-dark 0%, @main-bright 100%);
+  // background: -webkit-linear-gradient(top,  @main-dark 0%, @main-bright 100%);
+  // background: linear-gradient(to bottom,  @main-dark 0%, @main-bright 100%);
+  // background-repeat: no-repeat;
+  // height: 100vh;
+}
+
+
+
+
+
+
+
+// index
+#wrapper {
+  padding-top: 15px;
+}
+
+#le-app {
+  padding-top: 60px;
+}
+
+

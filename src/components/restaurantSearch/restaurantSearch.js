@@ -14,6 +14,7 @@
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
+  pubSub.on('renderRestaurantList', destroy);
   
   // handleRenderRestaurantSearch:
   // used when receiveing the emitted event when clicking back button from a different component

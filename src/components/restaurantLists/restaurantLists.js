@@ -13,6 +13,8 @@
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
+  pubSub.on('renderRestaurantSearch', destroy);
+  pubSub.on('renderRestaurantChoose', destroy);
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);

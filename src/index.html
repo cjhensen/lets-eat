@@ -3,28 +3,36 @@
 <head>
   <meta charset="utf-8" name="description" content="">
 
-  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Let's Eat</title>
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
   <header role="banner">
-    <div class="wrapper">
-      <nav role="navigation"></nav>
-      Let's Eat!
-      <a href="/logout" class="btn">Logout</a>
-    </div><!-- / wrapper -->
   </header>
-  <section role="main" class="container-fluid">
-    <div id="le-app">
-      <div class="js-restaurant-search-container">
-      </div><!-- / restaurant-search -->
 
-      <div class="js-restaurant-choose-container">
-      </div><!-- / restaurant-choose -->
-    </div>
-  </section>
+  <div id="wrapper">
+      
+    <nav role="navigation">
+    </nav>
+    <div class="container-fluid">
+
+      <section role="main" class="site-wrap">
+        <div id="le-app">
+          <div class="js-restaurant-search-container">
+          </div><!-- / restaurant-search -->
+
+          <div class="js-restaurant-choose-container">
+          </div><!-- / restaurant-choose -->
+        </div>
+      </section>
+
+    </div><!-- / .container-fluid -->
+  </div><!-- / wrapper -->
+
+
   <footer role="contentinfo"></footer>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

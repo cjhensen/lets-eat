@@ -14,13 +14,13 @@
     const template = `
       <div class="le-restaurant-search js-restaurant-search">
         <form id="restaurant-search">
-          <label for="input-location">Location
-            <input class="js-input-location" type="number" id="input-location" name="location" pattern="[0-9]*" required>
+          <label for="input-location"><span class="input-label">Location</span>
+            <input class="js-input-location col-xs-8 col-xs-offset-2" type="number" id="input-location" name="location" pattern="[0-9]*" placeholder="Location (zipcode)" required>
           </label>
 
-          <label for="select-radius">Radius
-            <select class="js-select-radius" name="radius" id="select-radius" required>
-              <option value="" disabled selected>Select a radius</option>
+          <label for="select-radius"><span class="input-label">Radius</span>
+            <select class="js-select-radius col-xs-8 col-xs-offset-2" name="radius" id="select-radius" required>
+              <option value="" disabled selected>Select a radius &#9660;</option>
               <option value="5">5mi</option>
               <option value="10">10mi</option>
               <option value="15">15mi</option>
@@ -42,11 +42,11 @@
           </label>
           -->
 
-          <label for="input-try-new" class="try-new">Try something new?
+          <label for="input-try-new" class="try-new col-xs-8 col-xs-offset-2">Try something new?
             <input class="js-input-try-new" type="checkbox" id="input-try-new" name="try-new">
           </label>
 
-          <button type="submit" class="btn btn-submit js-btn-submit">Let's Eat!</button>
+          <button type="submit" class="btn btn-submit js-btn-submit col-xs-8 col-xs-offset-2">Let's Eat!</button>
 
         </form>
       </div>

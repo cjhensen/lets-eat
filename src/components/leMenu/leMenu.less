@@ -1,17 +1,116 @@
 .le-menu {
-  .le-menu-toggle {
-    cursor: pointer;
-    background: blue;
-    color: #fff;
-    padding: 4px;
+  // navigation
+  background: @main-dark;
+  height: 44px;
+  margin-top: -15px;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+
+  h2 {
+    .base-font(@size: 20px, @weight: 400);
+    color: @white;
+    text-align: center;
+    margin: 0;
+    line-height: 44px;
+    vertical-align: middle;
   }
-  nav {
-    display: none;
+
+
+  .nav {
+    list-style: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    visibility: hidden;
+
+    margin-top: 80px;
+
     .nav-item {
+      margin-bottom: 15px;
       display: block;
+      cursor: pointer;
+      a {
+        .base-font(@size: 20px, @weight: 300);
+        color: @dark-grey;
+        border-bottom: 1px solid @dark-grey;
+        text-decoration: none;
+        cursor: pointer;
+      }
     }
   }
-  .show-nav {
-    display: inline;
+
+  .nav-visible {
+    visibility: visible;
+    transition: visibility 0.2s;
   }
+
+  .nav-trigger {
+    position: absolute;
+    clip: rect(0,0,0,0);
+  }
+
+  label[for="nav-trigger"] {
+    position: fixed;
+    top: 15px;
+    left: 15px; // this num
+    z-index: 2;
+    
+    cursor: pointer;
+
+    width: 25px;
+    height: 25px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 25px;
+      height: 2px;
+      background: @white;
+      box-shadow: 0 6px 0 0 @white, 0 12px 0 0 @white;
+      cursor: pointer;
+    }
+    &:after {
+      content: '';
+    }
+  }
+
+}
+  
+.site-wrap {
+  min-width: 100%;
+  min-height: 100%;
+  position: relative;
+  top: 0;
+  bottom: 100%;
+  left: 0;
+  z-index: 1;
+
+  // background: red;
+  // background: -moz-linear-gradient(top,  @main-dark 0%, @main-bright 100%);
+  // background: -webkit-linear-gradient(top,  @main-dark 0%, @main-bright 100%);
+  // background: linear-gradient(to bottom,  @main-dark 0%, @main-bright 100%);
+  // background-repeat: no-repeat;
+
+}
+// .nav-trigger:checked + label {
+//   left: 215px; // added to whatever you want this to be (200 in this case)
+// }
+
+.nav-trigger-open {
+    left: 215px !important;
+  }
+
+.nav-open {
+  left: 200px;
+}
+.nav-trigger + label, .site-wrap {
+    transition: left 0.2s;
 }

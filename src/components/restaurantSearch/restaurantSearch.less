@@ -1,18 +1,56 @@
+// .le-restaurant-search {
+//   label,
+//   input,
+//   select {
+//     display: block;
+//     width: 100%;
+//   }
+
+//   .try-new {
+//     display: inline-block;
+//     width: 100%;
+
+//     input {
+//       display: inline-block;
+//       width: auto;
+//     }
+//   }
+// }
+
 .le-restaurant-search {
-  label,
-  input,
-  select {
-    display: block;
-    width: 100%;
+  .input-label {
+    display: none;
   }
+  input#input-location {
+    .le-input-text;
+    color: @dark-grey;
+    border-bottom: 1px solid @dark-grey;
 
-  .try-new {
-    display: inline-block;
-    width: 100%;
-
-    input {
-      display: inline-block;
-      width: auto;
+    &::placeholder {
+      color: @dark-grey;
     }
   }
+  .try-new {
+    padding-left: 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    .base-font(@size: 16px, @weight: 200);
+    color: @dark-grey;
+  }
+  select#select-radius {
+    .base-font(@size: 16px, @weight: 200);
+    color: @grey;
+    border: 1px solid @white;
+    padding: 4px;
+    border-radius: 2px;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .btn-submit {
+    background: @accent-dark;
+    color: @white;
+    .base-font(@size: 18px, @weight: 300);
+  }
 }
+
