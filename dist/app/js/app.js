@@ -811,7 +811,7 @@ module.exports = {
     // pass in title and array (list) to options
 
     const template = `
-      <div class="js-restaurant-list le-restaurant-list">
+      <div class="js-restaurant-list le-restaurant-list col-xs-12">
       <h3>${options.title}</h3>
         <ul>
           ${buildListFromArray(options.list)}
@@ -829,7 +829,7 @@ module.exports = {
       let listTemplate = "";
 
       array.forEach(function(object) {
-        listTemplate = listTemplate + `<li>${object.id}</li>`;
+        listTemplate = listTemplate + `<li>${object.name}</li>`;
       });
 
       return listTemplate;
@@ -1016,7 +1016,7 @@ module.exports = {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 5
+        "limit": 50
       },
       dataType: 'json',
       type: 'GET',
