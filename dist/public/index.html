@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" name="description" content="">
-
-  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Let's Eat | Log In</title>
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/auth.css">
@@ -12,25 +13,97 @@
   <header role="banner">
   </header>
   <section role="main">
-    <div>
-    login
+
+    <div class="cover-wrapper">
+      <div id="wrapper">
+        <div class="container-fluid">
+          
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="le-logo">
+                <a href="#"><img src="/img/logo.png"></a>
+                Let's Eat
+                <p>Can't decide where to eat? Let's eat will do it for you!</p>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="le-login">
+            <button type="button" class="btn btn-login-open">Log In</button>
+            
+            <div class="login-form col-xs-12">
+            <p>Enter your username and password!</p>
+              <form action="/login" method="post">
+                <div>
+                  <label>Username</label>
+                  <input class="col-xs-8 col-xs-offset-2" type="text" name="username" placeholder="Username" />
+                </div>
+
+                <div>
+                  <label>Password</label>
+                  <input class="col-xs-8 col-xs-offset-2" type="password" name="password" placeholder="Password" />
+                </div>
+                <button class="col-xs-8 col-xs-offset-2 btn btn-login" type="submit">Log In</button>
+              </form>
+              <a href="#" class="col-xs-12 signup-link">Sign Up</a>
+            </div>
+
+            <div class="signup-form col-xs-12">
+            <p>Choose a username and password!</p>
+              <form action="/signup" method="post">
+                <div>
+                  <label>Username</label>
+                  <input class="col-xs-8 col-xs-offset-2" type="text" name="username" placeholder="Username" />
+                </div>
+
+                <div>
+                  <label>Password</label>
+                  <input class="col-xs-8 col-xs-offset-2" type="password" name="password" placeholder="Password" />
+                </div>
+                <button class="col-xs-8 col-xs-offset-2 btn btn-signup" type="submit">Sign Up</button>
+
+              </form>
+              <a href="#" class="col-xs-12 login-link">Log In</a>
+            </div><!-- /.signup-form -->
+          </div>
+
+        </div><!-- / .container-fluid -->
+      </div><!-- / #wrapper -->
+    </div><!-- / .cover-wrapper -->
+
+    <!-- <div class="container-fluid le-login-wrapper">
+      <div class="le-logo">
+        <a href="#"><img src="/img/logo.png"></a>
+        Let's Eat
+      </div>
+ -->
+
+      <!-- <div class="row">
+          <div class="le-login">
+            <button class="col-xs-12" type="button">Login</button>
+            more gdsagfdsa
+          </div>
+        </div>
+      </div> -->
+
+    <!-- <div class="le-login">
       <form action="/login" method="post">
         <div>
           <label>Username:</label>
-          <input type="text" name="username"/>
+          <input class="col-xs-8 col-xs-offset-2" type="text" name="username" placeholder="Username" />
         </div>
         <div>
           <label>Password:</label>
-          <input type="password" name="password"/>
+          <input class="col-xs-8 col-xs-offset-2" type="password" name="password" placeholder="Password" />
         </div>
         <div>
-          <input type="submit" value="Log In"/>
+          <input class="col-xs-8 col-xs-offset-2" type="submit" value="Log In"/>
         </div>
       </form>
-    </div>
+    </div> -->
 
-    <div>
-    signup
+    <!-- <div class="le-signup">
       <form action="/signup" method="post">
           <div>
             <label>Username:</label>
@@ -44,7 +117,8 @@
             <input type="submit" value="Sign Up"/>
           </div>
         </form>
-    </div>
+    </div> -->
+
   </section>
   <footer role="contentinfo"></footer>
 

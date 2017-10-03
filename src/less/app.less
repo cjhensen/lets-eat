@@ -1,23 +1,53 @@
+
 * {
   box-sizing: border-box;
 }
-
-body {
-  background: #efefef;
-}
 header .wrapper {
-  border-bottom: none;
-  text-align: center;
+  // border-bottom: none;
+  // text-align: center;
 }
 
 
 #le-app {
-  max-width: 720px;
-  margin: 0 auto;
-  border: 1px solid #000;
-  padding: 15px;
+  // max-width: 720px;
+  // margin: 0 auto;
+  // border: 1px solid #000;
+  // padding: 15px;
 
-  position: relative;
+  // position: relative;
+}
+@import "./variables.less";
+@import './reusable.less';
+@import "../vendor/bootstrap.min.css";
+@import "../components/**/*.less";
+
+
+// COLOR SCHEME ALL VARIABLES
+body {
+  background: @light-grey;
+
+  // gradient background
+  // background: @main-dark;
+  // background: -moz-linear-gradient(top,  @main-dark 0%, @main-bright 100%);
+  // background: -webkit-linear-gradient(top,  @main-dark 0%, @main-bright 100%);
+  // background: linear-gradient(to bottom,  @main-dark 0%, @main-bright 100%);
+  // background-repeat: no-repeat;
+  // height: 100vh;
 }
 
-@import "../components/**/*.less";
+
+
+
+
+
+
+// index
+#wrapper {
+  padding-top: 15px;
+}
+
+#le-app {
+  padding-top: 60px;
+}
+
+

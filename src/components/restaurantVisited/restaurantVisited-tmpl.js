@@ -7,8 +7,10 @@
   function generateTemplate() {
     const template = `
       <div class="js-restaurant-visited le-restaurant-visited">
-        <button type="button">I'd go here again</button>
-        <button>I wouldn't go back</button>
+        <div>
+          <button type="button">I'd go here again</button>
+          <button>I wouldn't go back</button>
+        </div>
       </div><!-- / le-restaurant-visited -->
     `;
 

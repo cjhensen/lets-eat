@@ -30,6 +30,8 @@
   // then populate the serach result on the page
   pubSub.on('processSearchResults', populateSearchResult);
   pubSub.on('showNextSearchResult', populateSearchResult);
+  pubSub.on('renderRestaurantSearch', destroy);
+  pubSub.on('renderRestaurantList', destroy);
 
   // module variables
   let localSearchResultData = [];
@@ -69,8 +71,16 @@
   function handleAlreadyVisitedBtnClicked() {
     console.log('handleAlreadyVisitedBtnClicked');
 
+    toggleChooseBlur();
+    
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
     pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
+  }
+
+  function toggleChooseBlur() {
+    $('.info-place').toggleClass('visited-open');
+    $('.img-place').toggleClass('visited-open');
+    $('.choose-controls').toggleClass('visited-open');
   }
 
   // handleReceivedSearchResults:
@@ -138,6 +148,7 @@
       // increment index for next result
       currentSearchResultIndex++;
 
+      pubSub.emit('renderRestaurantChoose');
       render();
       pubSub.emit('destroyLoader');
 

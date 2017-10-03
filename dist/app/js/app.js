@@ -325,14 +325,16 @@ module.exports = {
   function generateTemplate() {
     const template = `
       <div class="le-menu js-menu">
-        <button class="le-menu-toggle btn" type="button">MENU</button>
-        <nav class="nav">
-          <a class="nav-item" href="#" alt="" data-item="log">Login/Logout</a>
-          <a class="nav-item" href="#" alt="" data-item="search">Search</a>
-          <a class="nav-item" href="#" alt="" data-item="history">History</a>
-          <a class="nav-item" href="#" alt="" data-item="liked">Liked Restaurants</a>
-          <a class="nav-item" href="#" alt="" data-item="disliked">Disliked Restaurants</a>
-        </nav>
+        <h2>Let's Eat</h2>
+        <ul class="nav">
+          <li class="nav-item"><a href="#" data-item="search">Search</a></li>
+          <li class="nav-item"><a href="#" data-item="history">History</a></li>
+          <li class="nav-item"><a href="#" data-item="liked">Liked</a></li>
+          <li class="nav-item"><a href="#" data-item="disliked">Disliked</a></li>
+          <li class="nav-item"><a href="/logout" data-item="log">Log Out</a></li>
+        </ul>
+        <input type="checkbox" id="nav-trigger" class="nav-trigger le-menu-toggle" />
+        <label for="nav-trigger"></label>
       </div>
     `;
 
@@ -355,55 +357,44 @@ module.exports = {
   const template = $(leMenuTmpl.generateTemplate());
   const leMenuToggle = `${component} .le-menu-toggle`;
   const leMenuNav = `${component} nav`;
-  const leMenuNavItem = `${component} .nav-item`;
+  const leMenuNavItem = `${component} .nav-item a`;
 
   // handleMenuClicked:
   // on menu button click, show menu
   function handleMenuClicked() {
     console.log('handleMenuClicked');
-    toggleNavVisibility();
-    toggleMenuButtonText();
+    toggleMenu();
+  }
+
+  function toggleMenu() {
+    $('.site-wrap').toggleClass('nav-open');
+    $('.nav').toggleClass('nav-visible');
+    $('.nav-trigger').toggleClass('nav-trigger-open');
+    $('label[for="nav-trigger"]').toggleClass('nav-trigger-open');
   }
 
   // handleMenuItemClicked:
   // on menu item clicked, bring to that view, and hide menu
   function handleMenuItemClicked() {
     console.log('handleMenuItemClicked');
-    event.preventDefault();
-    toggleNavVisibility();
-    toggleMenuButtonText();
-
     // bring to appropriate view
     // get the item clicked in the menu
     // send event to restaurantLists with the item to render the appropriate component
     const itemClicked = $(this).attr('data-item');
-    console.log('itemClicked', itemClicked);
-
     if(itemClicked === "history" || itemClicked === "liked" || itemClicked === "disliked") {
+      event.preventDefault();
       pubSub.emit('renderRestaurantList', {itemClicked: itemClicked});
+      toggleMenu();
     }
-  }
-
-  // toggleNavVisibility:
-  // toggle nav visibility through show-nav class
-  function toggleNavVisibility() {
-    $(leMenuNav).toggleClass('show-nav');
-  }
-
-  // toggleMenuButtonText:
-  // if text is MENU, change to X. If X, change to MENU
-  function toggleMenuButtonText() {
-    const currentText = $(leMenuToggle).text();
-    if(currentText === "MENU") {
-      $(leMenuToggle).text("X");
-    } else {
-      $(leMenuToggle).text("MENU");
+    if(itemClicked === "search") {
+      pubSub.emit('renderRestaurantSearch');
+      toggleMenu();
     }
   }
 
   function assignEventHandlers() {
-    globals.APP_CONTAINER.on('click', leMenuToggle, handleMenuClicked);
-    globals.APP_CONTAINER.on('click', leMenuNavItem, handleMenuItemClicked);
+    globals.NAV_CONTAINER.on('click', leMenuToggle, handleMenuClicked);
+    globals.NAV_CONTAINER.on('click', leMenuNavItem, handleMenuItemClicked);
   }
 
   function render(container) {
@@ -413,7 +404,7 @@ module.exports = {
     container.append(template);
   }
 
-  render();
+  render(globals.NAV_CONTAINER);
   assignEventHandlers();
 
   module.exports = {
@@ -441,19 +432,17 @@ module.exports = {
     const template = `
       <div class="js-restaurant-choose le-restaurant-choose">
         <button type="button" class="btn btn-back js-btn-back">Back</button>
-        <div class="info-place">
+        <div class="info-place col-xs-12 col-md-4 col-md-offset-4">
           <h4 class="js-title">${options.title}</h4>
-          <span class="js-rating rating-stars">${options.rating}</span>
+          <span class="js-rating rating-stars">${options.rating} stars</span>
         </div>
-        <div class="img-place">
-          <a href="#" class="js-link-show-details">
-            <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
-          </a>
+        <div class="img-place col-xs-12 col-md-4 col-md-offset-4">
+          <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
         </div>
-        <div class="choose-controls">
-          <button type="button" class="btn">Eat Here!</button>
-          <button type="button" class="btn js-btn-already-visited">Already been here</button>
-          <button type="button" class="btn js-btn-next">Not feeling this place</button>
+        <div class="choose-controls clearfix">
+          <button type="button" class="btn col-xs-12">Eat Here!</button>
+          <button type="button" class="btn js-btn-already-visited col-xs-12">Already been here</button>
+          <button type="button" class="btn js-btn-next col-xs-12">Not feeling this place</button>
         </div><!-- / choose-controls -->
 
         <!-- insert restaurantVisited component -->
@@ -500,6 +489,8 @@ module.exports = {
   // then populate the serach result on the page
   pubSub.on('processSearchResults', populateSearchResult);
   pubSub.on('showNextSearchResult', populateSearchResult);
+  pubSub.on('renderRestaurantSearch', destroy);
+  pubSub.on('renderRestaurantList', destroy);
 
   // module variables
   let localSearchResultData = [];
@@ -539,8 +530,16 @@ module.exports = {
   function handleAlreadyVisitedBtnClicked() {
     console.log('handleAlreadyVisitedBtnClicked');
 
+    toggleChooseBlur();
+    
     // Send currently shown restaurant in event to be added to liked/disliked from restaurantVisited popup
     pubSub.emit('displayVisitedPopup', {restaurant: localSearchResultData[currentSearchResultIndex-1]});
+  }
+
+  function toggleChooseBlur() {
+    $('.info-place').toggleClass('visited-open');
+    $('.img-place').toggleClass('visited-open');
+    $('.choose-controls').toggleClass('visited-open');
   }
 
   // handleReceivedSearchResults:
@@ -608,6 +607,7 @@ module.exports = {
       // increment index for next result
       currentSearchResultIndex++;
 
+      pubSub.emit('renderRestaurantChoose');
       render();
       pubSub.emit('destroyLoader');
 
@@ -811,7 +811,7 @@ module.exports = {
     // pass in title and array (list) to options
 
     const template = `
-      <div class="js-restaurant-list js-restaurant-list">
+      <div class="js-restaurant-list le-restaurant-list col-xs-12">
       <h3>${options.title}</h3>
         <ul>
           ${buildListFromArray(options.list)}
@@ -829,7 +829,7 @@ module.exports = {
       let listTemplate = "";
 
       array.forEach(function(object) {
-        listTemplate = listTemplate + `<li>${object.id}</li>`;
+        listTemplate = listTemplate + `<li>${object.name}</li>`;
       });
 
       return listTemplate;
@@ -854,6 +854,8 @@ module.exports = {
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
+  pubSub.on('renderRestaurantSearch', destroy);
+  pubSub.on('renderRestaurantChoose', destroy);
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
@@ -912,13 +914,13 @@ module.exports = {
     const template = `
       <div class="le-restaurant-search js-restaurant-search">
         <form id="restaurant-search">
-          <label for="input-location">Location
-            <input class="js-input-location" type="number" id="input-location" name="location" pattern="[0-9]*" required>
+          <label for="input-location"><span class="input-label">Location</span>
+            <input class="js-input-location col-xs-8 col-xs-offset-2" type="number" id="input-location" name="location" pattern="[0-9]*" placeholder="Location (zipcode)" required>
           </label>
 
-          <label for="select-radius">Radius
-            <select class="js-select-radius" name="radius" id="select-radius" required>
-              <option value="" disabled selected>Select a radius</option>
+          <label for="select-radius"><span class="input-label">Radius</span>
+            <select class="js-select-radius col-xs-8 col-xs-offset-2" name="radius" id="select-radius" required>
+              <option value="" disabled selected>Select a radius &#9660;</option>
               <option value="5">5mi</option>
               <option value="10">10mi</option>
               <option value="15">15mi</option>
@@ -940,11 +942,11 @@ module.exports = {
           </label>
           -->
 
-          <label for="input-try-new" class="try-new">Try something new?
+          <label for="input-try-new" class="try-new col-xs-8 col-xs-offset-2">Try something new?
             <input class="js-input-try-new" type="checkbox" id="input-try-new" name="try-new">
           </label>
 
-          <button type="submit" class="btn btn-submit js-btn-submit">Let's Eat!</button>
+          <button type="submit" class="btn btn-submit js-btn-submit col-xs-8 col-xs-offset-2">Let's Eat!</button>
 
         </form>
       </div>
@@ -976,6 +978,7 @@ module.exports = {
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
+  pubSub.on('renderRestaurantList', destroy);
   
   // handleRenderRestaurantSearch:
   // used when receiveing the emitted event when clicking back button from a different component
@@ -1013,7 +1016,7 @@ module.exports = {
         "term": "food",
         "location": queryParams.location,
         "radius": queryParams.radius,
-        "limit": 5
+        "limit": 50
       },
       dataType: 'json',
       type: 'GET',
@@ -1129,8 +1132,10 @@ module.exports = {
   function generateTemplate() {
     const template = `
       <div class="js-restaurant-visited le-restaurant-visited">
-        <button type="button">I'd go here again</button>
-        <button>I wouldn't go back</button>
+        <div>
+          <button type="button">I'd go here again</button>
+          <button>I wouldn't go back</button>
+        </div>
       </div><!-- / le-restaurant-visited -->
     `;
 
@@ -1251,7 +1256,8 @@ module.exports = {
   assignEventHandlers();
 },{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantVisited-tmpl":27}],29:[function(require,module,exports){
 module.exports = {
-  APP_CONTAINER: $('#le-app')
+  APP_CONTAINER: $('#le-app'),
+  NAV_CONTAINER: $('nav')
 };
 },{}],30:[function(require,module,exports){
 module.exports = {

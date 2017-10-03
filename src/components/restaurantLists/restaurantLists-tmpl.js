@@ -13,7 +13,7 @@
     // pass in title and array (list) to options
 
     const template = `
-      <div class="js-restaurant-list js-restaurant-list">
+      <div class="js-restaurant-list le-restaurant-list col-xs-12">
       <h3>${options.title}</h3>
         <ul>
           ${buildListFromArray(options.list)}
@@ -31,7 +31,7 @@
       let listTemplate = "";
 
       array.forEach(function(object) {
-        listTemplate = listTemplate + `<li>${object.id}</li>`;
+        listTemplate = listTemplate + `<li>${object.name}</li>`;
       });
 
       return listTemplate;
