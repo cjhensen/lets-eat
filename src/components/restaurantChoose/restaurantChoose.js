@@ -13,6 +13,7 @@
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
+  const btnEat = `${component} .js-btn-eat`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const btnBack = `${component} .js-btn-back`;
   const imgLink = `${component} .js-link-show-details`;
@@ -37,6 +38,8 @@
   let localSearchResultData = [];
   let currentSearchResultIndex = 0;
 
+  let objForInsert = {};
+
   // handleBtnBackClicked:
   // destroy choose view
   // render restaurant search view in restaurantSearch
@@ -44,6 +47,25 @@
     console.log('handleNextBtnClicked');
     destroy();
     pubSub.emit('renderRestaurantSearch');
+  }
+
+  // handleBtnEatClicked
+  // open new window with yelp page
+  // add item to history in db
+  function handleBtnEatClicked() {
+    console.log('handleBtnEatClicked');
+    console.log(localSearchResultData[currentSearchResultIndex-1]);
+    window.open(localSearchResultData[currentSearchResultIndex-1].url, '_blank');
+
+    let data = {
+      "history" : objForInsert
+    };
+
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      console.log('added to db');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   // handleImgLinkClicked:
@@ -98,6 +120,8 @@
     // set local data equal to received search result data
     localSearchResultData = searchResultData.data;
 
+    // set objForInsert
+
     let tryNew = searchResultData.tryNew;
     console.log('try new in handleReceivedSearchResults', tryNew);
 
@@ -145,6 +169,16 @@
       templateOptions.img_src = localSearchResultData[currentSearchResultIndex].image_url;
       templateOptions.img_alt = localSearchResultData[currentSearchResultIndex].name;
 
+      // set objForInsert
+      objForInsert = {
+        id: localSearchResultData[currentSearchResultIndex].id, 
+        name: localSearchResultData[currentSearchResultIndex].name, 
+        price: localSearchResultData[currentSearchResultIndex].price, 
+        rating: localSearchResultData[currentSearchResultIndex].rating, 
+        url: localSearchResultData[currentSearchResultIndex].url, 
+        image_url: localSearchResultData[currentSearchResultIndex].image_url
+      };
+
       // increment index for next result
       currentSearchResultIndex++;
 
@@ -171,6 +205,7 @@
     componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
     componentContainer.on('click', imgLink, handleImgLinkClicked);
     componentContainer.on('click', btnBack, handleBtnBackClicked);
+    componentContainer.on('click', btnEat, handleBtnEatClicked);
   }
 
   // render the view to the page

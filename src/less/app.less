@@ -44,10 +44,36 @@ body {
 // index
 #wrapper {
   padding-top: 15px;
+  padding-bottom: 0px;
 }
 
 #le-app {
   padding-top: 60px;
 }
 
+footer {
+  position: fixed;
+  z-index: 90;
+  height: 50px;
+  line-height: 50px;
+  // position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0 15px;
+  background: lighten(@grey, 20%);
+  .base-font(@size: 14px, @weight: 300);
+  color: @dark-grey;
+  display: none;
+}
+
+@screen-md-min: 992px;
+@media (min-width: @screen-md-min) { 
+footer {
+  display: block;
+  } 
+
+  #wrapper {
+    padding-bottom: 60px;
+  }
+}
 

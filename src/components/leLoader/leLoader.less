@@ -1,8 +1,107 @@
+// animated loader via http://www.codesynthesis.co.uk/tutorials/pure-css-loading-spinners
+
 .le-loader {
-  img {
-    max-width: 100%;
-    width: 30%;
-    margin: 0 auto;
-    display: block;
-  }
+  // img {
+  //   max-width: 100%;
+  //   width: 30%;
+  //   margin: 0 auto;
+  //   display: block;
+  // }
+
+  .animation-2 {
+    width:145px;
+    margin: 30px auto;
+}
+
+.animation-2 div{
+    display:inline-block;
+    background-color: @main-bright;
+    width:25px;
+    height:25px;
+    margin:2px;
+    padding:0;
+    border-radius:2px;
+}
+
+.animation-2 .box1 {
+    -webkit-animation: animation2-box1 1.5s infinite;
+    animation: animation2-box1 1.5s infinite;
+}
+
+.animation-2 .box2 {
+    -webkit-animation: animation2-box2 1.5s infinite;
+    animation: animation2-box2 1.5s infinite;
+}
+
+.animation-2 .box3 {
+    -webkit-animation: animation2-box3 1.5s infinite;
+    animation: animation2-box3 1.5s infinite;
+}
+
+.animation-2 .box4 {
+    -webkit-animation: animation2-box4 1.5s infinite;
+    animation: animation2-box4 1.5s infinite;
+}
+
+.animation-2 .box5 {
+    -webkit-animation: animation2-box5 1.5s infinite;
+    animation: animation2-box5 1.5s infinite;
+}
+
+@keyframes animation2-box1 {
+    40%
+   {
+        transform: translate(50px, 0) scale(1.5);
+    }
+    100%
+   {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes animation2-box2 {
+    40%
+   {
+        transform: translate(25px, 0) scale(2);
+    }
+    100%
+   {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes animation2-box3 {
+    25%
+   {
+        transform: scale(3);
+    }
+    100%
+   {
+        transform: scale(1);
+    }
+}
+
+
+
+@keyframes animation2-box4 {
+    40%
+   {
+        transform: translate(-25px, 0) scale(2);
+    }
+    100%
+   {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes animation2-box5 {
+    40%
+   {
+        transform: translate(-50px, 0) scale(1.5);
+    }
+    100%
+   {
+        transform: translate(0, 0);
+    }
+}
 }

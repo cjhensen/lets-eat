@@ -1,4 +1,10 @@
 .le-restaurant-choose {
+  .btn-back {
+    .base-font(@size: 16px, @weight: 500);
+    margin-left: -15px;
+    color: @dark-grey;
+    background: lighten(@grey, 30%);
+  }
   .info-place {
     background: #fff;
     border-radius: 4px;
@@ -26,14 +32,28 @@
     // max-height: 330px;
     background: #fff;
     position: relative;
-    padding-bottom: 15px;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    clear: both;
+    border: 15px solid #fff;
+    overflow: hidden;
+    padding: 0;
+
+    &::after {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+    }
 
     img {
-      display: block;
-      max-width: 100%;
-      margin: 0 auto;
+      // display: block;
+      // max-width: 100%;
+      // margin: 0 auto;
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
   .choose-controls {
@@ -41,7 +61,7 @@
     clear: both;
     button {
       display: block;
-      margin: 0 auto;
+      // margin: 0 auto;
       background: @accent-bright;
       .base-font(@size: 16px, @weight: 500);
       color: @white;

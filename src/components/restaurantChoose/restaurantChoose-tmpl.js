@@ -13,7 +13,9 @@
 
     const template = `
       <div class="js-restaurant-choose le-restaurant-choose">
-        <button type="button" class="btn btn-back js-btn-back">Back</button>
+        <div class="col-xs-12 col-md-4 col-md-offset-4">
+          <button type="button" class="btn btn-back js-btn-back">Back</button>
+        </div>
         <div class="info-place col-xs-12 col-md-4 col-md-offset-4">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating} stars</span>
@@ -22,9 +24,9 @@
           <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
         </div>
         <div class="choose-controls clearfix">
-          <button type="button" class="btn col-xs-12">Eat Here!</button>
-          <button type="button" class="btn js-btn-already-visited col-xs-12">Already been here</button>
-          <button type="button" class="btn js-btn-next col-xs-12">Not feeling this place</button>
+          <button type="button" class="btn js-btn-eat col-xs-12 col-md-4 col-md-offset-4">Eat Here!</button>
+          <button type="button" class="btn js-btn-already-visited col-xs-12 col-md-4 col-md-offset-4">Already been here</button>
+          <button type="button" class="btn js-btn-next col-xs-12 col-md-4 col-md-offset-4">Not feeling this place</button>
         </div><!-- / choose-controls -->
 
         <!-- insert restaurantVisited component -->

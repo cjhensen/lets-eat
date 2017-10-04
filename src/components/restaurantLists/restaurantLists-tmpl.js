@@ -13,7 +13,7 @@
     // pass in title and array (list) to options
 
     const template = `
-      <div class="js-restaurant-list le-restaurant-list col-xs-12">
+      <div class="js-restaurant-list le-restaurant-list col-xs-12 col-md-8 col-md-offset-2">
       <h3>${options.title}</h3>
         <ul>
           ${buildListFromArray(options.list)}

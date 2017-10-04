@@ -13,6 +13,12 @@
   function generateTemplate() {
     const template = `
       <div class="le-restaurant-search js-restaurant-search">
+        <ol class="col-xs-8 col-xs-offset-2">
+          <li>Enter zipcode</li>
+          <li>Select search radius</li>
+          <li>Want restaurants you haven't been to? Check 'Try something new' (if used app a few times)</li>
+          <li>"Let's Eat!"</li>
+        </ol>
         <form id="restaurant-search">
           <label for="input-location"><span class="input-label">Location</span>
             <input class="js-input-location col-xs-8 col-xs-offset-2" type="number" id="input-location" name="location" pattern="[0-9]*" placeholder="Location (zipcode)" required>

@@ -247,7 +247,13 @@ module.exports = {
   function generateTemplate() {
     const template = `
       <div class="le-loader js-loader">
-        <img src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif">
+        <div class="animation-2">
+          <div class="box1"></div>
+          <div class="box2"></div>
+          <div class="box3"></div>
+          <div class="box4"></div>
+          <div class="box5"></div>
+        </div>
       </div>
     `;
 
@@ -327,7 +333,7 @@ module.exports = {
       <div class="le-menu js-menu">
         <h2>Let's Eat</h2>
         <ul class="nav">
-          <li class="nav-item"><a href="#" data-item="search">Search</a></li>
+          <li class="nav-item"><a href="/app" data-item="search">Search</a></li>
           <li class="nav-item"><a href="#" data-item="history">History</a></li>
           <li class="nav-item"><a href="#" data-item="liked">Liked</a></li>
           <li class="nav-item"><a href="#" data-item="disliked">Disliked</a></li>
@@ -371,6 +377,7 @@ module.exports = {
     $('.nav').toggleClass('nav-visible');
     $('.nav-trigger').toggleClass('nav-trigger-open');
     $('label[for="nav-trigger"]').toggleClass('nav-trigger-open');
+    $('.le-menu h2').toggleClass('nav-trigger-open');
   }
 
   // handleMenuItemClicked:
@@ -431,7 +438,9 @@ module.exports = {
 
     const template = `
       <div class="js-restaurant-choose le-restaurant-choose">
-        <button type="button" class="btn btn-back js-btn-back">Back</button>
+        <div class="col-xs-12 col-md-4 col-md-offset-4">
+          <button type="button" class="btn btn-back js-btn-back">Back</button>
+        </div>
         <div class="info-place col-xs-12 col-md-4 col-md-offset-4">
           <h4 class="js-title">${options.title}</h4>
           <span class="js-rating rating-stars">${options.rating} stars</span>
@@ -440,9 +449,9 @@ module.exports = {
           <img class="js-img" src="${options.img_src}" alt="${options.img_alt}">
         </div>
         <div class="choose-controls clearfix">
-          <button type="button" class="btn col-xs-12">Eat Here!</button>
-          <button type="button" class="btn js-btn-already-visited col-xs-12">Already been here</button>
-          <button type="button" class="btn js-btn-next col-xs-12">Not feeling this place</button>
+          <button type="button" class="btn js-btn-eat col-xs-12 col-md-4 col-md-offset-4">Eat Here!</button>
+          <button type="button" class="btn js-btn-already-visited col-xs-12 col-md-4 col-md-offset-4">Already been here</button>
+          <button type="button" class="btn js-btn-next col-xs-12 col-md-4 col-md-offset-4">Not feeling this place</button>
         </div><!-- / choose-controls -->
 
         <!-- insert restaurantVisited component -->
@@ -472,6 +481,7 @@ module.exports = {
   const component = '.js-restaurant-choose';
   let template = $(restaurantChooseTmpl.generateTemplate());
   const btnNextResult = `${component} .js-btn-next`;
+  const btnEat = `${component} .js-btn-eat`;
   const btnAlreadyVisited = `${component} .js-btn-already-visited`;
   const btnBack = `${component} .js-btn-back`;
   const imgLink = `${component} .js-link-show-details`;
@@ -496,6 +506,8 @@ module.exports = {
   let localSearchResultData = [];
   let currentSearchResultIndex = 0;
 
+  let objForInsert = {};
+
   // handleBtnBackClicked:
   // destroy choose view
   // render restaurant search view in restaurantSearch
@@ -503,6 +515,25 @@ module.exports = {
     console.log('handleNextBtnClicked');
     destroy();
     pubSub.emit('renderRestaurantSearch');
+  }
+
+  // handleBtnEatClicked
+  // open new window with yelp page
+  // add item to history in db
+  function handleBtnEatClicked() {
+    console.log('handleBtnEatClicked');
+    console.log(localSearchResultData[currentSearchResultIndex-1]);
+    window.open(localSearchResultData[currentSearchResultIndex-1].url, '_blank');
+
+    let data = {
+      "history" : objForInsert
+    };
+
+    utilities.makeDbRequest('PUT', data).then(function(data) {
+      console.log('added to db');
+    }).catch(function(err) {
+      console.log(err);
+    });
   }
 
   // handleImgLinkClicked:
@@ -557,6 +588,8 @@ module.exports = {
     // set local data equal to received search result data
     localSearchResultData = searchResultData.data;
 
+    // set objForInsert
+
     let tryNew = searchResultData.tryNew;
     console.log('try new in handleReceivedSearchResults', tryNew);
 
@@ -604,6 +637,16 @@ module.exports = {
       templateOptions.img_src = localSearchResultData[currentSearchResultIndex].image_url;
       templateOptions.img_alt = localSearchResultData[currentSearchResultIndex].name;
 
+      // set objForInsert
+      objForInsert = {
+        id: localSearchResultData[currentSearchResultIndex].id, 
+        name: localSearchResultData[currentSearchResultIndex].name, 
+        price: localSearchResultData[currentSearchResultIndex].price, 
+        rating: localSearchResultData[currentSearchResultIndex].rating, 
+        url: localSearchResultData[currentSearchResultIndex].url, 
+        image_url: localSearchResultData[currentSearchResultIndex].image_url
+      };
+
       // increment index for next result
       currentSearchResultIndex++;
 
@@ -630,6 +673,7 @@ module.exports = {
     componentContainer.on('click', btnAlreadyVisited, handleAlreadyVisitedBtnClicked);
     componentContainer.on('click', imgLink, handleImgLinkClicked);
     componentContainer.on('click', btnBack, handleBtnBackClicked);
+    componentContainer.on('click', btnEat, handleBtnEatClicked);
   }
 
   // render the view to the page
@@ -811,7 +855,7 @@ module.exports = {
     // pass in title and array (list) to options
 
     const template = `
-      <div class="js-restaurant-list le-restaurant-list col-xs-12">
+      <div class="js-restaurant-list le-restaurant-list col-xs-12 col-md-8 col-md-offset-2">
       <h3>${options.title}</h3>
         <ul>
           ${buildListFromArray(options.list)}
@@ -913,6 +957,12 @@ module.exports = {
   function generateTemplate() {
     const template = `
       <div class="le-restaurant-search js-restaurant-search">
+        <ol class="col-xs-8 col-xs-offset-2">
+          <li>Enter zipcode</li>
+          <li>Select search radius</li>
+          <li>Want restaurants you haven't been to? Check 'Try something new' (if used app a few times)</li>
+          <li>"Let's Eat!"</li>
+        </ol>
         <form id="restaurant-search">
           <label for="input-location"><span class="input-label">Location</span>
             <input class="js-input-location col-xs-8 col-xs-offset-2" type="number" id="input-location" name="location" pattern="[0-9]*" placeholder="Location (zipcode)" required>
