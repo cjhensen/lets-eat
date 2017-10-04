@@ -24,6 +24,7 @@
     $('.nav').toggleClass('nav-visible');
     $('.nav-trigger').toggleClass('nav-trigger-open');
     $('label[for="nav-trigger"]').toggleClass('nav-trigger-open');
+    $('.le-menu h2').toggleClass('nav-trigger-open');
   }
 
   // handleMenuItemClicked:

@@ -10,7 +10,7 @@
       <div class="le-menu js-menu">
         <h2>Let's Eat</h2>
         <ul class="nav">
-          <li class="nav-item"><a href="#" data-item="search">Search</a></li>
+          <li class="nav-item"><a href="/app" data-item="search">Search</a></li>
           <li class="nav-item"><a href="#" data-item="history">History</a></li>
           <li class="nav-item"><a href="#" data-item="liked">Liked</a></li>
           <li class="nav-item"><a href="#" data-item="disliked">Disliked</a></li>
