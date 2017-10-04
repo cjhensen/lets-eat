@@ -1,5 +1,6 @@
 // require assertion library
 const chai = require('chai');
+const expect = chai.expect;
 
 // require http assertion library
 const chaiHttp = require('chai-http');
@@ -18,6 +19,10 @@ const {app, runServer, closeServer} = require('../server/server');
 
 chai.use(chaiHttp);
 
+// for password
+const bcrypt = require('bcrypt-nodejs');
+
+
 function seedUserData() {
   console.log('seeding User data');
   const seedData = [];
@@ -31,7 +36,7 @@ function generateUserData() {
   return {
     userInfo: {
       username: "adminTest",
-      password: "adminTest"
+      password: bcrypt.hashSync("adminTestPw", bcrypt.genSaltSync(8), null)
     },
     history: [
     {
@@ -102,6 +107,119 @@ describe.only('Lets Eat API', function() {
           response.type.should.equal('text/html');
         });
         done();
+    });
+  });
+
+  describe('LOGIN', function() {
+    it('should redirect to / with incorrect or non-existent user info', function() {
+      const noExistUser = {
+        username: 'newUser',
+        password: 'newUserPw'
+      };
+
+      return chai.request(app)
+        .post('/login')
+        .send(noExistUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/');
+        });
+    });
+    it('should redirect to /app with correct user info', function() {
+      const existingUser = {
+        username: "adminTest",
+        password: "adminTestPw"
+      };
+
+      return chai.request(app)
+        .post('/login')
+        .send(existingUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/app');
+        });
+    });
+  });
+
+  describe('SIGNUP', function() {
+    it('should redirect to / with existing user info used as new user', function() {
+      const existingUser = {
+        username: "adminTest",
+        password: "adminTestPw"
+      };
+
+      return chai.request(app)
+        .post('/signup')
+        .send(existingUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/');
+        });
+    });
+
+    it('should redirect to app with new user info', function() {
+      const newUser = {
+        userName: "newUser",
+        userName: "newUserPw"
+      };
+
+      return chai.request(app)
+        .post('/signup')
+        .send(newUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/app');
+        });
+    });
+  });
+
+  describe('LOGOUT', function() {
+    it('should redirect to / on logout', function() {
+      const existingUser = {
+        username: 'adminTest',
+        password: 'adminTestPw'
+      };
+
+      return chai.request(app)
+        .post('/login')
+        .send(existingUser)
+        .then(function(response) {
+          return chai.request(app)
+            .get('/logout');
+        })
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/');
+        });
+    });
+  });
+
+  describe.only('USERDATA', function() {
+    describe('get user data list', function() {
+      it('should return the specified list', function() {
+
+        const existingUser = {
+          username: 'adminTest',
+          password: 'adminTestPw'
+        };
+
+        const data = {
+          arrayToGet: 'history'
+        };
+
+        return chai.request(app)
+          .post('/login')
+          .send(existingUser)
+          .then(function(response) {
+            return chai.request(app)
+              .get('/userdata')
+              .send(data)
+              .then(function(response) {
+                // console.log('req usr', request.user);
+                console.log('get response', response);
+              })
+          })
+      });
     });
   });
 
