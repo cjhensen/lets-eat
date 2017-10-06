@@ -10,6 +10,7 @@
   const component = '.js-restaurant-list';
   // let template = $(restaurantListsTmpl.generateTemplate());
   const templateOptions = {};
+  const deleteButton = `${component} li a`;
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
@@ -39,6 +40,32 @@
 
   }
 
+  function handleDeleteButtonClicked(event) {
+    event.preventDefault();
+    console.log('handleDeleteButtonClicked');
+
+    const arrayToDelFrom = templateOptions.title;
+    const itemToDelete = $(this).attr('data-id');
+
+    const data = {
+      arrayToDelFrom: arrayToDelFrom,
+      itemToDelete: itemToDelete
+    };
+
+    utilities.makeDbRequest('DELETE', data).then(function(data) {
+      destroy();
+      render();
+    }).catch(function(err) {
+      console.log(err);
+    });
+
+    
+  }
+
+  function assignEventHandlers() {
+    globals.APP_CONTAINER.on('click', deleteButton, handleDeleteButtonClicked);
+  }
+
   function render() {
     console.log('restaurantLists render');
     let template = $(restaurantListsTmpl.generateTemplate(templateOptions));
@@ -51,3 +78,5 @@
       $(component).remove();
     }
   }
+
+  assignEventHandlers();

@@ -9,6 +9,8 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 
+const request = require('supertest');
+
 // use chai should
 const should = chai.should();
 
@@ -36,7 +38,8 @@ function generateUserData() {
   return {
     userInfo: {
       username: "adminTest",
-      password: bcrypt.hashSync("adminTestPw", bcrypt.genSaltSync(8), null)
+      password: bcrypt.hashSync("adminTestPw", bcrypt.genSaltSync(8), null),
+      _id: 1234567890
     },
     history: [
     {
@@ -195,31 +198,38 @@ describe.only('Lets Eat API', function() {
   });
 
   describe.only('USERDATA', function() {
+    const authenticatedUser = request.agent(app);
+
+    const existingUser = {
+      username: 'adminTest',
+      password: 'adminTestPw'
+    };
+
+
+    before(function(done) {
+      authenticatedUser
+        .post('/login')
+        .send(existingUser)
+        .end(function(err, response) {
+          expect('Location', '/app');
+          done();
+        });
+    });
     describe('get user data list', function() {
-      it('should return the specified list', function() {
-
-        const existingUser = {
-          username: 'adminTest',
-          password: 'adminTestPw'
-        };
-
-        const data = {
-          arrayToGet: 'history'
-        };
-
-        return chai.request(app)
-          .post('/login')
-          .send(existingUser)
-          .then(function(response) {
-            return chai.request(app)
-              .get('/userdata')
-              .send(data)
-              .then(function(response) {
-                // console.log('req usr', request.user);
-                console.log('get response', response);
-              })
-          })
+      it('user should be logged in and navigate to /app', function(done) {
+        authenticatedUser.get('/app')
+        .expect('Location', '/app');
+        done();
       });
+
+      it('should return user list', function(done) {
+        authenticatedUser.get('/userdata')
+        .query({arrayToGet: 'history'})
+        .then(function(response) {
+          console.log('res', response);
+          done();
+        })
+      })
     });
   });
 

@@ -96,5 +96,23 @@ module.exports = function(app, passport, express, pathVar) {
       .then(user => response.status(204).end())
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
+
+  app.delete('/userdata', isLoggedIn, function(request, response) {
+    console.log('delete request query', request.user);
+
+    const arrayToDelFrom = request.query.arrayToDelFrom;
+    const itemToDel = request.query.itemToDelete;
+    
+    console.log('arrayToDelFrom', arrayToDelFrom);
+    console.log('itemToDel', itemToDel);
+
+
+
+    User
+      .findOneAndUpdate({_id: request.user._id}, {$pull: {arrayToDelFrom: {id: itemToDel}}})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
   
 }

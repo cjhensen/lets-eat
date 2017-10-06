@@ -873,7 +873,11 @@ module.exports = {
       let listTemplate = "";
 
       array.forEach(function(object) {
-        listTemplate = listTemplate + `<li>${object.name}</li>`;
+        listTemplate = listTemplate + `
+        <li>${object.name}
+          <a href="#" data-id="${object.id}">x</a>
+        </li>
+        `;
       });
 
       return listTemplate;
@@ -895,6 +899,7 @@ module.exports = {
   const component = '.js-restaurant-list';
   // let template = $(restaurantListsTmpl.generateTemplate());
   const templateOptions = {};
+  const deleteButton = `${component} li a`;
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
@@ -924,6 +929,32 @@ module.exports = {
 
   }
 
+  function handleDeleteButtonClicked(event) {
+    event.preventDefault();
+    console.log('handleDeleteButtonClicked');
+
+    const arrayToDelFrom = templateOptions.title;
+    const itemToDelete = $(this).attr('data-id');
+
+    const data = {
+      arrayToDelFrom: arrayToDelFrom,
+      itemToDelete: itemToDelete
+    };
+
+    utilities.makeDbRequest('DELETE', data).then(function(data) {
+      destroy();
+      render();
+    }).catch(function(err) {
+      console.log(err);
+    });
+
+    
+  }
+
+  function assignEventHandlers() {
+    globals.APP_CONTAINER.on('click', deleteButton, handleDeleteButtonClicked);
+  }
+
   function render() {
     console.log('restaurantLists render');
     let template = $(restaurantListsTmpl.generateTemplate(templateOptions));
@@ -936,6 +967,8 @@ module.exports = {
       $(component).remove();
     }
   }
+
+  assignEventHandlers();
 },{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
@@ -1491,6 +1524,11 @@ module.exports = {
         console.log('requestType', requestType);
         settings.data = data;
         console.log('put data', data);
+        console.log('settings.data', settings.data);
+      }
+      if(requestType === 'DELETE') {
+        console.log('requestType', requestType);
+        settings.data = data;
         console.log('settings.data', settings.data);
       }
       $.ajax(settings);

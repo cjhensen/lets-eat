@@ -31,7 +31,11 @@
       let listTemplate = "";
 
       array.forEach(function(object) {
-        listTemplate = listTemplate + `<li>${object.name}</li>`;
+        listTemplate = listTemplate + `
+        <li>${object.name}
+          <a href="#" data-id="${object.id}">x</a>
+        </li>
+        `;
       });
 
       return listTemplate;
