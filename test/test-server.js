@@ -174,8 +174,8 @@ describe('Lets Eat API', function() {
 
     it('should redirect to app with new user info', function() {
       const newUser = {
-        userName: "newUser",
-        userName: "newUserPw"
+        username: "newUser",
+        password: "newUserPw"
       };
 
       return chai.request(app)
@@ -184,6 +184,20 @@ describe('Lets Eat API', function() {
         .then(function(response) {
           expect(response.status).to.equal(200);
           expect('Location', '/app');
+        });
+    });
+
+    it('should add new user to db through POST', function() {
+      const newUser2 = {
+        userName: "newUser",
+        password: "newUser2pw"
+      };
+
+      return chai.request(app)
+        .post('/userdata')
+        .send(newUser2)
+        .then(function(response) {
+          expect(response.statusCode).to.equal(201);
         });
     });
   });

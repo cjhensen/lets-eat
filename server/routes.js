@@ -78,6 +78,7 @@ module.exports = function(app, passport, express, pathVar) {
       });
   });
 
+  // updating a user list
   app.put('/userdata', isLoggedIn, function(request, response) {
     const fieldsToUpdate = {};
     const updateableFields = ['history', 'liked', 'disliked'];
@@ -97,7 +98,27 @@ module.exports = function(app, passport, express, pathVar) {
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
 
-  // deleting one restaurant (restaurant id)
+  // creating a new user through POST
+  app.post('/userdata', function(request, response) {
+
+    const userCredentials = request.body;
+    const newUser = new User();
+    
+    newUser.userInfo.username = userCredentials.username;
+    newUser.userInfo.password = newUser.generateHash(userCredentials.password);
+
+    newUser.save(function(err) {
+      if(err) {
+        response.status(500).json({message: 'Internal server error'});
+        console.log('Error creating user');
+        throw err;
+      }
+      response.status(201).json({message: 'New user successfully created'});
+      console.log('New user successfully created');
+    });
+  });
+
+  // deleting one restaurant (restaurant id) history
   app.delete('/userdata/history/:id', isLoggedIn, function(request, response) {
     // console.log('history request is working');
 
@@ -116,6 +137,7 @@ module.exports = function(app, passport, express, pathVar) {
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
 
+  // deleting one restaurant (restaurant id) liked
   app.delete('/userdata/liked/:id', isLoggedIn, function(request, response) {
     // console.log('liked request is working');
 
@@ -134,6 +156,7 @@ module.exports = function(app, passport, express, pathVar) {
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
 
+  // deleting one restaurant (restaurant id) disliked
   app.delete('/userdata/disliked/:id', isLoggedIn, function(request, response) {
     // console.log('disliked request is working');
 
@@ -151,5 +174,6 @@ module.exports = function(app, passport, express, pathVar) {
       .then(user => response.status(204).end())
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
+
   
 }
