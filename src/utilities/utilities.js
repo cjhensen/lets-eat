@@ -72,8 +72,9 @@
       }
       if(requestType === 'DELETE') {
         console.log('requestType', requestType);
-        settings.data = data;
-        console.log('settings.data', settings.data);
+        settings.url = `/userdata/${data.arrayToDelFrom}/${data.itemToDelete}`;
+        // settings.data = data;
+        // console.log('settings.data', settings.data);
       }
       $.ajax(settings);
     });

@@ -64,10 +64,10 @@ module.exports = function(app, passport, express, pathVar) {
   // User Data Routes
   // Get list by user id
   app.get('/userdata', isLoggedIn, function(request, response) {
-    console.log('request.user', request.user);
-    console.log('request', request.query);
+    // console.log('request.user', request.user);
+    // console.log('request', request.query);
     const arrayToGet = request.query.arrayToGet;
-    console.log('arrayToGet', arrayToGet);
+    // console.log('arrayToGet', arrayToGet);
     User
       .findById(request.user._id)
       .exec()
@@ -82,13 +82,13 @@ module.exports = function(app, passport, express, pathVar) {
     const fieldsToUpdate = {};
     const updateableFields = ['history', 'liked', 'disliked'];
 
-    console.log('rb', request.body);
+    // console.log('rb', request.body);
     updateableFields.forEach(field => {
       if(field in request.body) {
         fieldsToUpdate[field] = request.body[field];
       }
     });
-    console.log('ftu', fieldsToUpdate);
+    // console.log('ftu', fieldsToUpdate);
 
     User
       .findOneAndUpdate({_id: request.user._id}, {$addToSet: fieldsToUpdate})
@@ -97,19 +97,56 @@ module.exports = function(app, passport, express, pathVar) {
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
 
-  app.delete('/userdata', isLoggedIn, function(request, response) {
-    console.log('delete request query', request.user);
+  // deleting one restaurant (restaurant id)
+  app.delete('/userdata/history/:id', isLoggedIn, function(request, response) {
+    // console.log('history request is working');
 
-    const arrayToDelFrom = request.query.arrayToDelFrom;
-    const itemToDel = request.query.itemToDelete;
-    
-    console.log('arrayToDelFrom', arrayToDelFrom);
-    console.log('itemToDel', itemToDel);
+    const listToDelFrom = request.params.list;
+    const itemToDel = request.params.id;
 
-
+    // console.log('listToDelFrom', listToDelFrom);
+    // console.log('itemToDel', itemToDel);
 
     User
-      .findOneAndUpdate({_id: request.user._id}, {$pull: {arrayToDelFrom: {id: itemToDel}}})
+      .findOneAndUpdate(
+        {_id: request.user._id}, 
+        {$pull: {'history': { id: itemToDel}}})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
+
+  app.delete('/userdata/liked/:id', isLoggedIn, function(request, response) {
+    // console.log('liked request is working');
+
+    const listToDelFrom = request.params.list;
+    const itemToDel = request.params.id;
+
+    // console.log('listToDelFrom', listToDelFrom);
+    // console.log('itemToDel', itemToDel);
+
+    User
+      .findOneAndUpdate(
+        {_id: request.user._id}, 
+        {$pull: {'liked': { id: itemToDel}}})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
+
+  app.delete('/userdata/disliked/:id', isLoggedIn, function(request, response) {
+    // console.log('disliked request is working');
+
+    const listToDelFrom = request.params.list;
+    const itemToDel = request.params.id;
+
+    // console.log('listToDelFrom', listToDelFrom);
+    // console.log('itemToDel', itemToDel);
+
+    User
+      .findOneAndUpdate(
+        {_id: request.user._id}, 
+        {$pull: {'disliked': { id: itemToDel}}})
       .exec()
       .then(user => response.status(204).end())
       .catch(err => response.status(500).json({message: 'Internal server error'}));

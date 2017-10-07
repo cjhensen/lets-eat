@@ -84,21 +84,33 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-describe.only('Lets Eat API', function() {
-  before(function() {
-    return runServer(TEST_DATABASE_URL);
+describe('Lets Eat API', function() {
+  before(function(done) {
+    // return runServer(TEST_DATABASE_URL);
+    
+    runServer(TEST_DATABASE_URL)
+    .then(seedUserData()
+      .then(function() {
+      done();
+    }));
   });
 
   beforeEach(function() {
-    return seedUserData();
+    // return seedUserData();
   });
 
   afterEach(function() {
-    return tearDownDb();
+    // return tearDownDb();
   });
 
-  after(function() {
-    return closeServer();
+  after(function(done) {
+    // return closeServer();
+    
+    tearDownDb()
+    .then(closeServer()
+      .then(function() {
+      done();
+    }));
   });
 
   describe('GET index endpoint', function() {
@@ -197,40 +209,100 @@ describe.only('Lets Eat API', function() {
     });
   });
 
-  describe.only('USERDATA', function() {
+  describe('USERDATA', function() {
+
+    const userCredentials = {
+        username: 'adminTest',
+        password: 'adminTestPw'
+      };
+
     const authenticatedUser = request.agent(app);
-
-    const existingUser = {
-      username: 'adminTest',
-      password: 'adminTestPw'
-    };
-
 
     before(function(done) {
       authenticatedUser
         .post('/login')
-        .send(existingUser)
+        .send(userCredentials)
         .end(function(err, response) {
+          expect(response.statusCode).to.equal(302);
           expect('Location', '/app');
           done();
         });
     });
-    describe('get user data list', function() {
-      it('user should be logged in and navigate to /app', function(done) {
-        authenticatedUser.get('/app')
-        .expect('Location', '/app');
-        done();
-      });
 
-      it('should return user list', function(done) {
+    describe('GET user list', function() {
+      it('should return the specified user data list (history)', function(done) {
         authenticatedUser.get('/userdata')
         .query({arrayToGet: 'history'})
-        .then(function(response) {
-          console.log('res', response);
+        .end(function(err, response) {
+          expect(response.body).to.be.a('array');
+          expect(response.body[0]).to.include.keys('image_url', 'url', 'rating', 'price', 'name', 'id');
+          expect(response).to.be.json;
           done();
-        })
-      })
+        });
+      });
+
+      it('should return the specified user data list (liked)', function(done) {
+        authenticatedUser.get('/userdata')
+        .query({arrayToGet: 'liked'})
+        .end(function(err, response) {
+          expect(response.body).to.be.a('array');
+          expect(response.body[0]).to.include.keys('image_url', 'url', 'rating', 'price', 'name', 'id');
+          expect(response).to.be.json;
+          done();
+        });
+      });
+
+      it('should return the specified user data list (disliked)', function(done) {
+        authenticatedUser.get('/userdata')
+        .query({arrayToGet: 'disliked'})
+        .end(function(err, response) {
+          expect(response.body).to.be.a('array');
+          expect(response.body[0]).to.include.keys('image_url', 'url', 'rating', 'price', 'name', 'id');
+          expect(response).to.be.json;
+          done();
+        });
+      });
     });
+    
+    describe('PUT user list item', function() {
+      it('should add a new item to a user list (history)', function(done) {
+        const objToInsert = {
+          history: {
+            image_url: "image url",
+            url: "url",
+            rating: 4,
+            price: "$$",
+            name: "test restaurant",
+            id: 'test-restaurant-id'
+          }
+        };
+
+        authenticatedUser.put('/userdata')
+          .query(objToInsert)
+          .end(function(err, response) {
+            expect(response.statusCode).to.equal(204);
+            done();
+          });
+      });
+    });
+
+    describe('DELETE user list item', function() {
+      it('should delete a restaurant from user list (history)', function(done) {
+        authenticatedUser.delete('/userdata/history/china-station-stony-brook')
+          .then(function(response) {
+            expect(response.statusCode).to.equal(204);
+
+            authenticatedUser.get('/userdata')
+              .query({arrayToGet: "history"})
+              .end(function(err, response) {
+                expect(response.body).to.not.include({id: "china-station-stony-brook"});
+                expect(response.statusCode).to.equal(200);
+                done();
+              });
+          });
+      });
+    });
+
   });
 
 });

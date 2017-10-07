@@ -17,6 +17,10 @@
   pubSub.on('renderRestaurantSearch', destroy);
   pubSub.on('renderRestaurantChoose', destroy);
 
+
+  // module variables
+  let currentList = {};
+
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
 
@@ -24,13 +28,17 @@
     destroy();
     
     let listToDisplay = []; 
+
+    if(dataReceived) { 
+      currentList = dataReceived; 
+    }
     
     // get list from users based on nav item clicked
-    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
+    utilities.makeDbRequest('GET', currentList.itemClicked).then(function(data) {
       listToDisplay = data;
       console.log('listToDisplay', listToDisplay);
 
-      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.title = currentList.itemClicked;
       templateOptions.list = listToDisplay;
       console.log('templateOptions', templateOptions);
       render();
@@ -53,8 +61,9 @@
     };
 
     utilities.makeDbRequest('DELETE', data).then(function(data) {
+      console.log('delete request completed');
       destroy();
-      render();
+      pubSub.emit('renderRestaurantList');
     }).catch(function(err) {
       console.log(err);
     });
