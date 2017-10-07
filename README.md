@@ -66,9 +66,9 @@ Screenshots
 ![App Screenshot 1](https://image.ibb.co/g77Pqb/Screen_Shot_2017_10_04_at_1_44_02_PM.png)
 
 
-![App Screenshot 2](https://image.ibb.co/mbFYiw/Screen_Shot_2017_10_04_at_1_44_22_PM.png)
+![App Screenshot 2](https://preview.ibb.co/ivU9tw/Screen_Shot_2017_10_04_at_1_44_22_PM.png)
 
-![App Screenshot 3](https://image.ibb.co/eyuhbG/Screen_Shot_2017_10_04_at_1_49_09_PM.png)
+![App Screenshot 3](https://preview.ibb.co/jfEL0b/Screen_Shot_2017_10_04_at_1_49_09_PM.png)
 
 ![App Screenshot 4](https://image.ibb.co/eO7eOw/Screen_Shot_2017_10_04_at_1_44_53_PM.png)
 
