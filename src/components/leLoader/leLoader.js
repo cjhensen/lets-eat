@@ -37,12 +37,6 @@
       container.find(component).remove();
     }
 
-    // if($(component).length) {
-    //   console.log('leLoader destroy'); 
-    //   $(component).remove();
-    //   // $(component).detach();
-    //   // can either .detach() which keeps event handlers
-    // }
   }
 
 module.exports = {

@@ -42,18 +42,6 @@ app.use('/restaurant-search', yelpApiRouter);
 
 let server;
 
-// serve app to port
-// function runServer() {
-//   const port = process.env.PORT || 8080;
-//   return new Promise((resolve, reject) => {
-//     server = app.listen(port, () => {
-//       console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
-//       resolve(server);
-//     }).on('error', err => {
-//       reject(err);
-//     });
-//   });
-// }
 
 function runServer(databaseUrl = configDB.DATABASE_URL, port = configPort.PORT) {
   return new Promise((resolve, reject) => {
@@ -73,18 +61,6 @@ function runServer(databaseUrl = configDB.DATABASE_URL, port = configPort.PORT) 
   });
 }
 
-// function closeServer() {
-//   return new Promise((resolve, reject) => {
-//     console.log('Closing server');
-//     server.close(err => {
-//       if(err) {
-//         reject(err);
-//         return;
-//       }
-//       resolve();
-//     });
-//   });
-// }
 
 function closeServer() {
   return mongoose.disconnect().then(() => {

@@ -3,11 +3,6 @@ module.exports = function(app, passport, express, pathVar) {
   const {User} = require('./models/user.js');
   
   app.use(express.static('dist/public'));  
-  // app.use('/app', express.static(pathVar.join(__dirname) + 'dist/app'));
-  // app.use('/app', isLoggedIn);
-  // app.use('/app', express.static('dist/app'));
-  // app.use(express.static(pathVar.join(__dirname, '/../dist/app')));
-  
 
   // HOME
   app.get('/', function(request, response) {
