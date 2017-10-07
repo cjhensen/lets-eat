@@ -1,5 +1,6 @@
 // require assertion library
 const chai = require('chai');
+const expect = chai.expect;
 
 // require http assertion library
 const chaiHttp = require('chai-http');
@@ -7,6 +8,8 @@ const chaiHttp = require('chai-http');
 // faker for mocking data
 const faker = require('faker');
 const mongoose = require('mongoose');
+
+const request = require('supertest');
 
 // use chai should
 const should = chai.should();
@@ -17,6 +20,10 @@ const {TEST_DATABASE_URL} = require('../server/config/database');
 const {app, runServer, closeServer} = require('../server/server');
 
 chai.use(chaiHttp);
+
+// for password
+const bcrypt = require('bcrypt-nodejs');
+
 
 function seedUserData() {
   console.log('seeding User data');
@@ -31,7 +38,8 @@ function generateUserData() {
   return {
     userInfo: {
       username: "adminTest",
-      password: "adminTest"
+      password: bcrypt.hashSync("adminTestPw", bcrypt.genSaltSync(8), null),
+      _id: 1234567890
     },
     history: [
     {
@@ -76,21 +84,33 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-describe.only('Lets Eat API', function() {
-  before(function() {
-    return runServer(TEST_DATABASE_URL);
+describe('Lets Eat API', function() {
+  before(function(done) {
+    // return runServer(TEST_DATABASE_URL);
+    
+    runServer(TEST_DATABASE_URL)
+    .then(seedUserData()
+      .then(function() {
+      done();
+    }));
   });
 
   beforeEach(function() {
-    return seedUserData();
+    // return seedUserData();
   });
 
   afterEach(function() {
-    return tearDownDb();
+    // return tearDownDb();
   });
 
-  after(function() {
-    return closeServer();
+  after(function(done) {
+    // return closeServer();
+    
+    tearDownDb()
+    .then(closeServer()
+      .then(function() {
+      done();
+    }));
   });
 
   describe('GET index endpoint', function() {
@@ -103,6 +123,200 @@ describe.only('Lets Eat API', function() {
         });
         done();
     });
+  });
+
+  describe('LOGIN', function() {
+    it('should redirect to / with incorrect or non-existent user info', function() {
+      const noExistUser = {
+        username: 'newUser',
+        password: 'newUserPw'
+      };
+
+      return chai.request(app)
+        .post('/login')
+        .send(noExistUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/');
+        });
+    });
+    it('should redirect to /app with correct user info', function() {
+      const existingUser = {
+        username: "adminTest",
+        password: "adminTestPw"
+      };
+
+      return chai.request(app)
+        .post('/login')
+        .send(existingUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/app');
+        });
+    });
+  });
+
+  describe('SIGNUP', function() {
+    it('should redirect to / with existing user info used as new user', function() {
+      const existingUser = {
+        username: "adminTest",
+        password: "adminTestPw"
+      };
+
+      return chai.request(app)
+        .post('/signup')
+        .send(existingUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/');
+        });
+    });
+
+    it('should redirect to app with new user info', function() {
+      const newUser = {
+        username: "newUser",
+        password: "newUserPw"
+      };
+
+      return chai.request(app)
+        .post('/signup')
+        .send(newUser)
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/app');
+        });
+    });
+
+    it('should add new user to db through POST', function() {
+      const newUser2 = {
+        userName: "newUser",
+        password: "newUser2pw"
+      };
+
+      return chai.request(app)
+        .post('/userdata')
+        .send(newUser2)
+        .then(function(response) {
+          expect(response.statusCode).to.equal(201);
+        });
+    });
+  });
+
+  describe('LOGOUT', function() {
+    it('should redirect to / on logout', function() {
+      const existingUser = {
+        username: 'adminTest',
+        password: 'adminTestPw'
+      };
+
+      return chai.request(app)
+        .post('/login')
+        .send(existingUser)
+        .then(function(response) {
+          return chai.request(app)
+            .get('/logout');
+        })
+        .then(function(response) {
+          expect(response.status).to.equal(200);
+          expect('Location', '/');
+        });
+    });
+  });
+
+  describe('USERDATA', function() {
+
+    const userCredentials = {
+        username: 'adminTest',
+        password: 'adminTestPw'
+      };
+
+    const authenticatedUser = request.agent(app);
+
+    before(function(done) {
+      authenticatedUser
+        .post('/login')
+        .send(userCredentials)
+        .end(function(err, response) {
+          expect(response.statusCode).to.equal(302);
+          expect('Location', '/app');
+          done();
+        });
+    });
+
+    describe('GET user list', function() {
+      it('should return the specified user data list (history)', function(done) {
+        authenticatedUser.get('/userdata')
+        .query({arrayToGet: 'history'})
+        .end(function(err, response) {
+          expect(response.body).to.be.a('array');
+          expect(response.body[0]).to.include.keys('image_url', 'url', 'rating', 'price', 'name', 'id');
+          expect(response).to.be.json;
+          done();
+        });
+      });
+
+      it('should return the specified user data list (liked)', function(done) {
+        authenticatedUser.get('/userdata')
+        .query({arrayToGet: 'liked'})
+        .end(function(err, response) {
+          expect(response.body).to.be.a('array');
+          expect(response.body[0]).to.include.keys('image_url', 'url', 'rating', 'price', 'name', 'id');
+          expect(response).to.be.json;
+          done();
+        });
+      });
+
+      it('should return the specified user data list (disliked)', function(done) {
+        authenticatedUser.get('/userdata')
+        .query({arrayToGet: 'disliked'})
+        .end(function(err, response) {
+          expect(response.body).to.be.a('array');
+          expect(response.body[0]).to.include.keys('image_url', 'url', 'rating', 'price', 'name', 'id');
+          expect(response).to.be.json;
+          done();
+        });
+      });
+    });
+    
+    describe('PUT user list item', function() {
+      it('should add a new item to a user list (history)', function(done) {
+        const objToInsert = {
+          history: {
+            image_url: "image url",
+            url: "url",
+            rating: 4,
+            price: "$$",
+            name: "test restaurant",
+            id: 'test-restaurant-id'
+          }
+        };
+
+        authenticatedUser.put('/userdata')
+          .query(objToInsert)
+          .end(function(err, response) {
+            expect(response.statusCode).to.equal(204);
+            done();
+          });
+      });
+    });
+
+    describe('DELETE user list item', function() {
+      it('should delete a restaurant from user list (history)', function(done) {
+        authenticatedUser.delete('/userdata/history/china-station-stony-brook')
+          .then(function(response) {
+            expect(response.statusCode).to.equal(204);
+
+            authenticatedUser.get('/userdata')
+              .query({arrayToGet: "history"})
+              .end(function(err, response) {
+                expect(response.body).to.not.include({id: "china-station-stony-brook"});
+                expect(response.statusCode).to.equal(200);
+                done();
+              });
+          });
+      });
+    });
+
   });
 
 });

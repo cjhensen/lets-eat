@@ -873,7 +873,11 @@ module.exports = {
       let listTemplate = "";
 
       array.forEach(function(object) {
-        listTemplate = listTemplate + `<li>${object.name}</li>`;
+        listTemplate = listTemplate + `
+        <li>${object.name}
+          <a href="#" data-id="${object.id}">x</a>
+        </li>
+        `;
       });
 
       return listTemplate;
@@ -895,11 +899,16 @@ module.exports = {
   const component = '.js-restaurant-list';
   // let template = $(restaurantListsTmpl.generateTemplate());
   const templateOptions = {};
+  const deleteButton = `${component} li a`;
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
   pubSub.on('renderRestaurantSearch', destroy);
   pubSub.on('renderRestaurantChoose', destroy);
+
+
+  // module variables
+  let currentList = {};
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
@@ -908,13 +917,17 @@ module.exports = {
     destroy();
     
     let listToDisplay = []; 
+
+    if(dataReceived) { 
+      currentList = dataReceived; 
+    }
     
     // get list from users based on nav item clicked
-    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
+    utilities.makeDbRequest('GET', currentList.itemClicked).then(function(data) {
       listToDisplay = data;
       console.log('listToDisplay', listToDisplay);
 
-      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.title = currentList.itemClicked;
       templateOptions.list = listToDisplay;
       console.log('templateOptions', templateOptions);
       render();
@@ -922,6 +935,33 @@ module.exports = {
       console.log(err);
     });
 
+  }
+
+  function handleDeleteButtonClicked(event) {
+    event.preventDefault();
+    console.log('handleDeleteButtonClicked');
+
+    const arrayToDelFrom = templateOptions.title;
+    const itemToDelete = $(this).attr('data-id');
+
+    const data = {
+      arrayToDelFrom: arrayToDelFrom,
+      itemToDelete: itemToDelete
+    };
+
+    utilities.makeDbRequest('DELETE', data).then(function(data) {
+      console.log('delete request completed');
+      destroy();
+      pubSub.emit('renderRestaurantList');
+    }).catch(function(err) {
+      console.log(err);
+    });
+
+    
+  }
+
+  function assignEventHandlers() {
+    globals.APP_CONTAINER.on('click', deleteButton, handleDeleteButtonClicked);
   }
 
   function render() {
@@ -936,6 +976,8 @@ module.exports = {
       $(component).remove();
     }
   }
+
+  assignEventHandlers();
 },{"../../globals":29,"../../utilities/pubSub":33,"../../utilities/utilities":34,"./restaurantLists-tmpl":21}],23:[function(require,module,exports){
 module.exports = {
   restaurantSearch: require('./restaurantSearch'),
@@ -1492,6 +1534,12 @@ module.exports = {
         settings.data = data;
         console.log('put data', data);
         console.log('settings.data', settings.data);
+      }
+      if(requestType === 'DELETE') {
+        console.log('requestType', requestType);
+        settings.url = `/userdata/${data.arrayToDelFrom}/${data.itemToDelete}`;
+        // settings.data = data;
+        // console.log('settings.data', settings.data);
       }
       $.ajax(settings);
     });

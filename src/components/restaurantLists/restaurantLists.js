@@ -10,11 +10,16 @@
   const component = '.js-restaurant-list';
   // let template = $(restaurantListsTmpl.generateTemplate());
   const templateOptions = {};
+  const deleteButton = `${component} li a`;
 
   // Subscribed Events
   pubSub.on('renderRestaurantList', handleRenderRestaurantList);
   pubSub.on('renderRestaurantSearch', destroy);
   pubSub.on('renderRestaurantChoose', destroy);
+
+
+  // module variables
+  let currentList = {};
 
   function handleRenderRestaurantList(dataReceived) {
     console.log('dataReceived', dataReceived);
@@ -23,13 +28,17 @@
     destroy();
     
     let listToDisplay = []; 
+
+    if(dataReceived) { 
+      currentList = dataReceived; 
+    }
     
     // get list from users based on nav item clicked
-    utilities.makeDbRequest('GET', dataReceived.itemClicked).then(function(data) {
+    utilities.makeDbRequest('GET', currentList.itemClicked).then(function(data) {
       listToDisplay = data;
       console.log('listToDisplay', listToDisplay);
 
-      templateOptions.title = dataReceived.itemClicked;
+      templateOptions.title = currentList.itemClicked;
       templateOptions.list = listToDisplay;
       console.log('templateOptions', templateOptions);
       render();
@@ -37,6 +46,33 @@
       console.log(err);
     });
 
+  }
+
+  function handleDeleteButtonClicked(event) {
+    event.preventDefault();
+    console.log('handleDeleteButtonClicked');
+
+    const arrayToDelFrom = templateOptions.title;
+    const itemToDelete = $(this).attr('data-id');
+
+    const data = {
+      arrayToDelFrom: arrayToDelFrom,
+      itemToDelete: itemToDelete
+    };
+
+    utilities.makeDbRequest('DELETE', data).then(function(data) {
+      console.log('delete request completed');
+      destroy();
+      pubSub.emit('renderRestaurantList');
+    }).catch(function(err) {
+      console.log(err);
+    });
+
+    
+  }
+
+  function assignEventHandlers() {
+    globals.APP_CONTAINER.on('click', deleteButton, handleDeleteButtonClicked);
   }
 
   function render() {
@@ -51,3 +87,5 @@
       $(component).remove();
     }
   }
+
+  assignEventHandlers();

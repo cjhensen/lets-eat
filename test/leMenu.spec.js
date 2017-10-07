@@ -25,21 +25,5 @@ describe('leMenu', function() {
     leMenu.render(APP_CONTAINER);
     expect(APP_CONTAINER.find('.le-menu').length).to.equal(1);
   });
-
-  describe('menu button', function() {
-    it('should show "MENU" text on button on menu closed state', function() {
-      expect(APP_CONTAINER.find('.le-menu-toggle').text()).to.equal('MENU');
-    });
-
-    xit('should show "X" text on button on menu open state', function() {
-      const event = simulant(jsdomWindow, 'click');
-      // const element = APP_CONTAINER.find('.le-menu-toggle');
-      const element = jsdomDocument.getElementsByClassName('le-menu-toggle')[0];
-      console.log(APP_CONTAINER.find('button.le-menu-toggle').text());
-      // APP_CONTAINER.find('.le-menu-toggle').trigger(event);
-      simulant.fire(element, 'click');
-      console.log(APP_CONTAINER.find('button.le-menu-toggle').text());
-    });
-  });
   
 });

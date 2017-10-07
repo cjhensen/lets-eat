@@ -64,10 +64,10 @@ module.exports = function(app, passport, express, pathVar) {
   // User Data Routes
   // Get list by user id
   app.get('/userdata', isLoggedIn, function(request, response) {
-    console.log('request.user', request.user);
-    console.log('request', request.query);
+    // console.log('request.user', request.user);
+    // console.log('request', request.query);
     const arrayToGet = request.query.arrayToGet;
-    console.log('arrayToGet', arrayToGet);
+    // console.log('arrayToGet', arrayToGet);
     User
       .findById(request.user._id)
       .exec()
@@ -78,17 +78,18 @@ module.exports = function(app, passport, express, pathVar) {
       });
   });
 
+  // updating a user list
   app.put('/userdata', isLoggedIn, function(request, response) {
     const fieldsToUpdate = {};
     const updateableFields = ['history', 'liked', 'disliked'];
 
-    console.log('rb', request.body);
+    // console.log('rb', request.body);
     updateableFields.forEach(field => {
       if(field in request.body) {
         fieldsToUpdate[field] = request.body[field];
       }
     });
-    console.log('ftu', fieldsToUpdate);
+    // console.log('ftu', fieldsToUpdate);
 
     User
       .findOneAndUpdate({_id: request.user._id}, {$addToSet: fieldsToUpdate})
@@ -96,5 +97,83 @@ module.exports = function(app, passport, express, pathVar) {
       .then(user => response.status(204).end())
       .catch(err => response.status(500).json({message: 'Internal server error'}));
   });
+
+  // creating a new user through POST
+  app.post('/userdata', function(request, response) {
+
+    const userCredentials = request.body;
+    const newUser = new User();
+    
+    newUser.userInfo.username = userCredentials.username;
+    newUser.userInfo.password = newUser.generateHash(userCredentials.password);
+
+    newUser.save(function(err) {
+      if(err) {
+        response.status(500).json({message: 'Internal server error'});
+        console.log('Error creating user');
+        throw err;
+      }
+      response.status(201).json({message: 'New user successfully created'});
+      console.log('New user successfully created');
+    });
+  });
+
+  // deleting one restaurant (restaurant id) history
+  app.delete('/userdata/history/:id', isLoggedIn, function(request, response) {
+    // console.log('history request is working');
+
+    const listToDelFrom = request.params.list;
+    const itemToDel = request.params.id;
+
+    // console.log('listToDelFrom', listToDelFrom);
+    // console.log('itemToDel', itemToDel);
+
+    User
+      .findOneAndUpdate(
+        {_id: request.user._id}, 
+        {$pull: {'history': { id: itemToDel}}})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
+
+  // deleting one restaurant (restaurant id) liked
+  app.delete('/userdata/liked/:id', isLoggedIn, function(request, response) {
+    // console.log('liked request is working');
+
+    const listToDelFrom = request.params.list;
+    const itemToDel = request.params.id;
+
+    // console.log('listToDelFrom', listToDelFrom);
+    // console.log('itemToDel', itemToDel);
+
+    User
+      .findOneAndUpdate(
+        {_id: request.user._id}, 
+        {$pull: {'liked': { id: itemToDel}}})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
+
+  // deleting one restaurant (restaurant id) disliked
+  app.delete('/userdata/disliked/:id', isLoggedIn, function(request, response) {
+    // console.log('disliked request is working');
+
+    const listToDelFrom = request.params.list;
+    const itemToDel = request.params.id;
+
+    // console.log('listToDelFrom', listToDelFrom);
+    // console.log('itemToDel', itemToDel);
+
+    User
+      .findOneAndUpdate(
+        {_id: request.user._id}, 
+        {$pull: {'disliked': { id: itemToDel}}})
+      .exec()
+      .then(user => response.status(204).end())
+      .catch(err => response.status(500).json({message: 'Internal server error'}));
+  });
+
   
 }

@@ -70,6 +70,12 @@
         console.log('put data', data);
         console.log('settings.data', settings.data);
       }
+      if(requestType === 'DELETE') {
+        console.log('requestType', requestType);
+        settings.url = `/userdata/${data.arrayToDelFrom}/${data.itemToDelete}`;
+        // settings.data = data;
+        // console.log('settings.data', settings.data);
+      }
       $.ajax(settings);
     });
   }
