@@ -1,4 +1,7 @@
 ## Let's Eat! ##
+Test the app
+-------
+You can sign up with your own details (username and password), or use the demo details {username: demo, password: demo}! Click around, do a restaurant search, check the history/liked/disliked lists, go try a new restaurant!
 
 Summary
 -------
