@@ -20,8 +20,10 @@
 
   .nav {
     list-style: none;
-    width: 100%;
+    // width: 100%;
+    width: 150px;
     height: 100%;
+    // height: auto;
     position: fixed;
     top: 0;
     right: 0;
@@ -29,8 +31,16 @@
     left: 0;
     z-index: 0;
     visibility: hidden;
+    background: red;
 
-    margin-top: 80px;
+    // margin-top: 80px;
+    padding-top: 36px;
+    margin-top: 44px;
+    background: lighten(@grey, 30%);
+
+    -webkit-box-shadow: inset -4px 0px 2px 0px rgba(0,0,0,0.10);
+    -moz-box-shadow: inset -4px 0px 2px 0px rgba(0,0,0,0.10);
+    box-shadow: inset -4px 0px 2px 0px rgba(0,0,0,0.10);
 
     .nav-item {
       margin-bottom: 15px;
@@ -106,7 +116,7 @@
 // }
 
 .nav-trigger-open {
-    left: 215px !important;
+    // left: 215px !important;
   }
 
 .nav-open {
@@ -114,4 +124,16 @@
 }
 .nav-trigger + label, .site-wrap, .le-menu h2 {
     transition: left 0.2s;
+}
+
+
+@screen-md-min: 992px;
+@media (min-width: @screen-md-min) { 
+.le-menu {
+  .nav {
+    bottom: 36px;
+    height: auto; 
+  }
+}
+
 }

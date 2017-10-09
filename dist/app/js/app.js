@@ -303,12 +303,6 @@ module.exports = {
       container.find(component).remove();
     }
 
-    // if($(component).length) {
-    //   console.log('leLoader destroy'); 
-    //   $(component).remove();
-    //   // $(component).detach();
-    //   // can either .detach() which keeps event handlers
-    // }
   }
 
 module.exports = {
@@ -857,6 +851,7 @@ module.exports = {
     const template = `
       <div class="js-restaurant-list le-restaurant-list col-xs-12 col-md-8 col-md-offset-2">
       <h3>${options.title}</h3>
+      <span class="empty-list-message">Search to add items to your ${options.title} list!</span>
         <ul>
           ${buildListFromArray(options.list)}
         </ul>
@@ -898,6 +893,7 @@ module.exports = {
   // DOM
   const component = '.js-restaurant-list';
   // let template = $(restaurantListsTmpl.generateTemplate());
+  const emptyListMsg = `${component} .empty-list-message`;
   const templateOptions = {};
   const deleteButton = `${component} li a`;
 
@@ -931,6 +927,11 @@ module.exports = {
       templateOptions.list = listToDisplay;
       console.log('templateOptions', templateOptions);
       render();
+
+      if(listToDisplay.length === 0) {
+        $('.js-restaurant-list span').toggleClass('empty-list-message-visible');
+      }
+
     }).catch(function(err) {
       console.log(err);
     });
@@ -999,19 +1000,20 @@ module.exports = {
   function generateTemplate() {
     const template = `
       <div class="le-restaurant-search js-restaurant-search">
-        <ol class="col-xs-8 col-xs-offset-2">
+        <ol class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3">
           <li>Enter zipcode</li>
           <li>Select search radius</li>
           <li>Want restaurants you haven't been to? Check 'Try something new' (if used app a few times)</li>
           <li>"Let's Eat!"</li>
         </ol>
+        <span class="fields-empty-message col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3">Please fill out all required fields (Location & Radius)</span>
         <form id="restaurant-search">
           <label for="input-location"><span class="input-label">Location</span>
-            <input class="js-input-location col-xs-8 col-xs-offset-2" type="number" id="input-location" name="location" pattern="[0-9]*" placeholder="Location (zipcode)" required>
+            <input class="js-input-location col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 type="number" id="input-location" name="location" pattern="[0-9]*" placeholder="Location (zipcode)" required>
           </label>
 
           <label for="select-radius"><span class="input-label">Radius</span>
-            <select class="js-select-radius col-xs-8 col-xs-offset-2" name="radius" id="select-radius" required>
+            <select class="js-select-radius col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3" name="radius" id="select-radius" required>
               <option value="" disabled selected>Select a radius &#9660;</option>
               <option value="5">5mi</option>
               <option value="10">10mi</option>
@@ -1023,7 +1025,7 @@ module.exports = {
 
           <!--
           <label for="select-cuisine">Cuisine (optional)
-            <select class="js-select-cuisine" name="cuisine" id="select-cuisine">
+            <select class="js-select-cuisine col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3" name="cuisine" id="select-cuisine">
               <option value="" disabled selected>Select a cuisine</option>
               <option value="italian">Italian</option>
               <option value="american">American</option>
@@ -1034,11 +1036,11 @@ module.exports = {
           </label>
           -->
 
-          <label for="input-try-new" class="try-new col-xs-8 col-xs-offset-2">Try something new?
+          <label for="input-try-new" class="try-new col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3">Try something new?
             <input class="js-input-try-new" type="checkbox" id="input-try-new" name="try-new">
           </label>
 
-          <button type="submit" class="btn btn-submit js-btn-submit col-xs-8 col-xs-offset-2">Let's Eat!</button>
+          <button type="submit" class="btn btn-submit js-btn-submit col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3">Let's Eat!</button>
 
         </form>
       </div>
@@ -1067,6 +1069,7 @@ module.exports = {
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
   const btnTest = $('.button-test', template);
+  const fieldsEmptyMsg = `${component} .fields-empty-message`;
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
@@ -1088,12 +1091,21 @@ module.exports = {
     // doing this instead of passing directly to getDataFromApi allows me
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
-    getDataFromApi(formValues, processSearchResults);
+    console.log('formValues', formValues);
 
-    // remove component from dom
-    destroy();
+    if(formValues.location === "" || isNaN(formValues.radius)) {
+      console.log('Please fill out all form values');
+      $(fieldsEmptyMsg).css('display', 'inline-block');
 
-    pubSub.emit('renderLoader');
+    } else {
+      $(fieldsEmptyMsg).css('display', 'none');
+      getDataFromApi(formValues, processSearchResults);  
+      
+      // remove component from dom
+      destroy();
+
+      pubSub.emit('renderLoader');
+    }
   }
 
   // getDataFromApi: request yelp search data via my own api

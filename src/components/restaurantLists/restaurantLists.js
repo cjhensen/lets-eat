@@ -9,6 +9,7 @@
   // DOM
   const component = '.js-restaurant-list';
   // let template = $(restaurantListsTmpl.generateTemplate());
+  const emptyListMsg = `${component} .empty-list-message`;
   const templateOptions = {};
   const deleteButton = `${component} li a`;
 
@@ -42,6 +43,11 @@
       templateOptions.list = listToDisplay;
       console.log('templateOptions', templateOptions);
       render();
+
+      if(listToDisplay.length === 0) {
+        $('.js-restaurant-list span').toggleClass('empty-list-message-visible');
+      }
+
     }).catch(function(err) {
       console.log(err);
     });

@@ -11,6 +11,7 @@
   const template = $(restaurantSearchTmpl.generateTemplate());
   const btnSearch = $('.js-btn-submit', template); 
   const btnTest = $('.button-test', template);
+  const fieldsEmptyMsg = `${component} .fields-empty-message`;
 
   // Subscribed Events
   pubSub.on('renderRestaurantSearch', handleRenderRestaurantSearch);
@@ -32,12 +33,21 @@
     // doing this instead of passing directly to getDataFromApi allows me
     // to still check and access the tryNew param without re-calling the function getFormValues
     const formValues = getFormValues(); 
-    getDataFromApi(formValues, processSearchResults);
+    console.log('formValues', formValues);
 
-    // remove component from dom
-    destroy();
+    if(formValues.location === "" || isNaN(formValues.radius)) {
+      console.log('Please fill out all form values');
+      $(fieldsEmptyMsg).css('display', 'inline-block');
 
-    pubSub.emit('renderLoader');
+    } else {
+      $(fieldsEmptyMsg).css('display', 'none');
+      getDataFromApi(formValues, processSearchResults);  
+      
+      // remove component from dom
+      destroy();
+
+      pubSub.emit('renderLoader');
+    }
   }
 
   // getDataFromApi: request yelp search data via my own api

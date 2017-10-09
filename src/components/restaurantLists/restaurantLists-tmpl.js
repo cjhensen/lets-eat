@@ -15,6 +15,7 @@
     const template = `
       <div class="js-restaurant-list le-restaurant-list col-xs-12 col-md-8 col-md-offset-2">
       <h3>${options.title}</h3>
+      <span class="empty-list-message">Search to add items to your ${options.title} list!</span>
         <ul>
           ${buildListFromArray(options.list)}
         </ul>
